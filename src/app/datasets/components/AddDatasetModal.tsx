@@ -2,7 +2,7 @@ import ModalWrapper from "@/app/components/ModalWrapper";
 import { addDataset, datasetExists, updateDataset } from "@/app/db/utils";
 import { toastError, toastInfo, toastSuccess } from "@/app/lib/toasts";
 import { Dataset } from "@/app/lib/types";
-import { BundleEntry, ListEntry, Resource } from "fhir/r4";
+import { BundleEntry, Resource } from "fhir/r4";
 import React, { useState } from "react";
 
 interface AddDatasetModalProps {
@@ -64,6 +64,8 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     processFile(0);
   };
 
+  const prevName = props.dataset?.name || "";
+
   const handleSubmit = async () => {
     if (dataset.name === "") {
       toastError("Please enter a name for the dataset.");
@@ -79,17 +81,17 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       }
       await addDataset(dataset);
     } else if (props.mode === "edit") {
-      await updateDataset(dataset);
+      await updateDataset(prevName, dataset);
     }
     return true;
   };
 
   return (
     <ModalWrapper showModal={props.showModal} setShowModal={props.setShowModal}>
-      <div className="flex flex-row justify-between items-center p-4">
+      <div className="flex flex-row justify-between items-center py-2 px-4">
         <h1 className="text-2xl font-bold">CREATE DATASET</h1>
       </div>
-      <div className="flex flex-col justify-between items-center p-4">
+      <div className="flex flex-col justify-between items-center py-2 px-4">
         <div className="flex flex-col w-full">
           <label className="text-gray-700" htmlFor="name">
             Name
@@ -137,7 +139,10 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
           </label>
           <div className="flex flex-col w-full bg-gray-100 h-48 mt-4 border-2 rounded overflow-scroll">
             {selectedResources.map((file) => (
-              <div className="flex flex-row justify-between items-start text-xs p-2">
+              <div
+                key={file.name}
+                className="flex flex-row justify-between items-start text-xs p-2"
+              >
                 <p>{file.name}</p>
                 <button
                   className="text-red-500 hover:text-red-600 font-bold py-2 px-4 rounded"
@@ -155,14 +160,14 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
         </div>
         <div className="flex flex-row justify-end gap-4 w-full mt-4">
           <button
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-gray-200 text-gray-700 p-2 rounded-lg"
             onClick={() => props.setShowModal(false)}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
+            className="bg-blue-500 text-white p-2 rounded-lg ml-2"
             onClick={async () => {
               console.log("ADDING ");
               const res = await handleSubmit();

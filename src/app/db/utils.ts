@@ -1,5 +1,4 @@
 import { Resource } from "fhir/r4";
-import { toastError } from "../lib/toasts";
 import { db } from "./db";
 
 export const datasetExists = async (name: string) => {
@@ -40,9 +39,9 @@ export const addDataset = async (dataset: any) => {
   }
 };
 
-export const updateDataset = async (dataset: any) => {
+export const updateDataset = async (prevName: string, dataset: any) => {
   try {
-    await db.datasets.update(dataset.id, dataset);
+    await db.datasets.update(prevName, dataset);
     return true;
   } catch (error) {
     console.log(error);
@@ -87,5 +86,53 @@ export const addResourcesToDataset = async (
   } catch (error) {
     console.log(error);
     return false;
+  }
+};
+
+export const getDashboardCards = async () => {
+  try {
+    const cards = await db.dashboardCards.toArray();
+    return cards;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const addDashboardCard = async (card: any) => {
+  try {
+    await db.dashboardCards.add(card);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+export const updateDashboardCard = async (prevName: string, card: any) => {
+  try {
+    await db.dashboardCards.update(prevName, card);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+export const deleteDashboardCard = async (id: string) => {
+  try {
+    await db.dashboardCards.delete(id);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+export const getDashboardCard = async (title: string) => {
+  try {
+    const card = await db.dashboardCards.get(title);
+    return card;
+  } catch (error) {
+    console.log(error);
   }
 };

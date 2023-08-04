@@ -5,6 +5,7 @@ import { LuFileJson } from "react-icons/lu";
 import React, { useState } from "react";
 import PreviewModal from "./PreviewModal";
 import { Resource } from "fhir/r4";
+import SearchBar from "@/app/components/SearchBar";
 
 interface DatasetViewProps {
   dataset: Dataset;
@@ -15,6 +16,25 @@ const DatasetView = (props: DatasetViewProps) => {
   const [page, setPage] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
   const [previewResource, setPreviewResource] = useState<Resource>();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [resources, setResources] = useState<Resource[]>(
+    props.dataset.resources
+  );
+
+  const handleSearch = () => {
+    if (searchTerm === "") {
+      setResources(props.dataset.resources);
+    } else {
+      const filteredResources = props.dataset.resources.filter((r) => {
+        return (
+          r.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          r.resourceType.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+      setResources(filteredResources);
+    }
+  };
+
   return (
     <div className="flex flex-col w-full bg-white rounded-lg shadow-md">
       <div className="flex flex-col w-full bg-white rounded-lg shadow-md">
@@ -25,15 +45,20 @@ const DatasetView = (props: DatasetViewProps) => {
           </span>
         </div>
         <div className="flex flex-col p-4">
+          <SearchBar
+            handleSearch={handleSearch}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
           <div className="flex flex-row font-bold rounded-md p-2">
             <span className="w-1/3">Type</span>
             <span className="w-1/2">Id</span>
             <span className="w-1/6">View</span>
           </div>
-          {props.dataset.resources
+          {resources
             .slice(page * numberToDisplay, (page + 1) * numberToDisplay)
             .map((resource) => (
-              <div className="flex flex-row p-1 text-xs">
+              <div key={resource.id} className="flex flex-row p-1 text-xs">
                 <span className="w-1/3">{resource.resourceType}</span>
                 <span className="w-1/2">{resource.id}</span>
                 <button
@@ -51,11 +76,8 @@ const DatasetView = (props: DatasetViewProps) => {
         <div className="flex flex-row justify-between items-center p-4">
           <span className="text-gray-500">
             Showing {page * numberToDisplay + 1} to{" "}
-            {Math.min(
-              (page + 1) * numberToDisplay,
-              props.dataset.resources.length
-            )}{" "}
-            of {props.dataset.resources.length} entries
+            {Math.min((page + 1) * numberToDisplay, resources.length)} of{" "}
+            {resources.length} entries
           </span>
 
           <div className="flex flex-row gap-4">
@@ -86,9 +108,7 @@ const DatasetView = (props: DatasetViewProps) => {
             <button
               className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
               onClick={() => {
-                setPage(
-                  Math.floor(props.dataset.resources.length / numberToDisplay)
-                );
+                setPage(Math.floor(resources.length / numberToDisplay));
               }}
             >
               <BiLastPage />

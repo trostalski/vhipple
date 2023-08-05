@@ -1,17 +1,33 @@
 import ModalWrapper from "@/app/components/ModalWrapper";
-import { addDashboardCard, getDatasets } from "@/app/db/utils";
-import { availableChartTypes } from "@/app/lib/constants";
+import {
+  addDashboardCard,
+  dashboardCardExists,
+  getDatasets,
+  updateDashboardCard,
+} from "@/app/db/utils";
 import { DashboardCard } from "@/app/lib/types";
 import { useLiveQuery } from "dexie-react-hooks";
 import React, { useState } from "react";
 import Select from "react-select";
-import { defaultCard, exampleCards } from "../lib/constants";
+import {
+  availableChartColours,
+  availableChartTypes,
+  availableDataTypes,
+  categoricalDataType,
+  defaultCard,
+  exampleCards,
+} from "../lib/constants";
 import { toastError, toastSuccess } from "@/app/lib/toasts";
-import { createChartJsData } from "@/app/dashboard/lib/utils";
+import {
+  createChartJsData,
+  getChartTypeOptions,
+} from "@/app/dashboard/lib/utils";
+import { addMode, editMode } from "@/app/datasets/lib/constants";
 
 interface AddCardModalProps {
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
+  mode: "add" | "edit";
   card?: DashboardCard;
 }
 
@@ -19,7 +35,11 @@ const AddCardModal = (props: AddCardModalProps) => {
   const [card, setCard] = useState<DashboardCard>(
     props.card || { ...defaultCard }
   );
+  const [dataType, setDataType] =
+    useState<(typeof availableDataTypes)[number]>(categoricalDataType);
+
   const datasets = useLiveQuery(getDatasets) || [];
+  const prevTitle = props.card?.title || "";
 
   const handleSubmit = async () => {
     if (!card.title) {
@@ -30,7 +50,7 @@ const AddCardModal = (props: AddCardModalProps) => {
       toastError("Chart type is required.");
       return;
     }
-    if (!card.datasetNames.length) {
+    if (!card.datasets.length) {
       toastError("At least one dataset is required.");
       return;
     }
@@ -39,18 +59,34 @@ const AddCardModal = (props: AddCardModalProps) => {
       return;
     }
     const inputDatasets = datasets.filter((d) =>
-      card.datasetNames.includes(d.name)
+      card.datasets.map((d) => d.name).includes(d.name)
     );
     const chartJsData = createChartJsData(inputDatasets, card.fhirpath);
     card.data = chartJsData;
-    const res = await addDashboardCard(card);
-    if (res) {
-      toastSuccess("Card added successfully.");
-      props.setShowModal(false);
-    } else {
-      toastError("Something went wrong.");
+    if (props.mode === addMode) {
+      if (await dashboardCardExists(card.title)) {
+        toastError("Card with this title already exists.");
+        return;
+      }
+      const res = await addDashboardCard(card);
+      if (res) {
+        toastSuccess("Card added successfully.");
+        props.setShowModal(false);
+      } else {
+        toastError("Something went wrong.");
+      }
+    } else if (props.mode === editMode) {
+      const res = await updateDashboardCard(prevTitle, card);
+      if (res) {
+        toastSuccess("Card updated successfully.");
+        props.setShowModal(false);
+      } else {
+        toastError("Something went wrong.");
+      }
     }
   };
+
+  const chartTypeOptions = getChartTypeOptions(dataType);
 
   return (
     <ModalWrapper setShowModal={props.setShowModal} showModal={props.showModal}>
@@ -105,18 +141,40 @@ const AddCardModal = (props: AddCardModalProps) => {
           />
         </div>
         <div className="flex flex-col w-full">
-          <label className="text-gray-700" htmlFor="description">
+          <label className="text-gray-700" htmlFor="data-type">
+            Data Type
+          </label>
+          <select
+            name="data-type"
+            className="border border-gray-300 p-2 rounded-lg"
+            id="data-type"
+            value={dataType}
+            onChange={(e) => setDataType(e?.target.value)}
+          >
+            {availableDataTypes.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col w-full">
+          <label className="text-gray-700" htmlFor="chart-type">
             Chart Type
           </label>
-          <Select
-            name="chartType"
-            id="chartType"
-            value={{ label: card.chartType, value: card.chartType }}
-            options={availableChartTypes.map((c) => ({
-              label: c,
-              value: c,
-            }))}
-          />
+          <select
+            name="chart-type"
+            className="border border-gray-300 p-2 rounded-lg"
+            id="char-type"
+            value={card.chartType}
+            onChange={(e) => setCard({ ...card, chartType: e.target.value })}
+          >
+            {chartTypeOptions!.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex flex-col w-full">
           <label className="text-gray-700" htmlFor="description">
@@ -128,16 +186,21 @@ const AddCardModal = (props: AddCardModalProps) => {
               value: d.name,
             }))}
             isMulti={true}
-            value={card.datasetNames.map((d) => ({
-              label: d,
-              value: d,
+            value={card.datasets.map((d) => ({
+              label: d.name,
+              value: d.name,
             }))}
-            onChange={(e) =>
+            onChange={(e) => {
               setCard({
                 ...card,
-                datasetNames: e.map((d) => d.value),
-              })
-            }
+                datasets: e.map((d, i) => ({
+                  name: d.value,
+                  chartColour:
+                    availableChartColours[i % availableChartColours.length]
+                      .name,
+                })),
+              });
+            }}
           />
         </div>
         <div className="flex flex-col w-full">

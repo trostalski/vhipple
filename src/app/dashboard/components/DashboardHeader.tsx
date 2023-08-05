@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import AddCardModal from "./AddCardModal";
+import { addMode } from "@/app/datasets/lib/constants";
 
 const DashboardHeader = () => {
   const [showModal, setShowModal] = useState(false);
@@ -15,7 +16,11 @@ const DashboardHeader = () => {
         New Card
       </button>
       {showModal && (
-        <AddCardModal showModal={showModal} setShowModal={setShowModal} />
+        <AddCardModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          mode={addMode}
+        />
       )}
     </div>
   );

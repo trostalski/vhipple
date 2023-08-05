@@ -98,6 +98,16 @@ export const getDashboardCards = async () => {
   }
 };
 
+export const dashboardCardExists = async (title: string) => {
+  try {
+    const card = await db.dashboardCards.get(title);
+    return card !== undefined;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
 export const addDashboardCard = async (card: any) => {
   try {
     await db.dashboardCards.add(card);
@@ -108,9 +118,9 @@ export const addDashboardCard = async (card: any) => {
   }
 };
 
-export const updateDashboardCard = async (prevName: string, card: any) => {
+export const updateDashboardCard = async (prevTitle: string, card: any) => {
   try {
-    await db.dashboardCards.update(prevName, card);
+    await db.dashboardCards.update(prevTitle, card);
     return true;
   } catch (error) {
     console.log(error);

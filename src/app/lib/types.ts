@@ -1,10 +1,15 @@
 import { Resource } from "fhir/r4";
-import { availableChartTypes } from "./constants";
+import {
+  availableChartTypes,
+  availableLegendPositions,
+} from "../dashboard/lib/constants";
 
 export type ChartType = (typeof availableChartTypes)[number];
 export type ChartJsDatasetData = number[];
 export type ChartJsDataset = {
   data: ChartJsDatasetData;
+  label?: string;
+  backgroundColor?: string[];
 };
 export type ChartJsLabels = string[];
 export type ChartJsData = {
@@ -16,10 +21,16 @@ export interface DashboardCard {
   title: string;
   description: string;
   chartType: ChartType;
-  datasetNames: string[];
+  datasets: { name: string; chartColour: string }[];
   fhirpath: string;
   width: number;
+  numDataPoints: number;
   height: number;
+  showChart: boolean;
+  showXLables: boolean;
+  showYLables: boolean;
+  showLegend: boolean;
+  legendPosition: (typeof availableLegendPositions)[number];
   data?: ChartJsData;
 }
 

@@ -7,75 +7,22 @@ import {
   cardMinWidth,
   cardStartHeight,
   cardStartWidth,
+  maxNumDataPoints,
 } from "../lib/constants";
-import { DashboardCard } from "@/app/lib/types";
 import { CiMenuKebab } from "react-icons/ci";
 import { deleteDashboardCard, updateDashboardCard } from "@/app/db/utils";
 import BoxMenu from "./BoxMenu";
-import { Bar } from "react-chartjs-2";
-import { ChartData } from "chart.js";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import ChartComp from "./ChartComp";
+import { DashboardCard } from "@/app/lib/types";
 
 interface DashboardCardBoxProps {
   card: DashboardCard;
 }
 
-interface ChartCompProps {
-  card: DashboardCard;
-}
-
-const ChartComp = (props: ChartCompProps) => {
-  const options = {
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        display: false,
-      },
-    },
-    plugins: {
-      legend: { display: false },
-    },
-  };
-  return (
-    <div className="h-full overflow-hidden">
-      <Bar
-        options={options}
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-        data={
-          props.card.data as ChartData<
-            "bar",
-            (number | [number, number] | null)[],
-            unknown
-          >
-        }
-      />
-    </div>
-  );
-};
-
 const DashboardCardBox = (props: DashboardCardBoxProps) => {
   const resizeRef = useRef<HTMLInputElement>(null);
   const [showMenu, setShowMenu] = useState(false);
+  const [numDataPoints, setNumDataPoints] = useState(props.card.numDataPoints); // specifies the number of data points to show in the chart
   const { resizeWidth, resizeHeight, startResizing, isResizing } = useResize(
     resizeRef,
     props.card.width || cardStartWidth,
@@ -114,7 +61,7 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
       onClick={() => setShowMenu(false)}
     >
       <div
-        className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize bg-blue-500"
+        className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize bg-blue-500 rounded-md"
         onMouseDown={(e) => {
           e.preventDefault();
           startResizing();
@@ -125,7 +72,7 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
           <h1 className="text-2xl font-bold">{props.card.title}</h1>
           <p className="text-gray-500">{props.card.description}</p>
         </div>
-        <div className="relative">
+        <div className="">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -136,6 +83,7 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
           </button>
           {showMenu && (
             <BoxMenu
+              card={props.card}
               handleDelete={handleDelete}
               setShowMenu={setShowMenu}
               showMenu
@@ -143,7 +91,45 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
           )}
         </div>
       </div>
-      <ChartComp card={props.card} />
+      {props.card.showChart && (
+        <>
+          <ChartComp card={props.card} />{" "}
+          <div className="flex items-center justify-center w-full">
+            <input
+              type="range"
+              min="1"
+              max={maxNumDataPoints}
+              className="w-48 h-2 bg-gray-200 mb-2 rounded-lg appearance-none cursor-pointer"
+              value={numDataPoints}
+              onChange={(e) => {
+                setNumDataPoints(Number(e.target.value));
+              }}
+              onKeyDown={async (e) => {
+                console.log("KEX: ", e.key);
+                if (
+                  e.key === "Enter" ||
+                  e.key === "ArrowUp" ||
+                  e.key === "ArrowDown" ||
+                  e.key === "ArrowLeft" ||
+                  e.key === "ArrowRight"
+                ) {
+                  await updateDashboardCard(props.card.title, {
+                    ...props.card,
+                    numDataPoints: numDataPoints,
+                  });
+                }
+              }}
+              onMouseUp={async () => {
+                await updateDashboardCard(props.card.title, {
+                  ...props.card,
+                  numDataPoints: numDataPoints,
+                });
+              }}
+            />
+            <span className="text-gray-400 w-4 ml-2 pb-2">{numDataPoints}</span>
+          </div>
+        </>
+      )}
     </div>
   );
 };

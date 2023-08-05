@@ -6,7 +6,7 @@ import DashboardCardList from "./components/DashboardCardList";
 const page = () => {
   return (
     <MainWrapper>
-      <div className="flex flex-col">
+      <div className="flex flex-col pb-64">
         <DashboardHeader />
         <DashboardCardList />
       </div>

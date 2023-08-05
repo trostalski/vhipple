@@ -23,11 +23,12 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
   const resizeRef = useRef<HTMLInputElement>(null);
   const [showMenu, setShowMenu] = useState(false);
   const [numDataPoints, setNumDataPoints] = useState(props.card.numDataPoints); // specifies the number of data points to show in the chart
-  const { resizeWidth, resizeHeight, startResizing, isResizing } = useResize(
-    resizeRef,
-    props.card.width || cardStartWidth,
-    props.card.height || cardStartHeight
-  );
+  const { resizeWidth, resizeHeight, startResizing, stopResizing, isResizing } =
+    useResize(
+      resizeRef,
+      props.card.width || cardStartWidth,
+      props.card.height || cardStartHeight
+    );
 
   useEffect(() => {
     const updateCard = async () => {
@@ -65,6 +66,11 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
         onMouseDown={(e) => {
           e.preventDefault();
           startResizing();
+        }}
+        onMouseUp={(e) => {
+          e.preventDefault();
+          console.log("MOUSE UP");
+          stopResizing();
         }}
       />
       <div className="flex flex-row justify-between items-center p-4">

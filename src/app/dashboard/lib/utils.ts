@@ -44,7 +44,10 @@ export const generateColourPalette = (numColours: number, name?: string) => {
   return colours;
 };
 
-const getDatasetValues = (datasets: Dataset[], fhirpath: string) => {
+export const evalFhirPathOnDatasets = (
+  datasets: Dataset[],
+  fhirpath: string
+) => {
   const fpFunc = compile(fhirpath);
   const datasetValues: any[][] = [];
   for (let i = 0; i < datasets.length; i++) {
@@ -84,9 +87,9 @@ export const sortChartJsData = (data: ChartJsData) => {
   return data;
 };
 
-export const createChartJsData = (datasets: Dataset[], fhirpath: string) => {
+export const createCatChartJsData = (datasets: Dataset[], fhirpath: string) => {
   let chartJsDatasets: ChartJsDataset[] = [];
-  const datasetValues = getDatasetValues(datasets, fhirpath);
+  const datasetValues = evalFhirPathOnDatasets(datasets, fhirpath);
   const allUniqueValues = datasetValues.flat().filter(onlyUnique);
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
@@ -117,5 +120,19 @@ export const getChartTypeOptions = (
       return numerical1DChartTypes;
     case numerical2DDataType:
       return numerical2DChartTypes;
+  }
+};
+
+export const scrollOnMouseEdge = (mouseMoveEvent: MouseEvent) => {
+  // scroll when mouse is at the edge of the screen
+  if (mouseMoveEvent.clientX < 10) {
+    window.scrollBy(-10, 0);
+  } else if (mouseMoveEvent.clientX > window.innerWidth - 10) {
+    window.scrollBy(10, 0);
+  }
+  if (mouseMoveEvent.clientY < 10) {
+    window.scrollBy(0, -10);
+  } else if (mouseMoveEvent.clientY > window.innerHeight - 10) {
+    window.scrollBy(0, 10);
   }
 };

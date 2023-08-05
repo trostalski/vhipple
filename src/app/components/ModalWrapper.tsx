@@ -42,7 +42,7 @@ const ModalWrapper = (props: ModalWrapperProps) => {
           &#8203;
         </span>
         <div
-          className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
+          className="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
           onClick={(e) => e.stopPropagation()}
         >
           {props.children}

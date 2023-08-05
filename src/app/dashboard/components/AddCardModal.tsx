@@ -19,10 +19,12 @@ import {
 } from "../lib/constants";
 import { toastError, toastSuccess } from "@/app/lib/toasts";
 import {
-  createChartJsData,
+  createCatChartJsData,
+  evalFhirPathOnDatasets,
   getChartTypeOptions,
 } from "@/app/dashboard/lib/utils";
 import { addMode, editMode } from "@/app/datasets/lib/constants";
+import FhirPathPreviewMenu from "./FhirPathPreviewMenu";
 
 interface AddCardModalProps {
   showModal: boolean;
@@ -37,6 +39,7 @@ const AddCardModal = (props: AddCardModalProps) => {
   );
   const [dataType, setDataType] =
     useState<(typeof availableDataTypes)[number]>(categoricalDataType);
+  const [showFhirPathPreview, setShowFhirPathPreview] = useState(false);
 
   const datasets = useLiveQuery(getDatasets) || [];
   const prevTitle = props.card?.title || "";
@@ -61,7 +64,7 @@ const AddCardModal = (props: AddCardModalProps) => {
     const inputDatasets = datasets.filter((d) =>
       card.datasets.map((d) => d.name).includes(d.name)
     );
-    const chartJsData = createChartJsData(inputDatasets, card.fhirpath);
+    const chartJsData = createCatChartJsData(inputDatasets, card.fhirpath);
     card.data = chartJsData;
     if (props.mode === addMode) {
       if (await dashboardCardExists(card.title)) {
@@ -207,14 +210,35 @@ const AddCardModal = (props: AddCardModalProps) => {
           <label className="text-gray-700" htmlFor="fhirpath">
             Value FHIRPath
           </label>
-          <input
-            className="border border-gray-300 p-2 rounded-lg"
-            type="text"
-            name="fhirpath"
-            id="fhirpath"
-            value={card.fhirpath}
-            onChange={(e) => setCard({ ...card, fhirpath: e.target.value })}
-          />
+          <div className="relative flex flex-row gap-4 w-full">
+            <input
+              className="border w-full border-gray-300 p-2 rounded-lg"
+              type="text"
+              name="fhirpath"
+              id="fhirpath"
+              value={card.fhirpath}
+              onChange={(e) => setCard({ ...card, fhirpath: e.target.value })}
+            />
+            <button
+              className={`p-2 rounded-md bg-orange-400 text-white ${
+                !card.fhirpath && "bg-green-100 cursor-not-allowed"
+              }`}
+              disabled={!card.fhirpath}
+              onClick={() => setShowFhirPathPreview(!showFhirPathPreview)}
+            >
+              Preview
+            </button>
+            {showFhirPathPreview && (
+              <FhirPathPreviewMenu
+                showMenu={showFhirPathPreview}
+                setShowMenu={setShowFhirPathPreview}
+                fhirPathResults={evalFhirPathOnDatasets(
+                  datasets,
+                  card.fhirpath
+                )}
+              />
+            )}
+          </div>
         </div>
         <div className="flex flex-row justify-end items-center w-full mt-4">
           <button

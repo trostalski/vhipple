@@ -34,7 +34,6 @@ const useResize = (
         setResizeWidth(newWidth);
         setResizeHeight(newHeight);
       }
-      scrollOnMouseEdge(mouseMoveEvent);
     },
     [isResizing]
   );

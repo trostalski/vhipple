@@ -220,8 +220,8 @@ const AddCardModal = (props: AddCardModalProps) => {
               onChange={(e) => setCard({ ...card, fhirpath: e.target.value })}
             />
             <button
-              className={`p-2 rounded-md bg-orange-400 text-white ${
-                !card.fhirpath && "bg-green-100 cursor-not-allowed"
+              className={`p-2 rounded-md text-orange-600 ${
+                !card.fhirpath && "opacity-50 cursor-not-allowed"
               }`}
               disabled={!card.fhirpath}
               onClick={() => setShowFhirPathPreview(!showFhirPathPreview)}
@@ -233,9 +233,18 @@ const AddCardModal = (props: AddCardModalProps) => {
                 showMenu={showFhirPathPreview}
                 setShowMenu={setShowFhirPathPreview}
                 fhirPathResults={evalFhirPathOnDatasets(
-                  datasets,
+                  datasets.map((d) => {
+                    if (card.datasets.map((d) => d.name).includes(d.name)) {
+                      return d;
+                    }
+                    return {
+                      ...d,
+                      data: [],
+                    };
+                  })!,
                   card.fhirpath
                 )}
+                datasetNames={card.datasets.map((d) => d.name)}
               />
             )}
           </div>

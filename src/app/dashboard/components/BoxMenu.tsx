@@ -148,7 +148,7 @@ const BoxMenu = (props: BoxMenuProps) => {
       <div className="flex flex-col px-2 max-h-24 gap-1 w-full overflow-scroll">
         <span>Chart Colours</span>
         {props.card.datasets.map((dataset) => (
-          <div className="flex flex-row w-full">
+          <div className="flex flex-row w-full" key={dataset.name}>
             <span className="w-24">{dataset.name}</span>
             <select
               id="dataset-colour"

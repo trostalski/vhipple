@@ -5,26 +5,26 @@ import {
   getDatasets,
   updateDashboardCard,
 } from "@/app/db/utils";
-import { DashboardCard } from "@/app/lib/types";
+import { ChartJsData, DashboardCard } from "@/app/lib/types";
 import { useLiveQuery } from "dexie-react-hooks";
 import React, { useState } from "react";
 import Select from "react-select";
 import {
   availableChartColours,
-  availableChartTypes,
   availableDataTypes,
   categoricalDataType,
   defaultCard,
-  exampleCards,
+  availableExampleCards,
+  numerical1DDataType,
 } from "../lib/constants";
 import { toastError, toastSuccess } from "@/app/lib/toasts";
 import {
   createCatChartJsData,
-  evalFhirPathOnDatasets,
+  createNum1DChartJsData,
   getChartTypeOptions,
 } from "@/app/dashboard/lib/utils";
 import { addMode, editMode } from "@/app/datasets/lib/constants";
-import FhirPathPreviewMenu from "./FhirPathPreviewMenu";
+import FhirPathInput from "./FhirPathInput";
 
 interface AddCardModalProps {
   showModal: boolean;
@@ -37,9 +37,9 @@ const AddCardModal = (props: AddCardModalProps) => {
   const [card, setCard] = useState<DashboardCard>(
     props.card || { ...defaultCard }
   );
-  const [dataType, setDataType] =
-    useState<(typeof availableDataTypes)[number]>(categoricalDataType);
-  const [showFhirPathPreview, setShowFhirPathPreview] = useState(false);
+  const [dataType, setDataType] = useState<(typeof availableDataTypes)[number]>(
+    card.dataType
+  );
 
   const datasets = useLiveQuery(getDatasets) || [];
   const prevTitle = props.card?.title || "";
@@ -57,15 +57,31 @@ const AddCardModal = (props: AddCardModalProps) => {
       toastError("At least one dataset is required.");
       return;
     }
-    if (!card.fhirpath) {
+    if (!card.valueFhirpath) {
       toastError("FHIRPath is required.");
       return;
     }
     const inputDatasets = datasets.filter((d) =>
       card.datasets.map((d) => d.name).includes(d.name)
     );
-    const chartJsData = createCatChartJsData(inputDatasets, card.fhirpath);
-    card.data = chartJsData;
+    let chartJsData: ChartJsData;
+    if (dataType == categoricalDataType) {
+      chartJsData = createCatChartJsData(inputDatasets, card.valueFhirpath);
+    } else if (dataType == numerical1DDataType) {
+      if (!card.labelFhirpath || card.labelFhirpath == "") {
+        console.log("no label fhirpath");
+        chartJsData = createNum1DChartJsData(inputDatasets, card.valueFhirpath);
+      } else {
+        console.log("label fhirpath");
+        console.log(card.labelFhirpath);
+        chartJsData = createNum1DChartJsData(
+          inputDatasets,
+          card.valueFhirpath,
+          card.labelFhirpath
+        );
+      }
+    }
+    card.data = chartJsData!;
     if (props.mode === addMode) {
       if (await dashboardCardExists(card.title)) {
         toastError("Card with this title already exists.");
@@ -90,6 +106,9 @@ const AddCardModal = (props: AddCardModalProps) => {
   };
 
   const chartTypeOptions = getChartTypeOptions(dataType);
+  const exampleCards = availableExampleCards.filter(
+    (c) => c.dataType == dataType
+  );
 
   return (
     <ModalWrapper setShowModal={props.setShowModal} showModal={props.showModal}>
@@ -98,6 +117,24 @@ const AddCardModal = (props: AddCardModalProps) => {
       </div>
       <div className="flex flex-col justify-between items-center py-2 px-4">
         <div className="flex flex-col w-full">
+          <label className="text-gray-700" htmlFor="data-type">
+            Data Type
+          </label>
+          <select
+            name="data-type"
+            className="border border-gray-300 p-2 rounded-lg"
+            id="data-type"
+            value={dataType}
+            onChange={(e) => setDataType(e?.target.value)}
+          >
+            {availableDataTypes.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col w-full">
           <label className="text-gray-700" htmlFor="template">
             From Template
           </label>
@@ -105,12 +142,12 @@ const AddCardModal = (props: AddCardModalProps) => {
             name="template"
             id="template"
             options={exampleCards.map((c) => ({
-              label: c.title,
-              value: c.title,
+              label: c!.title,
+              value: c!.title,
             }))}
             onChange={(e) => {
               if (!e) return;
-              const template = exampleCards.find((c) => c.title === e.value);
+              const template = exampleCards.find((c) => c!.title === e.value);
               if (template) {
                 setCard({ ...template });
               }
@@ -143,24 +180,7 @@ const AddCardModal = (props: AddCardModalProps) => {
             onChange={(e) => setCard({ ...card, description: e.target.value })}
           />
         </div>
-        <div className="flex flex-col w-full">
-          <label className="text-gray-700" htmlFor="data-type">
-            Data Type
-          </label>
-          <select
-            name="data-type"
-            className="border border-gray-300 p-2 rounded-lg"
-            id="data-type"
-            value={dataType}
-            onChange={(e) => setDataType(e?.target.value)}
-          >
-            {availableDataTypes.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </div>
+
         <div className="flex flex-col w-full">
           <label className="text-gray-700" htmlFor="chart-type">
             Chart Type
@@ -206,49 +226,27 @@ const AddCardModal = (props: AddCardModalProps) => {
             }}
           />
         </div>
-        <div className="flex flex-col w-full">
-          <label className="text-gray-700" htmlFor="fhirpath">
-            Value FHIRPath
-          </label>
-          <div className="relative flex flex-row gap-4 w-full">
-            <input
-              className="border w-full border-gray-300 p-2 rounded-lg"
-              type="text"
-              name="fhirpath"
-              id="fhirpath"
-              value={card.fhirpath}
-              onChange={(e) => setCard({ ...card, fhirpath: e.target.value })}
-            />
-            <button
-              className={`p-2 rounded-md text-orange-600 ${
-                !card.fhirpath && "opacity-50 cursor-not-allowed"
-              }`}
-              disabled={!card.fhirpath}
-              onClick={() => setShowFhirPathPreview(!showFhirPathPreview)}
-            >
-              Preview
-            </button>
-            {showFhirPathPreview && (
-              <FhirPathPreviewMenu
-                showMenu={showFhirPathPreview}
-                setShowMenu={setShowFhirPathPreview}
-                fhirPathResults={evalFhirPathOnDatasets(
-                  datasets.map((d) => {
-                    if (card.datasets.map((d) => d.name).includes(d.name)) {
-                      return d;
-                    }
-                    return {
-                      ...d,
-                      data: [],
-                    };
-                  })!,
-                  card.fhirpath
-                )}
-                datasetNames={card.datasets.map((d) => d.name)}
-              />
-            )}
-          </div>
-        </div>
+        <FhirPathInput
+          inputLabel="Value Fhirpath"
+          card={card}
+          setCard={setCard}
+          value={card?.valueFhirpath}
+          onChangeHandler={(e) => {
+            setCard({ ...card, valueFhirpath: e.target.value });
+          }}
+        />
+        {dataType == numerical1DDataType && (
+          <FhirPathInput
+            inputLabel="Label Fhirpath"
+            card={card}
+            setCard={setCard}
+            value={card?.labelFhirpath}
+            onChangeHandler={(e) => {
+              setCard({ ...card, labelFhirpath: e.target.value });
+            }}
+          />
+        )}
+
         <div className="flex flex-row justify-end items-center w-full mt-4">
           <button
             className="bg-gray-200 text-gray-700 p-2 rounded-lg"
@@ -259,7 +257,6 @@ const AddCardModal = (props: AddCardModalProps) => {
           <button
             className="bg-blue-500 text-white p-2 rounded-lg ml-2"
             onClick={() => {
-              console.log("SBUTMI");
               handleSubmit();
             }}
           >

@@ -9,11 +9,16 @@ export const cardMinWidth = 300;
 export const maxNumDataPoints = 100;
 export const startNumDataPoints = 20;
 
+export const categoricalDataType = "categorical";
+export const numerical1DDataType = "numerical-1-d";
+export const numerical2DDataType = "numerical-2-d";
+
 export const baseExampleCard: DashboardCard = {
   title: "Example Card",
   description: "This is an example card.",
+  dataType: categoricalDataType,
   chartType: "bar",
-  fhirpath: "",
+  valueFhirpath: "",
   datasets: [],
   data: undefined,
   numDataPoints: startNumDataPoints,
@@ -32,28 +37,63 @@ export const defaultCard: DashboardCard = {
   description: "",
 };
 
-export const exampleCards: DashboardCard[] = [
+export const catExampleCards: DashboardCard[] = [
   {
     ...baseExampleCard,
     title: "Gender Distribution",
+    dataType: categoricalDataType,
     description: "Shows the distribution of genders within the datasets.",
     chartType: "bar",
-    fhirpath: "Patient.gender",
+    valueFhirpath: "Patient.gender",
   },
   {
     ...baseExampleCard,
     title: "Conditions",
+    dataType: categoricalDataType,
     description: "Shows the distribution of Diagnoses within the datasets.",
     chartType: "bar",
-    fhirpath: "Condition.code.coding.display",
+    valueFhirpath: "Condition.code.coding.display",
   },
   {
     ...baseExampleCard,
     title: "Observations",
+    dataType: categoricalDataType,
     description: "Shows the distribution of Observations within the datasets.",
     chartType: "bar",
-    fhirpath: "Observation.code.coding.display",
+    valueFhirpath: "Observation.code.coding.display",
   },
+];
+
+export const num1DExampleCards: DashboardCard[] = [
+  {
+    ...baseExampleCard,
+    title: "Body Height",
+    dataType: numerical1DDataType,
+    description: "Shows the distribution of heights within the datasets.",
+    chartType: "boxplot",
+    valueFhirpath:
+      "Observation.where(code.coding.code='8302-2').valueQuantity.value",
+    labelFhirpath:
+      "Observation.where(code.coding.code='8302-2').code.coding.display",
+  },
+];
+
+export const num2DExampleCards: DashboardCard[] = [
+  {
+    ...baseExampleCard,
+    title: "Age vs Weight",
+    dataType: numerical2DDataType,
+    description: "Shows the distribution of ages within the datasets.",
+    chartType: "scatter",
+    valueFhirpath: "Patient.age",
+    labelFhirpath: "Patient.weight",
+  },
+];
+
+export const availableExampleCards: DashboardCard[] = [
+  ...catExampleCards,
+  ...num1DExampleCards,
+  ...num2DExampleCards,
 ];
 
 export const categoricalChartTypes = [
@@ -77,9 +117,7 @@ export const availableLegendPositions = [
   "right",
   "chartArea",
 ];
-export const categoricalDataType = "categorical";
-export const numerical1DDataType = "numerical-1-d";
-export const numerical2DDataType = "numerical-2-d";
+
 export const availableDataTypes = [
   categoricalDataType,
   numerical1DDataType,

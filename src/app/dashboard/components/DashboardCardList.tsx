@@ -6,6 +6,7 @@ import DashboardCardBox from "./DashboardCardBox";
 
 const DashboardCardList = () => {
   const dashboardCards = useLiveQuery(getDashboardCards) || [];
+  console.log(dashboardCards);
   return (
     <div className="flex flex-row flex-wrap gap-4 mt-4">
       {!dashboardCards || dashboardCards?.length === 0 ? (

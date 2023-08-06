@@ -44,6 +44,18 @@ export const generateColourPalette = (numColours: number, name?: string) => {
   return colours;
 };
 
+export const validateFhirPath = (fhirpath: string): boolean => {
+  if (fhirpath === "" || !fhirpath) {
+    return false;
+  }
+  try {
+    compile(fhirpath);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 export const evalFhirPathOnDatasets = (
   datasets: Dataset[],
   fhirpath: string
@@ -53,7 +65,7 @@ export const evalFhirPathOnDatasets = (
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
     const resources = dataset.resources;
-    let values: any[] = [];
+    let values: any[][] = [];
     for (let i = 0; i < resources.length; i++) {
       const resource = resources[i];
       const resourceValue = fpFunc(resource);
@@ -61,8 +73,8 @@ export const evalFhirPathOnDatasets = (
         values.push(resourceValue);
       }
     }
-    values = values.flat();
-    datasetValues.push(values);
+    const flattenedValues = values.flat();
+    datasetValues.push(flattenedValues);
   }
   return datasetValues;
 };
@@ -108,6 +120,79 @@ export const createCatChartJsData = (datasets: Dataset[], fhirpath: string) => {
   };
   data = sortChartJsData(data);
   return data;
+};
+
+const createNum1DChartJsDataWithLabels = (
+  datasets: Dataset[],
+  valueFhirpath: string,
+  labelFhipath: string
+) => {
+  const chartJsDatasets: ChartJsDataset[] = [];
+  const datasetValues = evalFhirPathOnDatasets(datasets, valueFhirpath);
+  const datasetLabels = evalFhirPathOnDatasets(datasets, labelFhipath);
+  const allUniqueLabels = datasetLabels.flat().filter(onlyUnique);
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
+    const values = datasetValues[i];
+    const labels = datasetLabels[i];
+    let datasetData: any[] = [];
+
+    const zipped = labels.map((label, index) => {
+      return [label, values[index]];
+    });
+    for (let i = 0; i < allUniqueLabels.length; i++) {
+      const label = allUniqueLabels[i];
+      const filtered = zipped.filter((z) => z[0] === label);
+      const filteredValues = filtered.map((f) => f[1]);
+      datasetData.push(filteredValues);
+    }
+    chartJsDatasets.push({
+      data: datasetData,
+      label: dataset.name,
+    });
+  }
+  const data: ChartJsData = {
+    labels: allUniqueLabels,
+    datasets: chartJsDatasets,
+  };
+  return data;
+};
+const createNum1DChartJsDataWithoutLabels = (
+  datasets: Dataset[],
+  valueFhirpath: string
+) => {
+  console.log("createNum1DChartJsDataWithoutLabels fhirpath: ", valueFhirpath);
+  const chartJsDatasets: ChartJsDataset[] = [];
+  const datasetValues = evalFhirPathOnDatasets(datasets, valueFhirpath);
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
+    const values = datasetValues[i];
+    chartJsDatasets.push({
+      data: [values],
+      label: dataset.name,
+    });
+  }
+  const data: ChartJsData = {
+    labels: ["hey"],
+    datasets: chartJsDatasets,
+  };
+  return data;
+};
+
+export const createNum1DChartJsData = (
+  datasets: Dataset[],
+  valueFhirpath: string,
+  labelFhipath?: string
+) => {
+  if (labelFhipath) {
+    return createNum1DChartJsDataWithLabels(
+      datasets,
+      valueFhirpath,
+      labelFhipath
+    );
+  } else {
+    return createNum1DChartJsDataWithoutLabels(datasets, valueFhirpath);
+  }
 };
 
 export const getChartTypeOptions = (

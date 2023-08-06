@@ -1,7 +1,7 @@
 import { DashboardCard } from "@/app/lib/types";
 import { generateColourPalette } from "../lib/utils";
-import { Chart, ChartData, ChartOptions } from "chart.js";
-import { Bar, Doughnut, Pie, PolarArea, Radar } from "react-chartjs-2";
+import { ChartData, ChartOptions } from "chart.js";
+import { Bar, Doughnut, Pie, PolarArea, Radar, Chart } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,6 +15,10 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
+import {
+  BoxPlotController,
+  BoxAndWiskers,
+} from "@sgratzl/chartjs-chart-boxplot";
 
 interface ChartCompProps {
   card: DashboardCard;
@@ -30,7 +34,9 @@ ChartJS.register(
   ArcElement,
   RadialLinearScale,
   PointElement,
-  LineElement
+  LineElement,
+  BoxPlotController,
+  BoxAndWiskers
 );
 
 const ChartComp = (props: ChartCompProps) => {
@@ -60,7 +66,6 @@ const ChartComp = (props: ChartCompProps) => {
     for (let i = 0; i < props.card.datasets.length; i++) {
       const dataset = props.card.data.datasets[i];
       const datasetData = dataset.data.slice(0, props.card.numDataPoints);
-      console.log("CHAR COLOR: ", props.card.datasets[i].chartColour);
       const backgroundColor = generateColourPalette(
         datasetData.length,
         props.card.datasets[i].chartColour
@@ -158,6 +163,13 @@ const ChartComp = (props: ChartCompProps) => {
               unknown
             >
           }
+        />
+      )}
+      {props.card.chartType === "boxplot" && (
+        <Chart
+          type={"boxplot" as any}
+          data={displayData as any}
+          options={options as any}
         />
       )}
     </div>

@@ -1,11 +1,12 @@
 import { Resource } from "fhir/r4";
 import {
   availableChartTypes,
+  availableDataTypes,
   availableLegendPositions,
 } from "../dashboard/lib/constants";
 
 export type ChartType = (typeof availableChartTypes)[number];
-export type ChartJsDatasetData = number[];
+export type ChartJsDatasetData = any;
 export type ChartJsDataset = {
   data: ChartJsDatasetData;
   label?: string;
@@ -22,7 +23,9 @@ export interface DashboardCard {
   description: string;
   chartType: ChartType;
   datasets: { name: string; chartColour: string }[];
-  fhirpath: string;
+  dataType: (typeof availableDataTypes)[number];
+  valueFhirpath: string;
+  labelFhirpath?: string;
   width: number;
   numDataPoints: number;
   height: number;

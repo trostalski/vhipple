@@ -1,7 +1,7 @@
 // db.ts
 import Dexie, { Table } from "dexie";
-
-import { DashboardCard, Dataset } from "../lib/types";
+import { Dataset } from "../datasets/lib/types";
+import { DashboardCard } from "../dashboard/lib/types";
 
 export class MySubClassedDexie extends Dexie {
   // 'friends' is added by dexie when declaring the stores()

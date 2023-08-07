@@ -13,7 +13,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import { deleteDashboardCard, updateDashboardCard } from "@/app/db/utils";
 import BoxMenu from "./BoxMenu";
 import ChartComp from "./ChartComp";
-import { DashboardCard } from "@/app/lib/types";
+import { DashboardCard } from "../lib/types";
 
 interface DashboardCardBoxProps {
   card: DashboardCard;
@@ -69,7 +69,6 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
         }}
         onMouseUp={(e) => {
           e.preventDefault();
-          console.log("MOUSE UP");
           stopResizing();
         }}
       />
@@ -111,7 +110,6 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
                 setNumDataPoints(Number(e.target.value));
               }}
               onKeyDown={async (e) => {
-                console.log("KEX: ", e.key);
                 if (
                   e.key === "Enter" ||
                   e.key === "ArrowUp" ||

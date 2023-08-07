@@ -1,5 +1,4 @@
 import { updateDashboardCard } from "@/app/db/utils";
-import { DashboardCard } from "@/app/lib/types";
 import React, { useEffect, useState } from "react";
 import AddCardModal from "./AddCardModal";
 import { editMode } from "@/app/datasets/lib/constants";
@@ -7,6 +6,7 @@ import {
   availableChartColours,
   availableLegendPositions,
 } from "../lib/constants";
+import { DashboardCard } from "../lib/types";
 
 interface BoxMenuProps {
   card: DashboardCard;
@@ -107,38 +107,6 @@ const BoxMenu = (props: BoxMenuProps) => {
         </label>
       </div>
       <div className="flex flex-col gap-1">
-        {/* <div className="flex flex-row items-center gap-2 px-2">
-          <input
-            id="x-min"
-            type="number"
-            className="border border-gray-300 rounded-md w-12"
-            value={props.card.xMin}
-            onChange={async (e) => {
-              await updateDashboardCard(props.card.title, {
-                ...props.card,
-                xMin: e.target.value,
-              });
-            }}
-          />
-          <label htmlFor="x-min" className="">
-            x-Min
-          </label>
-          <input
-            id="x-max"
-            type="number"
-            className="border border-gray-300 rounded-md w-12"
-            value={props.card.xMax}
-            onChange={async (e) => {
-              await updateDashboardCard(props.card.title, {
-                ...props.card,
-                xMax: e.target.value,
-              });
-            }}
-          />
-          <label htmlFor="x-max" className="">
-            x-Max
-          </label>
-        </div> */}
         <div className="flex flex-row items-center gap-2 px-2">
           <input
             id="y-min"

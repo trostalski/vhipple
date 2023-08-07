@@ -1,9 +1,10 @@
 import ModalWrapper from "@/app/components/ModalWrapper";
 import { addDataset, datasetExists, updateDataset } from "@/app/db/utils";
 import { toastError, toastInfo, toastSuccess } from "@/app/lib/toasts";
-import { Dataset } from "@/app/lib/types";
 import { BundleEntry, Resource } from "fhir/r4";
 import React, { useState } from "react";
+import { Dataset, ResourceContainer } from "../lib/types";
+import { resolveReferencesForDataset } from "../lib/utils";
 
 interface AddDatasetModalProps {
   showModal: boolean;
@@ -17,12 +18,12 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     props.dataset || {
       name: "",
       description: "",
-      resources: [],
+      resourceContainers: [],
       size: 0,
     }
   );
   const [selectedResources, setSelectedResources] = useState<
-    { name: string; resources: Resource[] }[]
+    { name: string; resources: ResourceContainer[] }[]
   >([]);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +31,8 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       toastInfo("No files selected.");
       return;
     }
-    const updatedResources: { name: string; resources: Resource[] }[] = [];
+    const updatedResources: { name: string; resources: ResourceContainer[] }[] =
+      [];
     const processFile = (index: number) => {
       const file = e.target.files![index];
       const reader = new FileReader();
@@ -72,8 +74,18 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       return false;
     }
     const newResources = selectedResources.flatMap((r) => r.resources);
-    dataset.resources = [...dataset.resources, ...newResources];
-    dataset.size = dataset.resources.length;
+    const newResourceContainers = newResources.map((r) => ({
+      id: r.id! + "/" + r.resourceType,
+      resource: r,
+      references: [],
+      referencedBy: [],
+    }));
+    dataset.resourceContainers = [
+      ...dataset.resourceContainers,
+      ...newResourceContainers,
+    ];
+    resolveReferencesForDataset(dataset, newResources);
+    dataset.size = dataset.resourceContainers.length;
     if (props.mode === "add") {
       if (await datasetExists(dataset.name)) {
         toastError("Dataset with the same name already exists.");
@@ -169,7 +181,6 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
             type="submit"
             className="bg-blue-500 text-white p-2 rounded-lg ml-2"
             onClick={async () => {
-              console.log("ADDING ");
               const res = await handleSubmit();
               if (!res) return;
               toastSuccess("Dataset created successfully.");

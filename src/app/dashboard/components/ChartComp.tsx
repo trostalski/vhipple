@@ -1,4 +1,3 @@
-import { DashboardCard } from "@/app/lib/types";
 import { generateColourPalette } from "../lib/utils";
 import { ChartData, ChartOptions } from "chart.js";
 import { Bar, Doughnut, Pie, PolarArea, Radar, Chart } from "react-chartjs-2";
@@ -19,7 +18,7 @@ import {
   BoxPlotController,
   BoxAndWiskers,
 } from "@sgratzl/chartjs-chart-boxplot";
-import { chownSync } from "fs";
+import { DashboardCard } from "../lib/types";
 
 interface ChartCompProps {
   card: DashboardCard;
@@ -49,8 +48,6 @@ const ChartComp = (props: ChartCompProps) => {
     scales: {
       x: {
         display: props.card.showXLables,
-        // min: props.card.xMin,
-        // max: props.card.xMax,
       },
       y: {
         display: props.card.showYLables,

@@ -65,7 +65,7 @@ export const addResourceToDataset = async (
 ) => {
   try {
     const dataset = await db.datasets.get(datasetId);
-    dataset!.resources.push(resource);
+    dataset!.resourceContainers.push(resource);
     await db.datasets.update(datasetId, dataset!);
     return true;
   } catch (error) {
@@ -80,7 +80,7 @@ export const addResourcesToDataset = async (
 ) => {
   try {
     const dataset = await db.datasets.get(datasetId);
-    dataset!.resources.push(...resources);
+    dataset!.resourceContainers.push(...resources);
     await db.datasets.update(datasetId, dataset!);
     return true;
   } catch (error) {

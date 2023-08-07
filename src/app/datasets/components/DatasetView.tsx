@@ -1,4 +1,3 @@
-import { Dataset } from "@/app/lib/types";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { BiFirstPage, BiLastPage } from "react-icons/bi";
 import { LuFileJson } from "react-icons/lu";
@@ -6,6 +5,7 @@ import React, { useState } from "react";
 import PreviewModal from "./PreviewModal";
 import { Resource } from "fhir/r4";
 import SearchBar from "@/app/components/SearchBar";
+import { Dataset } from "../lib/types";
 
 interface DatasetViewProps {
   dataset: Dataset;
@@ -17,21 +17,21 @@ const DatasetView = (props: DatasetViewProps) => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewResource, setPreviewResource] = useState<Resource>();
   const [searchTerm, setSearchTerm] = useState("");
-  const [resources, setResources] = useState<Resource[]>(
-    props.dataset.resources
-  );
+  const resourcesIn = props.dataset.resourceContainers.map((rc) => rc.resource);
+  const [displayResources, setDisplayResources] =
+    useState<Resource[]>(resourcesIn);
 
   const handleSearch = () => {
     if (searchTerm === "") {
-      setResources(props.dataset.resources);
+      setDisplayResources(resourcesIn);
     } else {
-      const filteredResources = props.dataset.resources.filter((r) => {
+      const filteredResources = resourcesIn.filter((r) => {
         return (
           r.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           r.resourceType.toLowerCase().includes(searchTerm.toLowerCase())
         );
       });
-      setResources(filteredResources);
+      setDisplayResources(filteredResources);
     }
   };
 
@@ -55,7 +55,7 @@ const DatasetView = (props: DatasetViewProps) => {
             <span className="w-1/2">Id</span>
             <span className="w-1/6">View</span>
           </div>
-          {resources
+          {displayResources
             .slice(page * numberToDisplay, (page + 1) * numberToDisplay)
             .map((resource) => (
               <div key={resource.id} className="flex flex-row p-1 text-xs">
@@ -76,8 +76,8 @@ const DatasetView = (props: DatasetViewProps) => {
         <div className="flex flex-row justify-between items-center p-4">
           <span className="text-gray-500">
             Showing {page * numberToDisplay + 1} to{" "}
-            {Math.min((page + 1) * numberToDisplay, resources.length)} of{" "}
-            {resources.length} entries
+            {Math.min((page + 1) * numberToDisplay, displayResources.length)} of{" "}
+            {displayResources.length} entries
           </span>
 
           <div className="flex flex-row gap-4">
@@ -100,7 +100,12 @@ const DatasetView = (props: DatasetViewProps) => {
             <button
               className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
               onClick={() => {
-                setPage(page + 1);
+                setPage(
+                  Math.min(
+                    page + 1,
+                    Math.floor(displayResources.length / numberToDisplay)
+                  )
+                );
               }}
             >
               <GrFormNext />
@@ -108,7 +113,7 @@ const DatasetView = (props: DatasetViewProps) => {
             <button
               className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
               onClick={() => {
-                setPage(Math.floor(resources.length / numberToDisplay));
+                setPage(Math.floor(displayResources.length / numberToDisplay));
               }}
             >
               <BiLastPage />

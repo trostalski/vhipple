@@ -1,9 +1,9 @@
 import { deleteDataset } from "@/app/db/utils";
 import { toastSuccess } from "@/app/lib/toasts";
-import { Dataset } from "@/app/lib/types";
 import React, { useState } from "react";
 import { editMode, mainViewComp } from "../lib/constants";
 import AddDatasetModal from "./AddDatasetModal";
+import { Dataset } from "../lib/types";
 
 interface DatasetBoxProps {
   dataset: Dataset;

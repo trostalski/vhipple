@@ -1,4 +1,4 @@
-import { DashboardCard } from "@/app/lib/types";
+import { DashboardCard } from "./types";
 
 export const cardStartWidth = 400;
 export const cardStartHeight = 300;
@@ -24,8 +24,6 @@ export const baseExampleCard: DashboardCard = {
   data: undefined,
   numDataPoints: startNumDataPoints,
   showChart: true,
-  // xMin: 0,
-  // xMax: -1,
   yMin: undefined,
   yMax: undefined,
   width: cardStartWidth,

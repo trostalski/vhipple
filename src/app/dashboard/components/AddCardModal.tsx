@@ -5,7 +5,6 @@ import {
   getDatasets,
   updateDashboardCard,
 } from "@/app/db/utils";
-import { ChartJsData, DashboardCard } from "@/app/lib/types";
 import { useLiveQuery } from "dexie-react-hooks";
 import React, { useState } from "react";
 import Select from "react-select";
@@ -25,6 +24,7 @@ import {
 } from "@/app/dashboard/lib/utils";
 import { addMode, editMode } from "@/app/datasets/lib/constants";
 import FhirPathInput from "./FhirPathInput";
+import { DashboardCard, ChartJsData } from "../lib/types";
 
 interface AddCardModalProps {
   showModal: boolean;
@@ -69,11 +69,8 @@ const AddCardModal = (props: AddCardModalProps) => {
       chartJsData = createCatChartJsData(inputDatasets, card.valueFhirpath);
     } else if (dataType == numerical1DDataType) {
       if (!card.labelFhirpath || card.labelFhirpath == "") {
-        console.log("no label fhirpath");
         chartJsData = createNum1DChartJsData(inputDatasets, card.valueFhirpath);
       } else {
-        console.log("label fhirpath");
-        console.log(card.labelFhirpath);
         chartJsData = createNum1DChartJsData(
           inputDatasets,
           card.valueFhirpath,

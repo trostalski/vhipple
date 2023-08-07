@@ -1,10 +1,3 @@
-import {
-  ChartJsData,
-  ChartJsDataset,
-  ChartJsDatasetData,
-  ChartJsLabels,
-  Dataset,
-} from "../../lib/types";
 import { compile } from "fhirpath";
 import {
   availableChartColours,
@@ -17,6 +10,13 @@ import {
   numerical2DChartTypes,
   numerical2DDataType,
 } from "./constants";
+import { Dataset } from "@/app/datasets/lib/types";
+import {
+  ChartJsData,
+  ChartJsLabels,
+  ChartJsDatasetData,
+  ChartJsDataset,
+} from "./types";
 
 const onlyUnique = (value: any, index: number, array: any) => {
   return array.indexOf(value) === index;
@@ -64,7 +64,7 @@ export const evalFhirPathOnDatasets = (
   const datasetValues: any[][] = [];
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
-    const resources = dataset.resources;
+    const resources = dataset.resourceContainers.map((rc) => rc.resource);
     let values: any[][] = [];
     for (let i = 0; i < resources.length; i++) {
       const resource = resources[i];
@@ -161,7 +161,6 @@ const createNum1DChartJsDataWithoutLabels = (
   datasets: Dataset[],
   valueFhirpath: string
 ) => {
-  console.log("createNum1DChartJsDataWithoutLabels fhirpath: ", valueFhirpath);
   const chartJsDatasets: ChartJsDataset[] = [];
   const datasetValues = evalFhirPathOnDatasets(datasets, valueFhirpath);
   for (let i = 0; i < datasets.length; i++) {

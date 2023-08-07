@@ -2,7 +2,7 @@ import { getDatasets } from "@/app/db/utils";
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import DatasetBox from "./DatasetBox";
-import { Dataset } from "@/app/lib/types";
+import { Dataset } from "../lib/types";
 
 interface DatasetListProps {
   setMainComp: (comp: string) => void;

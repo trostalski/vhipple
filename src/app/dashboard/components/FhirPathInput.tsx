@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import FhirPathPreviewMenu from "./FhirPathPreviewMenu";
 import { evalFhirPathOnDatasets, validateFhirPath } from "../lib/utils";
-import { DashboardCard } from "@/app/lib/types";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDatasets } from "@/app/db/utils";
 import { toastError } from "@/app/lib/toasts";
+import { DashboardCard } from "../lib/types";
 
 interface FhirPathInputProps {
   card: DashboardCard;

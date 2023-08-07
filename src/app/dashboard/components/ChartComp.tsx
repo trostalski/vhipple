@@ -19,6 +19,7 @@ import {
   BoxPlotController,
   BoxAndWiskers,
 } from "@sgratzl/chartjs-chart-boxplot";
+import { chownSync } from "fs";
 
 interface ChartCompProps {
   card: DashboardCard;
@@ -40,14 +41,21 @@ ChartJS.register(
 );
 
 const ChartComp = (props: ChartCompProps) => {
+  const yMin = props.card.yMin === "" ? undefined : props.card.yMin;
+  const yMax = props.card.yMax === "" ? undefined : props.card.yMax;
+
   const options = {
     maintainAspectRatio: false,
     scales: {
       x: {
         display: props.card.showXLables,
+        // min: props.card.xMin,
+        // max: props.card.xMax,
       },
       y: {
         display: props.card.showYLables,
+        min: Number(yMin),
+        max: Number(yMax),
       },
     },
     plugins: {

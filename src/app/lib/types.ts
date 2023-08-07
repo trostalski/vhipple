@@ -25,8 +25,12 @@ export interface DashboardCard {
   datasets: { name: string; chartColour: string }[];
   dataType: (typeof availableDataTypes)[number];
   valueFhirpath: string;
-  labelFhirpath?: string;
+  labelFhirpath: string;
   width: number;
+  yMin?: number | string;
+  yMax?: number | string;
+  // xMin: number;
+  // xMax: number;
   numDataPoints: number;
   height: number;
   showChart: boolean;

@@ -230,7 +230,7 @@ const AddCardModal = (props: AddCardModalProps) => {
           inputLabel="Value Fhirpath"
           card={card}
           setCard={setCard}
-          value={card?.valueFhirpath}
+          value={card.valueFhirpath}
           onChangeHandler={(e) => {
             setCard({ ...card, valueFhirpath: e.target.value });
           }}
@@ -240,7 +240,7 @@ const AddCardModal = (props: AddCardModalProps) => {
             inputLabel="Label Fhirpath"
             card={card}
             setCard={setCard}
-            value={card?.labelFhirpath}
+            value={card.labelFhirpath}
             onChangeHandler={(e) => {
               setCard({ ...card, labelFhirpath: e.target.value });
             }}

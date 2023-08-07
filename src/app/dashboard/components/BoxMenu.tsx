@@ -106,6 +106,72 @@ const BoxMenu = (props: BoxMenuProps) => {
           y-Labels
         </label>
       </div>
+      <div className="flex flex-col gap-1">
+        {/* <div className="flex flex-row items-center gap-2 px-2">
+          <input
+            id="x-min"
+            type="number"
+            className="border border-gray-300 rounded-md w-12"
+            value={props.card.xMin}
+            onChange={async (e) => {
+              await updateDashboardCard(props.card.title, {
+                ...props.card,
+                xMin: e.target.value,
+              });
+            }}
+          />
+          <label htmlFor="x-min" className="">
+            x-Min
+          </label>
+          <input
+            id="x-max"
+            type="number"
+            className="border border-gray-300 rounded-md w-12"
+            value={props.card.xMax}
+            onChange={async (e) => {
+              await updateDashboardCard(props.card.title, {
+                ...props.card,
+                xMax: e.target.value,
+              });
+            }}
+          />
+          <label htmlFor="x-max" className="">
+            x-Max
+          </label>
+        </div> */}
+        <div className="flex flex-row items-center gap-2 px-2">
+          <input
+            id="y-min"
+            type="number"
+            className="border border-gray-300 rounded-md w-12"
+            value={props.card.yMin}
+            onChange={async (e) => {
+              await updateDashboardCard(props.card.title, {
+                ...props.card,
+                yMin: e.target.value,
+              });
+            }}
+          />
+          <label htmlFor="y-min" className="">
+            y-Min
+          </label>
+          <input
+            id="y-max"
+            type="number"
+            className="border border-gray-300 rounded-md w-12"
+            value={props.card.yMax}
+            onChange={async (e) => {
+              await updateDashboardCard(props.card.title, {
+                ...props.card,
+                yMax: e.target.value,
+              });
+            }}
+          />
+          <label htmlFor="y-max" className="">
+            y-Max
+          </label>
+        </div>
+      </div>
       <hr className="border-gray-200 w-full my-1" />
       <div className="flex flex-row items-center gap-2 px-2">
         <input

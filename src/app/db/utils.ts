@@ -21,6 +21,15 @@ export const getDataset = async (name: string) => {
   }
 };
 
+export const getDatasetNames = async () => {
+  try {
+    const datasetNames = await db.datasets.toCollection().primaryKeys();
+    return datasetNames;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getDatasets = async () => {
   try {
     const datasets = await db.datasets.toArray();
@@ -106,6 +115,31 @@ export const addResourcesToDataset = async (
   } catch (error) {
     console.log(error);
     return false;
+  }
+};
+
+export const getPatientsForDataset = async (name: string) => {
+  try {
+    const dataset = await db.datasets.get(name);
+    const patients = dataset!.resourceContainers.filter(
+      (rc) => rc.resource.resourceType === "Patient"
+    );
+    return patients;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllPatients = async () => {
+  try {
+    const datasets = await db.datasets.toArray();
+    const patients = datasets
+      .map((dataset) => dataset.resourceContainers)
+      .flat()
+      .filter((rc) => rc.resource.resourceType === "Patient");
+    return patients;
+  } catch (error) {
+    console.log(error);
   }
 };
 

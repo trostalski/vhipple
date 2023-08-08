@@ -6,6 +6,7 @@ import PreviewModal from "./PreviewModal";
 import { Resource } from "fhir/r4";
 import SearchBar from "@/app/components/SearchBar";
 import { Dataset } from "../lib/types";
+import Pagination from "@/app/components/Pagination";
 
 interface DatasetViewProps {
   dataset: Dataset;
@@ -73,53 +74,12 @@ const DatasetView = (props: DatasetViewProps) => {
               </div>
             ))}
         </div>
-        <div className="flex flex-row justify-between items-center p-4">
-          <span className="text-gray-500">
-            Showing {page * numberToDisplay + 1} to{" "}
-            {Math.min((page + 1) * numberToDisplay, displayResources.length)} of{" "}
-            {displayResources.length} entries
-          </span>
-
-          <div className="flex flex-row gap-4">
-            <button
-              className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                setPage(0);
-              }}
-            >
-              <BiFirstPage />
-            </button>
-            <button
-              className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                setPage(Math.max(page - 1, 0));
-              }}
-            >
-              <GrFormPrevious />
-            </button>
-            <button
-              className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                setPage(
-                  Math.min(
-                    page + 1,
-                    Math.floor(displayResources.length / numberToDisplay)
-                  )
-                );
-              }}
-            >
-              <GrFormNext />
-            </button>
-            <button
-              className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                setPage(Math.floor(displayResources.length / numberToDisplay));
-              }}
-            >
-              <BiLastPage />
-            </button>
-          </div>
-        </div>
+        <Pagination
+          numberToDisplay={numberToDisplay}
+          page={page}
+          setPage={setPage}
+          totalLength={displayResources.length}
+        />
         {showPreview && (
           <PreviewModal
             resource={previewResource!}

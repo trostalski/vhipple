@@ -1,5 +1,6 @@
 import { Resource } from "fhir/r4";
 import { db } from "./db";
+import { Dataset, ResourceContainer } from "../datasets/lib/types";
 
 export const datasetExists = async (name: string) => {
   try {
@@ -11,9 +12,9 @@ export const datasetExists = async (name: string) => {
   }
 };
 
-export const getDataset = async (id: string) => {
+export const getDataset = async (name: string) => {
   try {
-    const dataset = await db.datasets.get(id);
+    const dataset = await db.datasets.get(name);
     return dataset;
   } catch (error) {
     console.log(error);
@@ -29,7 +30,7 @@ export const getDatasets = async () => {
   }
 };
 
-export const addDataset = async (dataset: any) => {
+export const addDataset = async (dataset: Dataset) => {
   try {
     await db.datasets.add(dataset);
     return true;
@@ -39,7 +40,7 @@ export const addDataset = async (dataset: any) => {
   }
 };
 
-export const updateDataset = async (prevName: string, dataset: any) => {
+export const updateDataset = async (prevName: string, dataset: Dataset) => {
   try {
     await db.datasets.update(prevName, dataset);
     return true;
@@ -59,13 +60,32 @@ export const deleteDataset = async (id: string) => {
   }
 };
 
+export const removeResourcesFromDatasetBySource = async (
+  name: string,
+  source: string
+) => {
+  try {
+    const dataset = await db.datasets.get(name);
+    dataset!.resourceContainers = dataset!.resourceContainers.filter(
+      (rc) => rc.source !== source
+    );
+    const newSize = dataset!.resourceContainers.length;
+    dataset!.size = newSize;
+    await db.datasets.update(name, dataset!);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
 export const addResourceToDataset = async (
   datasetId: string,
-  resource: Resource
+  resourceContainer: ResourceContainer
 ) => {
   try {
     const dataset = await db.datasets.get(datasetId);
-    dataset!.resourceContainers.push(resource);
+    dataset!.resourceContainers.push(resourceContainer);
     await db.datasets.update(datasetId, dataset!);
     return true;
   } catch (error) {
@@ -76,11 +96,11 @@ export const addResourceToDataset = async (
 
 export const addResourcesToDataset = async (
   datasetId: string,
-  resources: Resource[]
+  resourceContainers: ResourceContainer[]
 ) => {
   try {
     const dataset = await db.datasets.get(datasetId);
-    dataset!.resourceContainers.push(...resources);
+    dataset!.resourceContainers.push(...resourceContainers);
     await db.datasets.update(datasetId, dataset!);
     return true;
   } catch (error) {

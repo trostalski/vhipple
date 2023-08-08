@@ -1,10 +1,21 @@
 import ModalWrapper from "@/app/components/ModalWrapper";
-import { addDataset, datasetExists, updateDataset } from "@/app/db/utils";
-import { toastError, toastInfo, toastSuccess } from "@/app/lib/toasts";
+import {
+  addDataset,
+  datasetExists,
+  removeResourcesFromDatasetBySource,
+  updateDataset,
+} from "@/app/db/utils";
+import {
+  toastError,
+  toastInfo,
+  toastPromise,
+  toastSuccess,
+} from "@/app/lib/toasts";
 import { BundleEntry, Resource } from "fhir/r4";
 import React, { useState } from "react";
 import { Dataset, ResourceContainer } from "../lib/types";
-import { resolveReferencesForDataset } from "../lib/utils";
+import { resolveReferencesForDataset } from "../lib/resolveReferences";
+import { onlyUnique } from "@/app/dashboard/lib/utils";
 
 interface AddDatasetModalProps {
   showModal: boolean;
@@ -23,16 +34,27 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     }
   );
   const [selectedResources, setSelectedResources] = useState<
-    { name: string; resources: ResourceContainer[] }[]
+    { name: string; resourceContainers: ResourceContainer[] }[]
   >([]);
+
+  // previous dataset name when editing
+  const prevDatasetName = props.dataset?.name || "";
+
+  // previous sources for displaying file names when editing
+  const prevSources =
+    props.dataset?.resourceContainers
+      .map((rc) => rc.source)
+      .filter(onlyUnique) || [];
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       toastInfo("No files selected.");
       return;
     }
-    const updatedResources: { name: string; resources: ResourceContainer[] }[] =
-      [];
+    const updatedResources: {
+      name: string;
+      resourceContainers: ResourceContainer[];
+    }[] = [];
     const processFile = (index: number) => {
       const file = e.target.files![index];
       const reader = new FileReader();
@@ -41,12 +63,25 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
         if (re.target) {
           const resource = JSON.parse(re.target.result as string);
           if (resource.resourceType === "Bundle") {
-            const resources = resource.entry.map(
-              (e: BundleEntry) => e.resource
-            );
-            updatedResources.push({ name: file.name, resources });
+            let resourceContainers: ResourceContainer[] = [];
+            for (const entry of resource.entry) {
+              resourceContainers.push({
+                id: entry.resource.id,
+                fullUrl: entry.fullUrl,
+                source: file.name,
+                resource: entry.resource,
+                references: [],
+                referencedBy: [],
+              });
+            }
+            updatedResources.push({
+              name: file.name,
+              resourceContainers: resourceContainers,
+            });
           } else {
-            updatedResources.push({ name: file.name, resources: [resource] });
+            toastError(
+              `File ${file.name} is not a valid FHIR Bundle. Please upload a valid FHIR Bundle.`
+            );
           }
         }
 
@@ -66,25 +101,19 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     processFile(0);
   };
 
-  const prevName = props.dataset?.name || "";
-
   const handleSubmit = async () => {
     if (dataset.name === "") {
       toastError("Please enter a name for the dataset.");
       return false;
     }
-    const newResources = selectedResources.flatMap((r) => r.resources);
-    const newResourceContainers = newResources.map((r) => ({
-      id: r.id! + "/" + r.resourceType,
-      resource: r,
-      references: [],
-      referencedBy: [],
-    }));
+    const newResourceContainers = selectedResources.flatMap(
+      (r) => r.resourceContainers
+    );
     dataset.resourceContainers = [
       ...dataset.resourceContainers,
       ...newResourceContainers,
     ];
-    resolveReferencesForDataset(dataset, newResources);
+    resolveReferencesForDataset(dataset, newResourceContainers);
     dataset.size = dataset.resourceContainers.length;
     if (props.mode === "add") {
       if (await datasetExists(dataset.name)) {
@@ -93,7 +122,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       }
       await addDataset(dataset);
     } else if (props.mode === "edit") {
-      await updateDataset(prevName, dataset);
+      await updateDataset(prevDatasetName, dataset);
     }
     return true;
   };
@@ -150,6 +179,27 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
             Select Resources
           </label>
           <div className="flex flex-col w-full bg-gray-100 h-48 mt-4 border-2 rounded overflow-scroll">
+            {prevSources.map((source) => (
+              <div
+                key={source}
+                className="flex flex-row justify-between items-start text-xs p-2"
+              >
+                <p>{source}</p>
+                <button
+                  className="text-red-500 hover:text-red-600 font-bold py-2 px-4 rounded"
+                  onClick={async () =>
+                    toastPromise(
+                      removeResourcesFromDatasetBySource(dataset.name, source),
+                      "Removing resources from dataset...",
+                      "Resources removed from dataset successfully.",
+                      "Failed to remove resources from dataset."
+                    )
+                  }
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
             {selectedResources.map((file) => (
               <div
                 key={file.name}

@@ -6,6 +6,7 @@ export interface ResourceContainer {
   resource: Resource;
   references: Resource[];
   referencedBy: Resource[];
+  datasetName: string;
   fullUrl?: string;
 }
 

@@ -70,6 +70,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
                 fullUrl: entry.fullUrl,
                 source: file.name,
                 resource: entry.resource,
+                datasetName: "",
                 references: [],
                 referencedBy: [],
               });
@@ -113,6 +114,10 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       ...dataset.resourceContainers,
       ...newResourceContainers,
     ];
+    dataset.resourceContainers = dataset.resourceContainers.map((rc) => {
+      rc.datasetName = dataset.name;
+      return rc;
+    });
     resolveReferencesForDataset(dataset, newResourceContainers);
     dataset.size = dataset.resourceContainers.length;
     if (props.mode === "add") {

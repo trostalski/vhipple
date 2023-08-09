@@ -143,6 +143,18 @@ export const getAllPatients = async () => {
   }
 };
 
+export const getPatient = async (id: string, datasetName: string) => {
+  try {
+    const dataset = await db.datasets.get(datasetName);
+    const patient = dataset!.resourceContainers.find(
+      (rc) => rc.resource.id === id
+    );
+    return patient;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getDashboardCards = async () => {
   try {
     const cards = await db.dashboardCards.toArray();

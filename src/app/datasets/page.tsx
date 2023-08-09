@@ -4,8 +4,8 @@ import MainWrapper from "../components/MainWrapper";
 import DatasetHeader from "./components/DatasetHeader";
 import DatasetList from "./components/DatasetList";
 import DatasetView from "./components/DatasetView";
-import { Dataset } from "../lib/types";
 import { mainListComp, mainViewComp } from "./lib/constants";
+import { Dataset } from "./lib/types";
 
 const page = () => {
   const [mainComp, setMainComp] = useState("list"); // list, view, edit

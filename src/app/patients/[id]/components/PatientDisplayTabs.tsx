@@ -19,26 +19,29 @@ const Tab = (props: TabProps) => {
   );
 };
 
-const PatientDisplayTabs = () => {
-  // create a tab bar for "Overview", "Timeline" and "Patient Network"
-  const [activeTab, setActiveTab] = React.useState("Overview");
+interface PatientDisplayTabsProps {
+  displayTab: string;
+  setDisplayTab: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const PatientDisplayTabs = (props: PatientDisplayTabsProps) => {
   return (
     <div className="flex flex-col bg-white w-full rounded-md shadow-md">
       <div className="flex flex-row w-full justify-between">
         <Tab
           name="Overview"
-          isActive={activeTab === "Overview"}
-          setActiveTab={setActiveTab}
+          isActive={props.displayTab === "Overview"}
+          setActiveTab={props.setDisplayTab}
         />
         <Tab
           name="Timeline"
-          isActive={activeTab === "Timeline"}
-          setActiveTab={setActiveTab}
+          isActive={props.displayTab === "Timeline"}
+          setActiveTab={props.setDisplayTab}
         />
         <Tab
-          name="Patient Network"
-          isActive={activeTab === "Patient Network"}
-          setActiveTab={setActiveTab}
+          name="Network"
+          isActive={props.displayTab === "Network"}
+          setActiveTab={props.setDisplayTab}
         />
       </div>
     </div>

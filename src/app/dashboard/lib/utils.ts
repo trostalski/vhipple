@@ -17,6 +17,7 @@ import {
   ChartJsDatasetData,
   ChartJsDataset,
 } from "./types";
+import { Resource } from "fhir/r4";
 
 export const onlyUnique = (value: any, index: number, array: any) => {
   return array.indexOf(value) === index;
@@ -56,6 +57,22 @@ export const validateFhirPath = (fhirpath: string): boolean => {
   }
 };
 
+export const evalFhirPathOnResources = (
+  resources: any[],
+  fpFunc: Compile
+): any[] => {
+  let values: any[][] = [];
+  for (let i = 0; i < resources.length; i++) {
+    const resource = resources[i];
+    const resourceValue = fpFunc(resource);
+    if (resourceValue) {
+      values.push(resourceValue);
+    }
+  }
+  const flattenedValues = values.flat();
+  return flattenedValues;
+};
+
 export const evalFhirPathOnDatasets = (
   datasets: Dataset[],
   fhirpath: string
@@ -65,21 +82,13 @@ export const evalFhirPathOnDatasets = (
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
     const resources = dataset.resourceContainers.map((rc) => rc.resource);
-    let values: any[][] = [];
-    for (let i = 0; i < resources.length; i++) {
-      const resource = resources[i];
-      const resourceValue = fpFunc(resource);
-      if (resourceValue) {
-        values.push(resourceValue);
-      }
-    }
-    const flattenedValues = values.flat();
-    datasetValues.push(flattenedValues);
+    const values = evalFhirPathOnResources(resources, fpFunc);
+    datasetValues.push(values);
   }
   return datasetValues;
 };
 
-export const sortChartJsData = (data: ChartJsData) => {
+export const sortChartJsDataByValueSum = (data: ChartJsData) => {
   let summedValues: number[] = [];
   for (let i = 0; i < data.datasets[0].data.length; i++) {
     let sum = 0;
@@ -118,7 +127,7 @@ export const createCatChartJsData = (datasets: Dataset[], fhirpath: string) => {
     labels: allUniqueValues,
     datasets: chartJsDatasets,
   };
-  data = sortChartJsData(data);
+  data = sortChartJsDataByValueSum(data);
   return data;
 };
 
@@ -157,6 +166,7 @@ const createNum1DChartJsDataWithLabels = (
   };
   return data;
 };
+
 const createNum1DChartJsDataWithoutLabels = (
   datasets: Dataset[],
   valueFhirpath: string
@@ -172,7 +182,7 @@ const createNum1DChartJsDataWithoutLabels = (
     });
   }
   const data: ChartJsData = {
-    labels: ["hey"],
+    labels: [""],
     datasets: chartJsDatasets,
   };
   return data;
@@ -194,6 +204,32 @@ export const createNum1DChartJsData = (
   }
 };
 
+export const createNum2DDataForResources = (
+  resources: Resource[],
+  xFhirpath: string,
+  yFhirpath: string
+) => {
+  const datasetLabels = evalFhirPathOnResources(resources, compile(xFhirpath));
+  const datasetValues = evalFhirPathOnResources(resources, compile(yFhirpath));
+  const zipped = datasetLabels.map((label, index) => {
+    return [label, datasetValues[index]];
+  });
+  // sort by label
+  zipped.sort((a, b) => {
+    return (a[0] as string).localeCompare(b[0] as string);
+  });
+  const data = {
+    labels: zipped.map((z) => z[0]) as ChartJsLabels,
+    datasets: [
+      {
+        label: "",
+        data: zipped.map((z) => z[1]) as ChartJsDatasetData,
+      },
+    ],
+  };
+  return data;
+};
+
 export const getChartTypeOptions = (
   dataType: (typeof availableDataTypes)[number]
 ) => {
@@ -207,16 +243,35 @@ export const getChartTypeOptions = (
   }
 };
 
-export const scrollOnMouseEdge = (mouseMoveEvent: MouseEvent) => {
-  // scroll when mouse is at the edge of the screen
-  if (mouseMoveEvent.clientX < 10) {
-    window.scrollBy(-10, 0);
-  } else if (mouseMoveEvent.clientX > window.innerWidth - 10) {
-    window.scrollBy(10, 0);
+export const sliceChartJsData = (
+  data: ChartJsData,
+  numDataPoints: number,
+  colors?: string[]
+): ChartJsData => {
+  let displayData: ChartJsData;
+  let displayDatasets = [];
+  if (numDataPoints === -1) {
+    displayData = data;
+  } else {
+    const labels = data.labels.slice(0, numDataPoints);
+    for (let i = 0; i < data.datasets.length; i++) {
+      const dataset = data.datasets[i];
+      const datasetData = dataset.data.slice(0, numDataPoints);
+      const backgroundColor = generateColourPalette(
+        datasetData.length,
+        colors && colors[i]
+      );
+      displayDatasets.push({
+        ...dataset,
+        data: datasetData,
+        backgroundColor: backgroundColor,
+      });
+    }
+    displayData = {
+      ...data,
+      labels: labels,
+      datasets: displayDatasets,
+    };
   }
-  if (mouseMoveEvent.clientY < 10) {
-    window.scrollBy(0, -10);
-  } else if (mouseMoveEvent.clientY > window.innerHeight - 10) {
-    window.scrollBy(0, 10);
-  }
+  return displayData;
 };

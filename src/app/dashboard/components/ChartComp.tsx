@@ -1,6 +1,14 @@
-import { generateColourPalette } from "../lib/utils";
+import { generateColourPalette, sliceChartJsData } from "../lib/utils";
 import { ChartData, ChartOptions } from "chart.js";
-import { Bar, Doughnut, Pie, PolarArea, Radar, Chart } from "react-chartjs-2";
+import {
+  Bar,
+  Doughnut,
+  Pie,
+  PolarArea,
+  Radar,
+  Chart,
+  Line,
+} from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -66,28 +74,14 @@ const ChartComp = (props: ChartCompProps) => {
   // only show card.numDataPoints number of data points
   let displayData;
   if (props.card.data) {
-    let displayDatasets = [];
-    const labels = props.card.data.labels.slice(0, props.card.numDataPoints);
-    for (let i = 0; i < props.card.datasets.length; i++) {
-      const dataset = props.card.data.datasets[i];
-      const datasetData = dataset.data.slice(0, props.card.numDataPoints);
-      const backgroundColor = generateColourPalette(
-        datasetData.length,
-        props.card.datasets[i].chartColour
-      );
-      displayDatasets.push({
-        ...dataset,
-        data: datasetData,
-        backgroundColor: backgroundColor,
-      });
-    }
-    displayData = {
-      ...props.card.data,
-      labels: labels,
-      datasets: displayDatasets,
-    };
+    displayData = sliceChartJsData(
+      props.card.data,
+      props.card.numDataPoints,
+      props.card.datasets.map((d) => d.chartColour)
+    );
+  } else {
+    return <span className="text-gray-500">No Data.</span>;
   }
-
   return (
     <div className="h-full overflow-hidden">
       {props.card.chartType === "bar" && (
@@ -175,6 +169,22 @@ const ChartComp = (props: ChartCompProps) => {
           type={"boxplot" as any}
           data={displayData as any}
           options={options as any}
+        />
+      )}
+      {props.card.chartType === "line" && (
+        <Line
+          options={options as ChartOptions<"line">}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+          data={
+            displayData as ChartData<
+              "line",
+              (number | [number, number] | null)[],
+              unknown
+            >
+          }
         />
       )}
     </div>

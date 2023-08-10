@@ -44,14 +44,13 @@ const LeftSidebar = () => {
           <BsPeople size={24} />
           {isOpen && <span>Patients</span>}
         </button>
-        <button
-          className="flex flex-row w-full items-center gap-4 p-4 hover:bg-gray-100 hover:rounded-xl"
+        {/* <button className="flex flex-row w-full items-center gap-4 p-4 hover:bg-gray-100 hover:rounded-xl"
           title="Settings"
           onClick={() => router.push("/settings")}
         >
           <AiOutlineSetting size={24} />
           {isOpen && <span>Settings</span>}
-        </button>
+        </button> */}
       </div>
     </nav>
   );

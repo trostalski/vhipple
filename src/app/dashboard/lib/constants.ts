@@ -84,12 +84,14 @@ export const num1DExampleCards: DashboardCard[] = [
 export const num2DExampleCards: DashboardCard[] = [
   {
     ...baseExampleCard,
-    title: "Age vs Weight",
+    title: "Weight",
     dataType: numerical2DDataType,
-    description: "Shows the distribution of ages within the datasets.",
-    chartType: "scatter",
-    valueFhirpath: "Patient.age",
-    labelFhirpath: "Patient.weight",
+    description: "Shows the course of weight for a patient.",
+    chartType: "line",
+    valueFhirpath:
+      "Observation.where(code.coding.code='8302-2').valueQuantity.value",
+    labelFhirpath:
+      "Observation.where(code.coding.code='8302-2').code.coding.display",
   },
 ];
 

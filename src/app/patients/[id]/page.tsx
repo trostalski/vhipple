@@ -8,13 +8,18 @@ import PatientHeader from "./components/PatientHeader";
 import { Patient } from "fhir/r4";
 import { PatientData } from "../lib/patientData";
 import LoadingScreen from "@/app/components/LoadingScreen";
-import PatientResources from "./components/PatientResources";
-import PatientInfoActive from "./components/PatientInfoActive";
 import PatientDisplayTabs from "./components/PatientDisplayTabs";
+import PatientOverview from "./components/PatientOverview";
+import VisTimeline from "./components/VisTimeline";
+import VisNetwork from "./components/VisNetwork";
+
+export const availableDisplayTabs = ["Overview", "Timeline", "Network"];
 
 const page = ({ params }: { params: { id: string } }) => {
   const searchParams = useSearchParams();
   const datasetName = searchParams.get("dataset");
+  const [displayTab, setDisplayTab] =
+    React.useState<(typeof availableDisplayTabs)[number]>("Overview");
   const patientContainer = useLiveQuery(() =>
     getPatient(params.id, datasetName!)
   )!;
@@ -22,18 +27,30 @@ const page = ({ params }: { params: { id: string } }) => {
   if (!patientContainer) return <LoadingScreen />;
 
   const patient = patientContainer?.resource as Patient;
-  const patientData = new PatientData(patient, patientContainer.referencedBy);
+  const patientData = new PatientData(
+    patient,
+    patientContainer.referencedBy,
+    datasetName!
+  );
 
   return (
     <MainWrapper>
       {!patient ? (
         <span className="text-gray-500">No patient found.</span>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 h-full w-full">
           <PatientHeader patient={patient! as Patient} />
-          <PatientDisplayTabs />
-          <PatientInfoActive patientData={patientData} />
-          <PatientResources patientData={patientData} />
+          <PatientDisplayTabs
+            displayTab={displayTab}
+            setDisplayTab={setDisplayTab}
+          />
+          {displayTab === "Overview" && (
+            <PatientOverview patientData={patientData} />
+          )}
+          {displayTab === "Timeline" && (
+            <VisTimeline resources={patientData.connectedResources} />
+          )}
+          {displayTab === "Network" && <VisNetwork patientData={patientData} />}
         </div>
       )}
     </MainWrapper>

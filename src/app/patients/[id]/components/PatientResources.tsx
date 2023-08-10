@@ -1,188 +1,90 @@
 import React, { useState } from "react";
 import { PatientData } from "../../lib/patientData";
-import {
-  AllergyIntolerance,
-  CarePlan,
-  Condition,
-  Immunization,
-  Medication,
-  MedicationRequest,
-  Observation,
-  Procedure,
-} from "fhir/r4";
+import { MdOutlineExpandMore, MdOutlineExpandLess } from "react-icons/md";
 import {
   getCodedResourceDisplay,
   getConditionDateDisplay,
   getImmunizationDisplay,
   getMedicationRequestDateDisplay,
-  getMedicationRequestDisplay,
-  getYYYYMMDD,
+  getObservationDateDisplay,
+  getOccurrenceDateDisplay,
+  getPerformedDateDisplay,
+  getValueDisplay,
 } from "../../lib/utils";
-import { MdOutlineExpandMore } from "react-icons/md";
 
 interface PatientResourcesProps {
   patientData: PatientData;
 }
 
-interface ConditionTabProps {
-  conditions: Condition[];
+interface TabContentProps<T> {
+  name: string;
+  resources: T[];
+  getDisplay: (resource: T) => string;
+  getDateDisplay: (resource: T) => string;
+  getValueDisplay?: (resource: T) => string;
 }
 
-interface ObservationTabProps {
-  observations: Observation[];
-}
+const TabContent = <T extends unknown>(props: TabContentProps<T>) => {
+  const displayResourceMap: Map<string, T[]> = new Map();
 
-interface MedicationTabProps {
-  medications: MedicationRequest[];
-}
-
-interface ProcedureTabProps {
-  procedures: Procedure[];
-}
-
-interface ImmunizationTabProps {
-  immunizations: Immunization[];
-}
-
-interface AllergyTabProps {
-  allergies: AllergyIntolerance[];
-}
-
-const ConditionTab = (props: ConditionTabProps) => {
-  const displayConditionMap: Map<string, Condition[]> = new Map();
-  const [showList, setShowList] = useState(true);
-
-  props.conditions.forEach((condition) => {
-    const display = getCodedResourceDisplay(condition);
-    if (displayConditionMap.has(display)) {
-      displayConditionMap.get(display)?.push(condition);
+  props.resources.forEach((resource) => {
+    const display = props.getDisplay(resource);
+    if (displayResourceMap.has(display)) {
+      displayResourceMap.get(display)?.push(resource);
     } else {
-      displayConditionMap.set(display, [condition]);
+      displayResourceMap.set(display, [resource]);
     }
   });
 
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+
   return (
     <div>
-      {props.conditions.length === 0 ? (
-        <span className="text-gray-500">No conditions.</span>
+      {props.resources.length === 0 ? (
+        <span className="text-gray-500">No {props.name}.</span>
       ) : (
-        Array.from(displayConditionMap.keys()).map((display) => (
-          <div className="flex flex-col">
-            <div className="flex flex-row items-center">
-              <button onClick={() => setShowList(!showList)}>
+        Array.from(displayResourceMap.keys()).map((display) => (
+          <div key={display} className="flex flex-col">
+            <button
+              className="flex items-center hover:underline"
+              onClick={() =>
+                setExpandedItems(
+                  expandedItems.includes(display)
+                    ? expandedItems.filter((item) => item !== display)
+                    : [...expandedItems, display]
+                )
+              }
+            >
+              {expandedItems.includes(display) ? (
+                <MdOutlineExpandLess />
+              ) : (
                 <MdOutlineExpandMore />
-              </button>
-              <span className="font-bold">{display}</span>
-            </div>
+              )}
+              <span className="">{display}</span>
+            </button>
             <div className="flex flex-col px-8">
-              {showList &&
-                displayConditionMap
+              {expandedItems.includes(display) &&
+                displayResourceMap
                   .get(display)
-                  ?.sort((condition) => {
-                    const date = getConditionDateDisplay(condition);
+                  ?.sort((resource) => {
+                    const date = props.getDateDisplay(resource);
                     return date === "Unknown" ? 1 : -1;
                   })
-                  .map((condition) => (
-                    <span className="text-xs">
-                      {getConditionDateDisplay(condition)}
-                    </span>
+                  .map((resource) => (
+                    <div className="flex flex-row items-center">
+                      <span className="w-24 text-gray-500">
+                        {props.getDateDisplay(resource)}
+                      </span>
+                      {props.getValueDisplay && (
+                        <span className="font-bold">
+                          {" "}
+                          {props.getValueDisplay(resource)}
+                        </span>
+                      )}
+                    </div>
                   ))}
             </div>
           </div>
-        ))
-      )}
-    </div>
-  );
-};
-
-const PrescriptionTab = (props: MedicationTabProps) => {
-  const displayMedicationMap: Map<string, MedicationRequest[]> = new Map();
-
-  props.medications.forEach((medication) => {
-    const display = getMedicationRequestDisplay(medication);
-    if (displayMedicationMap.has(display)) {
-      displayMedicationMap.get(display)?.push(medication);
-    } else {
-      displayMedicationMap.set(display, [medication]);
-    }
-  });
-
-  return (
-    <div>
-      {props.medications.length === 0 ? (
-        <span className="text-gray-500">No medications.</span>
-      ) : (
-        Array.from(displayMedicationMap.keys()).map((display) => (
-          <div className="flex flex-col">
-            <span className="font-bold">{display}</span>
-            {displayMedicationMap
-              .get(display)
-              ?.sort((medication) => {
-                const date = getMedicationRequestDisplay(medication);
-                return date === "Unknown" ? 1 : -1;
-              })
-              .map((medication) => (
-                <span className="text-xs">
-                  {getMedicationRequestDateDisplay(medication)}
-                </span>
-              ))}
-          </div>
-        ))
-      )}
-    </div>
-  );
-};
-
-const ObservationTab = (props: ObservationTabProps) => {
-  return (
-    <div>
-      {props.observations.length === 0 ? (
-        <span className="text-gray-500">No observations.</span>
-      ) : (
-        props.observations.map((observation) => (
-          <div>{getCodedResourceDisplay(observation)}</div>
-        ))
-      )}
-    </div>
-  );
-};
-
-const ProcedureTab = (props: ProcedureTabProps) => {
-  return (
-    <div>
-      {props.procedures.length === 0 ? (
-        <span className="text-gray-500">No procedures.</span>
-      ) : (
-        props.procedures.map((procedure) => (
-          <div>{getCodedResourceDisplay(procedure)}</div>
-        ))
-      )}
-    </div>
-  );
-};
-
-const ImmunizationTab = (props: ImmunizationTabProps) => {
-  return (
-    <div>
-      {props.immunizations.length === 0 ? (
-        <span className="text-gray-500">No immunizations.</span>
-      ) : (
-        props.immunizations.map((immunization) => (
-          <div>{getImmunizationDisplay(immunization)}</div>
-        ))
-      )}
-    </div>
-  );
-};
-
-const AllergyTab = (props: AllergyTabProps) => {
-  return (
-    <div>
-      {props.allergies.length === 0 ? (
-        <span className="text-gray-500">No allergies.</span>
-      ) : (
-        props.allergies.map((allergy) => (
-          <div>{getCodedResourceDisplay(allergy)}</div>
         ))
       )}
     </div>
@@ -194,38 +96,45 @@ const PatientResources = (props: PatientResourcesProps) => {
   const tabs = [
     {
       name: "Conditions",
-      comp: ConditionTab,
-      props: { conditions: props.patientData.conditions },
+      resources: props.patientData.conditions,
+      getDisplay: getCodedResourceDisplay,
+      getDateDisplay: getConditionDateDisplay,
     },
     {
       name: "Prescriptions",
-      comp: PrescriptionTab,
-      props: { medications: props.patientData.medicationRequests },
+      resources: props.patientData.medications,
+      getDisplay: getCodedResourceDisplay,
+      getDateDisplay: getMedicationRequestDateDisplay,
     },
     {
       name: "Observations",
-      comp: ObservationTab,
-      props: { observations: props.patientData.observations },
+      resources: props.patientData.observations,
+      getDisplay: getCodedResourceDisplay,
+      getDateDisplay: getObservationDateDisplay,
+      getValueDisplay: getValueDisplay,
     },
     {
       name: "Procedures",
-      comp: ProcedureTab,
-      props: { procedures: props.patientData.procedures },
+      resources: props.patientData.procedures,
+      getDisplay: getCodedResourceDisplay,
+      getDateDisplay: getPerformedDateDisplay,
     },
     {
       name: "Immunizations",
-      comp: ImmunizationTab,
-      props: { immunizations: props.patientData.immunizations },
+      resources: props.patientData.immunizations,
+      getDisplay: getImmunizationDisplay,
+      getDateDisplay: getOccurrenceDateDisplay,
     },
     {
       name: "Allergies",
-      comp: AllergyTab,
-      props: { allergies: props.patientData.allergies },
+      resources: props.patientData.allergies,
+      getDisplay: getCodedResourceDisplay,
+      getDateDisplay: getConditionDateDisplay,
     },
   ];
-  console.log(props.patientData.medications);
+
   return (
-    <div className="flex flex-col bg-white w-full h-full rounded-md shadow-md p-4 overflow-scroll">
+    <div className="flex flex-col bg-white rounded-md shadow-md p-4">
       <h1 className="text-3xl font-bold">All Info</h1>
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row gap-4">
@@ -244,7 +153,13 @@ const PatientResources = (props: PatientResourcesProps) => {
       </div>
       <hr className="border-blue-200 my-2" />
       <div className="h-96 overflow-scroll">
-        {tabs[selectedTab].comp(tabs[selectedTab].props as any)}
+        <TabContent
+          name={tabs[selectedTab].name}
+          getDisplay={tabs[selectedTab].getDisplay as any}
+          resources={tabs[selectedTab].resources as any}
+          getDateDisplay={tabs[selectedTab].getDateDisplay as any}
+          getValueDisplay={tabs[selectedTab].getValueDisplay as any}
+        />
       </div>
     </div>
   );

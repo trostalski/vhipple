@@ -14,6 +14,8 @@ import {
   Resource,
 } from "fhir/r4";
 import { compile } from "fhirpath";
+import { VisNetworkData } from "./types";
+import { getConnectedResources, getTargetResources } from "@/app/db/utils";
 
 const isActiveCondition = (condition: Condition) => {
   return condition.clinicalStatus?.coding?.[0].code === "active";
@@ -30,6 +32,8 @@ const isActiveMedication = (medication: Medication) => {
 export class PatientData {
   patient: Patient;
   connectedResources: Resource[];
+  datasetName: string;
+  resourceId: string;
 
   conditions: Condition[] = [];
   activeConditions: Condition[] = [];
@@ -56,9 +60,15 @@ export class PatientData {
 
   carePlans: CarePlan[] = [];
 
-  constructor(patient: Patient, connectedResources: Resource[]) {
+  constructor(
+    patient: Patient,
+    connectedResources: Resource[],
+    datasetName: string
+  ) {
     this.patient = patient;
     this.connectedResources = connectedResources;
+    this.datasetName = datasetName;
+    this.resourceId = patient.resourceType + "/" + patient.id!;
 
     this.encounters = this._getResourcesByType<Encounter>("Encounter");
 
@@ -114,5 +124,43 @@ export class PatientData {
       }
     }
     return values;
+  }
+
+  async loadGraphData() {
+    let result: VisNetworkData = {
+      nodes: [],
+      edges: [],
+    };
+    for (const resource of this.connectedResources) {
+      const id = resource.id;
+      const label = resource.resourceType;
+      if (!id || id === this.resourceId) {
+        continue;
+      }
+      if (result.nodes.findIndex((node) => node.id === id) === -1) {
+        result.nodes.push({ id, label });
+      }
+      const connResources = await getTargetResources(this.datasetName, id);
+      if (!connResources) {
+        continue;
+      }
+      for (const connResource of connResources) {
+        const connId = connResource.id;
+        if (!connId) {
+          continue;
+        }
+        if (result.nodes.findIndex((node) => node.id === connId) === -1) {
+          result.nodes.push({ id: connId, label: connResource.resourceType });
+        }
+        result.edges.push({ from: id, to: connId });
+      }
+    }
+    result = {
+      nodes: result.nodes.filter((node) => node.id !== this.patient.id),
+      edges: result.edges.filter(
+        (edge) => edge.from !== this.patient.id && edge.to !== this.patient.id
+      ),
+    };
+    return result;
   }
 }

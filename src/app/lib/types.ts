@@ -5,7 +5,6 @@ import {
   Procedure,
   DiagnosticReport,
   Medication,
-  Immunization,
 } from "fhir/r4";
 
 export type CodedResource =

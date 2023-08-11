@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@sgratzl/chartjs-chart-boxplot": "^4.2.4",
+    "@tanstack/react-table": "^8.9.3",
     "@types/fhir": "^0.0.37",
     "@types/node": "20.4.5",
     "@types/react": "18.2.18",

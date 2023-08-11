@@ -15,7 +15,7 @@ import {
 } from "fhir/r4";
 import { compile } from "fhirpath";
 import { VisNetworkData } from "./types";
-import { getConnectedResources, getTargetResources } from "@/app/db/utils";
+import { getTargetResources } from "@/app/db/utils";
 
 const isActiveCondition = (condition: Condition) => {
   return condition.clinicalStatus?.coding?.[0].code === "active";

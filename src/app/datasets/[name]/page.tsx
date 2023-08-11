@@ -7,6 +7,9 @@ import DatasetHeader from "./components/DatasetHeader";
 import ResourceOverview from "./components/ResourceOverview";
 import DisplayTabs from "@/app/patients/components/DisplayTabs";
 import PatientsList from "@/app/patients/components/PatientsList";
+import PatientsTable from "@/app/patients/components/PatientsTable";
+import { getPatientInfo } from "@/app/lib/utils";
+import { Patient } from "fhir/r4";
 
 export const availableDisplayTabs = ["Overview", "Patients", "Resources"];
 
@@ -22,7 +25,13 @@ const page = ({ params }: { params: { name: string } }) => {
 
   const contentToRender = {
     Resources: <ResourceOverview dataset={dataset} />,
-    Patients: <PatientsList />,
+    Patients: (
+      <PatientsTable
+        inputData={dataset.resourceContainers
+          .filter((rc) => rc.resource.resourceType === "Patient")
+          .map((rc) => getPatientInfo(rc.resource as Patient))}
+      />
+    ),
   };
 
   return (

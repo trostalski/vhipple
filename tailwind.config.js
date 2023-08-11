@@ -14,19 +14,11 @@ module.exports = {
     },
     extend: {
       colors: {
-        primary: "#5CDB95",
-        secondary: "#05386B",
-        text: "#242424",
-        accent: "#61CE70",
-        cancel: "#E63946",
-        submit: "#024488",
-        "baby-blue": "#89CFF0",
-        "light-gray": "#D3D3D3",
+        "primary-button": "#9AC6C5",
+        "sidebar-bg": "#2f4b7c",
+        "sidebar-hover": "#665191",
       },
-      fontFamily: {
-        primary: ["Roboto", "sans-serif"],
-        secondary: ["Roboto Slab", "serif"],
-      },
+      fontFamily: {},
       spacing: {
         128: "32rem",
         144: "36rem",

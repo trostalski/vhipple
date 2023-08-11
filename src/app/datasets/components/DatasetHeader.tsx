@@ -16,7 +16,7 @@ const DatasetHeader = (props: DatasetHeaderProps) => {
       <span className="grow" />
       {props.mainComp === mainListComp && (
         <button
-          className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
+          className="bg-primary-button hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
           onClick={() => setShowModal(true)}
         >
           New Dataset

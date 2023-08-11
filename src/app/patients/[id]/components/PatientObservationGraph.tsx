@@ -59,7 +59,7 @@ const PatientObservationGraph = (props: PatientLabGraphProps) => {
 
   return (
     <div className="flex flex-col bg-white rounded-md shadow-md p-4 overflow-scroll">
-      <h1 className="text-3xl font-bold">Lab Graphs</h1>
+      <h1 className="text-3xl font-bold">Observations Graphs</h1>
       <div className="flex flex-row items-center justify-between p-4">
         <Select
           className="w-full"

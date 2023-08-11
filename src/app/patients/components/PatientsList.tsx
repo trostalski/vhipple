@@ -17,7 +17,9 @@ const PatientsList = (props: PatientsListProps) => {
       ) : (
         patients
           .slice(page * numberToDisplay, (page + 1) * numberToDisplay)
-          .map((patient) => <PatientBox patientContainer={patient} />)
+          .map((patient) => (
+            <PatientBox key={patient.id} patientContainer={patient} />
+          ))
       )}
       <span className="grow" />
       <Pagination

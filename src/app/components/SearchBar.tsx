@@ -7,6 +7,7 @@ interface SearchBarProps {
 }
 
 const SearchBar = (props: SearchBarProps) => {
+  const { searchTerm, setSearchTerm, handleSearch } = props;
   return (
     <div className="flex flex-row items-center w-full">
       <input
@@ -15,22 +16,14 @@ const SearchBar = (props: SearchBarProps) => {
         name="search"
         id="search"
         placeholder="Search by id or type"
-        value={props.searchTerm}
-        onChange={(e) => props.setSearchTerm(e.target.value)}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            props.handleSearch();
+            handleSearch();
           }
         }}
       />
-      <button
-        className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-1 px-2 text-center rounded cursor-pointer ml-2"
-        onClick={() => {
-          props.handleSearch();
-        }}
-      >
-        Search
-      </button>
     </div>
   );
 };

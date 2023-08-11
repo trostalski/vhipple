@@ -2,12 +2,8 @@ import { getDatasets } from "@/app/db/utils";
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import DatasetBox from "./DatasetBox";
-import { Dataset } from "../lib/types";
 
-interface DatasetListProps {
-  setMainComp: (comp: string) => void;
-  setViewDataset: (dataset: Dataset) => void;
-}
+interface DatasetListProps {}
 
 const DatasetList = (props: DatasetListProps) => {
   const datasets = useLiveQuery(getDatasets);
@@ -17,12 +13,7 @@ const DatasetList = (props: DatasetListProps) => {
         <span className="text-gray-500">No dataset found.</span>
       ) : (
         datasets.map((dataset) => (
-          <DatasetBox
-            key={dataset.name}
-            dataset={dataset}
-            setMainComp={props.setMainComp}
-            setViewDataset={props.setViewDataset}
-          />
+          <DatasetBox key={dataset.name} dataset={dataset} />
         ))
       )}
     </div>

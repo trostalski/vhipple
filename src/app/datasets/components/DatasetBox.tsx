@@ -1,49 +1,54 @@
 import { deleteDataset } from "@/app/db/utils";
 import { toastSuccess } from "@/app/lib/toasts";
 import React, { useState } from "react";
-import { editMode } from "../lib/constants";
+import { editMode, mainViewComp } from "../lib/constants";
 import AddDatasetModal from "./AddDatasetModal";
 import { Dataset } from "../lib/types";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import { getYYYYMMDD } from "@/app/patients/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface DatasetBoxProps {
   dataset: Dataset;
-  setViewDataset: (dataset: Dataset) => void;
-  setMainComp: (mainComp: string) => void;
 }
 
 const DatasetBox = (props: DatasetBoxProps) => {
+  const { dataset } = props;
   const [showEditDatasetModal, setShowEditDatasetModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [mainHovered, setMainHovered] = useState(false);
+  const router = useRouter();
   return (
     <div
-      className={`flex flex-row gap-4 items-center bg-white rounded-lg shadow-md border border-white ${
-        mainHovered ? "border-primary-button " : ""
+      className={`flex flex-row gap-4 items-center bg-white rounded-lg shadow-md ${
+        mainHovered ? "shadow-xl " : ""
       }}`}
     >
       <button
-        className="flex flex-col h-full justify-center items-center text-primary-button cursor-pointer rounded-l-md hover:bg-primary-button hover:text-white"
+        className="flex flex-col h-full justify-center items-center text-primary-button cursor-pointer rounded-l-md transition hover:bg-primary-button hover:text-white"
         onClick={() => setExpanded(!expanded)}
       >
         {expanded ? <MdExpandLess size={24} /> : <MdExpandMore size={24} />}
       </button>
       <div
-        className="flex flex-col w-11/12 cursor-pointer"
+        className="flex flex-col flex-grow cursor-pointer"
         onMouseMove={() => {
           setMainHovered(true);
           console.log("hovered");
         }}
         onMouseLeave={() => setMainHovered(false)}
+        onClick={() => {
+          router.push(`/datasets/${dataset.name}`);
+        }}
       >
-        <h1 className="text-2xl font-bold">{props.dataset.name}</h1>
-        <p className="text-gray-500 text-sm">{props.dataset.size} Resources</p>
+        <h1 className="text-2xl font-bold">{dataset.name}</h1>
+        <p className="text-gray-500 text-sm">{dataset.size} Resources</p>
         {expanded && (
           <>
-            <div className="flex flex-row justify-between items-center p-4">
-              {props.dataset.description ? (
-                <p className="text-gray-500">{props.dataset.description}</p>
+            <div className="flex flex-row justify-between items-center">
+              {dataset.description ? (
+                <p className="text-gray-500">{dataset.description}</p>
               ) : (
                 <p className="text-gray-500">No description.</p>
               )}
@@ -51,18 +56,14 @@ const DatasetBox = (props: DatasetBoxProps) => {
           </>
         )}
       </div>
-      <div className="flex flex-row h-full">
-        {/* <button
-            className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
-              props.setViewDataset(props.dataset);
-              props.setMainComp(mainViewComp);
-            }}
-          >
-            View
-          </button> */}
+      <div className="flex flex-row items-center h-full">
+        <div className="flex flex-col">
+          <span className="text-gray-500" title="">
+            {getYYYYMMDD(dataset.updatedAt)}
+          </span>{" "}
+        </div>
         <button
-          className="py-2 px-4 h-full hover:bg-secondary-button hover:text-white rounded-md"
+          className="py-2 px-4 h-full transition hover:bg-secondary-button hover:text-white rounded-md"
           onClick={() => {
             setShowEditDatasetModal(true);
           }}
@@ -70,9 +71,16 @@ const DatasetBox = (props: DatasetBoxProps) => {
           <AiFillEdit />
         </button>
         <button
-          className="py-2 px-4 h-ful hover:bg-cancel-button hover:text-white rounded-md"
+          className="py-2 px-4 h-full transition hover:bg-cancel-button hover:text-white rounded-md"
           onClick={async () => {
-            const res = await deleteDataset(props.dataset.name);
+            // alert diaslog
+            const confirm = window.confirm(
+              `Are you sure you want to delete ${dataset.name}?`
+            );
+            if (!confirm) {
+              return;
+            }
+            const res = await deleteDataset(dataset.name);
             if (res) {
               toastSuccess("Dataset deleted successfully.");
             }
@@ -86,7 +94,7 @@ const DatasetBox = (props: DatasetBoxProps) => {
         <AddDatasetModal
           showModal={showEditDatasetModal}
           setShowModal={setShowEditDatasetModal}
-          dataset={props.dataset}
+          dataset={dataset}
           mode={editMode}
         />
       )}

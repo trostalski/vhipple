@@ -7,7 +7,7 @@ import PatientsList from "./components/PatientsList";
 const page = () => {
   return (
     <MainWrapper>
-      <div className="flex flex-col">
+      <div className="flex flex-col h-full w-full">
         <PatientsHeader />
         <PatientsList />
       </div>

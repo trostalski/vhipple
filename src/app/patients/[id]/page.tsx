@@ -8,7 +8,7 @@ import PatientHeader from "./components/PatientHeader";
 import { Patient } from "fhir/r4";
 import { PatientData } from "../lib/patientData";
 import LoadingScreen from "@/app/components/LoadingScreen";
-import PatientDisplayTabs from "./components/PatientDisplayTabs";
+import PatientDisplayTabs from "../components/DisplayTabs";
 import PatientOverview from "./components/PatientOverview";
 import VisTimeline from "./components/VisTimeline";
 import VisNetwork from "./components/VisNetwork";
@@ -18,8 +18,9 @@ export const availableDisplayTabs = ["Overview", "Timeline", "Network"];
 const page = ({ params }: { params: { id: string } }) => {
   const searchParams = useSearchParams();
   const datasetName = searchParams.get("dataset");
-  const [displayTab, setDisplayTab] =
-    React.useState<(typeof availableDisplayTabs)[number]>("Overview");
+  const [displayTab, setDisplayTab] = React.useState<
+    (typeof availableDisplayTabs)[number]
+  >(availableDisplayTabs[0]);
   const patientContainer = useLiveQuery(() =>
     getPatient(params.id, datasetName!)
   )!;
@@ -33,6 +34,12 @@ const page = ({ params }: { params: { id: string } }) => {
     datasetName!
   );
 
+  const contentToRender = {
+    Overview: <PatientOverview patientData={patientData} />,
+    Timeline: <VisTimeline resources={patientData.connectedResources} />,
+    Network: <VisNetwork patientData={patientData} />,
+  };
+
   return (
     <MainWrapper>
       {!patient ? (
@@ -43,14 +50,10 @@ const page = ({ params }: { params: { id: string } }) => {
           <PatientDisplayTabs
             displayTab={displayTab}
             setDisplayTab={setDisplayTab}
+            availableDisplayTabs={availableDisplayTabs}
           />
-          {displayTab === "Overview" && (
-            <PatientOverview patientData={patientData} />
-          )}
-          {displayTab === "Timeline" && (
-            <VisTimeline resources={patientData.connectedResources} />
-          )}
-          {displayTab === "Network" && <VisNetwork patientData={patientData} />}
+          {displayTab in contentToRender &&
+            contentToRender[displayTab as keyof typeof contentToRender]}
         </div>
       )}
     </MainWrapper>

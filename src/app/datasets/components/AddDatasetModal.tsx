@@ -11,11 +11,12 @@ import {
   toastPromise,
   toastSuccess,
 } from "@/app/lib/toasts";
-import { BundleEntry, Resource } from "fhir/r4";
 import React, { useState } from "react";
 import { Dataset, ResourceContainer } from "../lib/types";
 import { resolveReferencesForDataset } from "../lib/resolveReferences";
 import { onlyUnique } from "@/app/dashboard/lib/utils";
+import { AiFillDelete } from "react-icons/ai";
+import { getYYYYMMDD } from "@/app/patients/lib/utils";
 
 interface AddDatasetModalProps {
   showModal: boolean;
@@ -25,11 +26,14 @@ interface AddDatasetModalProps {
 }
 
 const AddDatasetModal = (props: AddDatasetModalProps) => {
+  const { showModal, setShowModal, mode, dataset: initialDataset } = props;
   const [dataset, setDataset] = useState<Dataset>(
-    props.dataset || {
+    initialDataset || {
       name: "",
       description: "",
       resourceContainers: [],
+      updatedAt: "",
+      createdAt: "",
       size: 0,
     }
   );
@@ -38,13 +42,11 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
   >([]);
 
   // previous dataset name when editing
-  const prevDatasetName = props.dataset?.name || "";
+  const prevDatasetName = dataset?.name || "";
 
   // previous sources for displaying file names when editing
   const prevSources =
-    props.dataset?.resourceContainers
-      .map((rc) => rc.source)
-      .filter(onlyUnique) || [];
+    dataset?.resourceContainers.map((rc) => rc.source).filter(onlyUnique) || [];
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
@@ -120,22 +122,26 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     });
     resolveReferencesForDataset(dataset, newResourceContainers);
     dataset.size = dataset.resourceContainers.length;
-    if (props.mode === "add") {
+    if (mode === "add") {
       if (await datasetExists(dataset.name)) {
         toastError("Dataset with the same name already exists.");
         return false;
       }
+      const date = getYYYYMMDD(new Date().toISOString());
+      dataset.createdAt = new Date().toISOString();
+      dataset.updatedAt = new Date().toISOString();
       await addDataset(dataset);
-    } else if (props.mode === "edit") {
+    } else if (mode === "edit") {
+      dataset.updatedAt = new Date().toISOString();
       await updateDataset(prevDatasetName, dataset);
     }
     return true;
   };
 
   return (
-    <ModalWrapper showModal={props.showModal} setShowModal={props.setShowModal}>
+    <ModalWrapper showModal={showModal} setShowModal={setShowModal}>
       <div className="flex flex-row justify-between items-center py-2 px-4">
-        <h1 className="text-2xl font-bold">CREATE DATASET</h1>
+        <h1 className="text-2xl font-bold">Create Dataset</h1>
       </div>
       <div className="flex flex-col justify-between items-center py-2 px-4">
         <div className="flex flex-col w-full">
@@ -168,11 +174,11 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
         </div>
         <div className="flex flex-col w-full">
           <label className="text-gray-700" htmlFor="description">
-            Resources
+            Bundles
           </label>
           <label
             htmlFor="resource-upload"
-            className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-1 text-center rounded cursor-pointer"
+            className="bg-secondary-button text-white py-1 text-center rounded cursor-pointer transition hover:bg-secondary-button-hover"
           >
             <input
               id="resource-upload"
@@ -181,7 +187,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
               multiple
               onChange={(e) => handleUpload(e)}
             />
-            Select Resources
+            Select Bundles
           </label>
           <div className="flex flex-col w-full bg-gray-100 h-48 mt-4 border-2 rounded overflow-scroll">
             {prevSources.map((source) => (
@@ -191,7 +197,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
               >
                 <p>{source}</p>
                 <button
-                  className="text-red-500 hover:text-red-600 font-bold py-2 px-4 rounded"
+                  className="text-red-500 font-bold py-2 px-4 rounded transition hover:text-red-600"
                   onClick={async () =>
                     toastPromise(
                       removeResourcesFromDatasetBySource(dataset.name, source),
@@ -208,18 +214,18 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
             {selectedResources.map((file) => (
               <div
                 key={file.name}
-                className="flex flex-row justify-between items-start text-xs p-2"
+                className="flex flex-row justify-between items-center text-xs p-2"
               >
                 <p>{file.name}</p>
                 <button
-                  className="text-red-500 hover:text-red-600 font-bold py-2 px-4 rounded"
+                  className="font-bold py-2 px-4 rounded transition hover:scale-125"
                   onClick={() =>
                     setSelectedResources(
                       selectedResources.filter((f) => f.name !== file.name)
                     )
                   }
                 >
-                  Remove
+                  <AiFillDelete size={16} />
                 </button>
               </div>
             ))}
@@ -227,19 +233,19 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
         </div>
         <div className="flex flex-row justify-end gap-4 w-full mt-4">
           <button
-            className="bg-gray-200 text-gray-700 p-2 rounded-lg"
-            onClick={() => props.setShowModal(false)}
+            className="bg-cancel-button text-white py-2 px-12 rounded-lg transition hover:bg-cancel-button-hover"
+            onClick={() => setShowModal(false)}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="bg-blue-500 text-white p-2 rounded-lg ml-2"
+            className="bg-primary-button text-white py-2 px-12 rounded-md transition hover:bg-primary-button-hover"
             onClick={async () => {
               const res = await handleSubmit();
               if (!res) return;
               toastSuccess("Dataset created successfully.");
-              props.setShowModal(false);
+              setShowModal(false);
             }}
           >
             Save

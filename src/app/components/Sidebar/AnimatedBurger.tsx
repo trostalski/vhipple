@@ -9,41 +9,18 @@ interface AnimatedBurgerProps {
 }
 
 const AnimatedBurger = (props: AnimatedBurgerProps) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const { isOpen, setIsOpen } = props;
   return (
     <button
-      onMouseEnter={() => {
-        setIsHovered(true);
-      }}
-      onMouseLeave={() => {
-        setIsHovered(false);
-      }}
-      className={`relative ${props.isOpen ? "" : ""}`}
+      className={`relative ${isOpen ? "" : ""}`}
       onClick={(e) => {
         e.preventDefault();
-        props.setIsOpen(!props.isOpen);
-        setIsHovered(false);
+        setIsOpen(!isOpen);
       }}
     >
-      {props.isOpen && (
-        <AiOutlineClose
-          className={`absolute bottom-0 top-0 my-auto transition ease-in-out duration-300 text-white ${
-            isHovered ? "opacity-100" : "opacity-0"
-          }`}
-          size={24}
-        />
-      )}
-      {!props.isOpen && (
-        <RiExpandRightLine
-          className={`absolute bottom-0 top-0 my-auto transition ease-in-out duration-300 text-white ${
-            isHovered ? "opacity-100" : "opacity-0"
-          }`}
-          size={24}
-        />
-      )}
       <RxHamburgerMenu
-        className={`absolute bottom-0 top-0 my-auto text-white transition ease-in-out duration-300 ${
-          isHovered ? "opacity-0" : "opacity-100"
+        className={`absolute bottom-0 top-0 my-auto transition ease-in-out duration-300 delay-150 text-white ${
+          isOpen ? "rotate-0 hover:rotate-90" : "rotate-90 hover:rotate-0"
         }`}
         size={24}
       />

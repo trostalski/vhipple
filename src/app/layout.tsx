@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import LeftSidebar from "./components/LeftSidebar";
+import LeftSidebar from "./components/Sidebar/Sidebar";
 import ToastProvider from "./lib/toast.provider";
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default function RootLayout({
         <ToastProvider>
           <div className="h-full w-full flex flex-row">
             <LeftSidebar />
-            <main className="bg-sky-50 h-full w-full">{children}</main>
+            <main className="bg-main-bg h-full w-full">{children}</main>
           </div>
         </ToastProvider>
       </body>

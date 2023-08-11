@@ -7,6 +7,8 @@ export interface ResourceContainer {
   references: Resource[];
   referencedBy: Resource[];
   datasetName: string;
+  createdAt: string;
+  updatedAt: string;
   fullUrl?: string;
 }
 

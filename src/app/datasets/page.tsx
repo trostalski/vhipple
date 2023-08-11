@@ -13,7 +13,7 @@ const page = () => {
 
   return (
     <MainWrapper>
-      <div className="flex flex-col">
+      <div className="flex flex-col w-full h-full">
         <DatasetHeader mainComp={mainComp} setMainComp={setMainComp} />
         {mainComp === mainListComp && (
           <DatasetList

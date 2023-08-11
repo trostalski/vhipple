@@ -14,9 +14,14 @@ module.exports = {
     },
     extend: {
       colors: {
-        "primary-button": "#9AC6C5",
+        "main-bg": "#f0f9ff",
         "sidebar-bg": "#2f4b7c",
         "sidebar-hover": "#665191",
+        "primary-button": "#0ea5e9",
+        "primary-button-hover": "#7dd3fc",
+        "secondary-button": "#a855f7",
+        "secondary-button-hover": "#d8b4fe",
+        "cancel-button": "#be123c",
       },
       fontFamily: {},
       spacing: {

@@ -14,6 +14,7 @@ export const numerical1DDataType = "numerical-1-d";
 export const numerical2DDataType = "numerical-2-d";
 
 export const baseExampleCard: DashboardCard = {
+  id: "",
   title: "Example Card",
   description: "This is an example card.",
   dataType: categoricalDataType,

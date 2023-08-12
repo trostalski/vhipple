@@ -12,7 +12,7 @@ const PatientBox = (props: PatientBoxProps) => {
   const { patientContainer } = props;
   const router = useRouter();
   const patient = patientContainer.resource as Patient;
-  const datasetName = patientContainer.datasetName;
+  const datasetName = patientContainer.datasetId;
   return (
     <div
       className="flex flex-col bg-white rounded-lg shadow-lg p-4 hover:cursor-pointer border border-white hover:border-gray-300"

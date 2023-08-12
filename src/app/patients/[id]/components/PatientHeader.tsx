@@ -11,7 +11,7 @@ const PatientHeader = (props: PatientHeaderProps) => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="flex flex-col justify-between">
+    <div className="flex flex-col justify-between shrink-0">
       <div className="flex flex-row items-center">
         <h1 className="text-3xl font-bold">
           {patient.name && patient.name[0].given && (

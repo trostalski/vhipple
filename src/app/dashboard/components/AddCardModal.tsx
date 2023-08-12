@@ -25,6 +25,7 @@ import {
 import { addMode, editMode } from "@/app/datasets/lib/constants";
 import FhirPathInput from "./FhirPathInput";
 import { DashboardCard, ChartJsData } from "../lib/types";
+import { generateUniqueId } from "@/app/lib/utils";
 
 interface AddCardModalProps {
   showModal: boolean;
@@ -34,15 +35,16 @@ interface AddCardModalProps {
 }
 
 const AddCardModal = (props: AddCardModalProps) => {
+  const { showModal, setShowModal, mode, card: initialCard } = props;
   const [card, setCard] = useState<DashboardCard>(
-    props.card || { ...defaultCard }
+    initialCard || { ...defaultCard }
   );
   const [dataType, setDataType] = useState<(typeof availableDataTypes)[number]>(
     card.dataType
   );
 
   const datasets = useLiveQuery(getDatasets) || [];
-  const prevTitle = props.card?.title || "";
+  const prevId = card?.id || "";
 
   const handleSubmit = async () => {
     if (!card.title) {
@@ -79,23 +81,24 @@ const AddCardModal = (props: AddCardModalProps) => {
       }
     }
     card.data = chartJsData!;
-    if (props.mode === addMode) {
+    if (mode === addMode) {
       if (await dashboardCardExists(card.title)) {
         toastError("Card with this title already exists.");
         return;
       }
+      card.id = generateUniqueId();
       const res = await addDashboardCard(card);
       if (res) {
         toastSuccess("Card added successfully.");
-        props.setShowModal(false);
+        setShowModal(false);
       } else {
         toastError("Something went wrong.");
       }
-    } else if (props.mode === editMode) {
-      const res = await updateDashboardCard(prevTitle, card);
+    } else if (mode === editMode) {
+      const res = await updateDashboardCard(prevId, card);
       if (res) {
         toastSuccess("Card updated successfully.");
-        props.setShowModal(false);
+        setShowModal(false);
       } else {
         toastError("Something went wrong.");
       }
@@ -108,7 +111,7 @@ const AddCardModal = (props: AddCardModalProps) => {
   );
 
   return (
-    <ModalWrapper setShowModal={props.setShowModal} showModal={props.showModal}>
+    <ModalWrapper setShowModal={setShowModal} showModal={showModal}>
       <div className="flex flex-row justify-between items-center py-2 px-4">
         <h1 className="text-2xl font-bold">CREATE CARD</h1>
       </div>
@@ -247,7 +250,7 @@ const AddCardModal = (props: AddCardModalProps) => {
         <div className="flex flex-row justify-end items-center w-full mt-4">
           <button
             className="bg-gray-200 text-gray-700 p-2 rounded-lg"
-            onClick={() => props.setShowModal(false)}
+            onClick={() => setShowModal(false)}
           >
             Cancel
           </button>

@@ -1,10 +1,15 @@
 import React from "react";
 import {
+  ColumnResizeMode,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import TablePagination from "@/app/components/TablePagination";
+import TableFilter from "@/app/components/TableFilter";
 
 export type TablePatient = {
   firstName: string;
@@ -15,8 +20,9 @@ export type TablePatient = {
   country: string;
   city: string;
   postalCode: string;
-  phoneNumber: string;
+  phone: string;
   street: string;
+  id: string;
 };
 
 const columnHelper = createColumnHelper<TablePatient>();
@@ -25,61 +31,56 @@ const columns = [
   columnHelper.accessor("firstName", {
     cell: (info) => info.getValue(),
     header: () => <span>First Name</span>,
-    footer: (info) => info.column.id,
   }),
   columnHelper.accessor((row) => row.lastName, {
     id: "lastName",
-    cell: (info) => <i>{info.getValue()}</i>,
+    cell: (info) => <span>{info.getValue()}</span>,
     header: () => <span>Last Name</span>,
-    footer: (info) => info.column.id,
   }),
   columnHelper.accessor((row) => row.gender, {
     id: "gender",
-    cell: (info) => <i>{info.getValue()}</i>,
+    cell: (info) => <span>{info.getValue()}</span>,
     header: () => <span>Gender</span>,
-    footer: (info) => info.column.id,
   }),
   columnHelper.accessor((row) => row.age, {
     id: "age",
-    cell: (info) => <i>{info.getValue()}</i>,
+    cell: (info) => <span>{info.getValue()}</span>,
     header: () => <span>Age</span>,
-    footer: (info) => info.column.id,
   }),
   columnHelper.accessor((row) => row.birthDate, {
     id: "birthDate",
-    cell: (info) => <i>{info.getValue()}</i>,
+    cell: (info) => <span>{info.getValue()}</span>,
     header: () => <span>Birth Date</span>,
-    footer: (info) => info.column.id,
   }),
   columnHelper.accessor((row) => row.country, {
     id: "country",
-    cell: (info) => <i>{info.getValue()}</i>,
+    cell: (info) => <span>{info.getValue()}</span>,
     header: () => <span>Country</span>,
-    footer: (info) => info.column.id,
   }),
   columnHelper.accessor((row) => row.city, {
     id: "city",
-    cell: (info) => <i>{info.getValue()}</i>,
+    cell: (info) => <span>{info.getValue()}</span>,
     header: () => <span>City</span>,
-    footer: (info) => info.column.id,
   }),
   columnHelper.accessor((row) => row.postalCode, {
     id: "postalCode",
-    cell: (info) => <i>{info.getValue()}</i>,
+    cell: (info) => <span>{info.getValue()}</span>,
     header: () => <span>Postal Code</span>,
-    footer: (info) => info.column.id,
   }),
-  columnHelper.accessor((row) => row.phoneNumber, {
-    id: "phoneNumber",
-    cell: (info) => <i>{info.getValue()}</i>,
-    header: () => <span>Phone Number</span>,
-    footer: (info) => info.column.id,
+  columnHelper.accessor((row) => row.phone, {
+    id: "phone",
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: () => <span>Phone</span>,
   }),
   columnHelper.accessor((row) => row.street, {
     id: "street",
-    cell: (info) => <i>{info.getValue()}</i>,
+    cell: (info) => <span>{info.getValue()}</span>,
     header: () => <span>Street</span>,
-    footer: (info) => info.column.id,
+  }),
+  columnHelper.accessor((row) => row.id, {
+    id: "id",
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: () => <span>Id</span>,
   }),
 ];
 
@@ -90,38 +91,70 @@ interface PatientsTableProps {
 const PatientsTable = (props: PatientsTableProps) => {
   const { inputData } = props;
   const [data, setData] = React.useState(() => [...inputData]);
-  const rerender = React.useReducer(() => ({}), {})[1];
 
   const table = useReactTable({
     data,
     columns,
+    columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
-    <div className="p-2">
-      <table>
-        <thead className="">
+    <div className="flex flex-col h-full overflow-scroll bg-white rounded-md mt-4">
+      <table
+        {...{
+          style: {
+            width: table.getCenterTotalSize(),
+          },
+        }}
+      >
+        <thead className="h-16 text-sm bg-slate-50">
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <tr key={headerGroup.id} className="">
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <th
+                  key={header.id}
+                  className="relative text-left px-2"
+                  colSpan={header.colSpan}
+                  style={{
+                    width: header.getSize(),
+                  }}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
+                  {header.column.getCanFilter() ? (
+                    <div>
+                      <TableFilter column={header.column} table={table} />
+                    </div>
+                  ) : null}
+                  <div
+                    onMouseDown={header.getResizeHandler()}
+                    onTouchStart={header.getResizeHandler()}
+                    className={`absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-gray-200 transition hover:bg-gray-500 ${
+                      header.column.getIsResizing() ? "isResizing" : ""
+                    }`}
+                  />
                 </th>
               ))}
             </tr>
           ))}
         </thead>
-        <tbody>
+        <tbody className="text-xs">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <tr
+              key={row.id}
+              className="border-y cursor-pointer transition hover:bg-gray-50"
+            >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td
+                  {...{ key: cell.id, style: { width: cell.column.getSize() } }}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
@@ -145,10 +178,10 @@ const PatientsTable = (props: PatientsTableProps) => {
           ))}
         </tfoot>
       </table>
-      <div className="h-4" />
-      <button onClick={() => rerender()} className="border p-2">
-        Rerender
-      </button>
+      <div className="grow" />
+      <div className="">
+        <TablePagination table={table} initialPageSize={30} />
+      </div>
     </div>
   );
 };

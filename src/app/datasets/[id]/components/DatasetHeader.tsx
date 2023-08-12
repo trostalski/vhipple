@@ -7,7 +7,7 @@ interface DatasetHeaderProps {
 const DatasetHeader = (props: DatasetHeaderProps) => {
   const { datasetName } = props;
   return (
-    <div className="flex flex-row justify-between items-center h-12">
+    <div className="flex flex-row justify-between items-center h-12 shrink-0">
       <h1 className="text-3xl font-bold">{datasetName}</h1>
       <span className="grow" />
     </div>

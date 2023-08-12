@@ -2,9 +2,9 @@ import { Resource } from "fhir/r4";
 import { db } from "./db";
 import { Dataset, ResourceContainer } from "../datasets/lib/types";
 
-export const datasetExists = async (name: string) => {
+export const datasetExists = async (id: string) => {
   try {
-    const dataset = await db.datasets.get(name);
+    const dataset = await db.datasets.get(id);
     return dataset !== undefined;
   } catch (error) {
     console.log(error);
@@ -12,9 +12,9 @@ export const datasetExists = async (name: string) => {
   }
 };
 
-export const getDataset = async (name: string) => {
+export const getDataset = async (id: string) => {
   try {
-    const dataset = await db.datasets.get(name);
+    const dataset = await db.datasets.get(id);
     return dataset;
   } catch (error) {
     console.log(error);
@@ -49,9 +49,9 @@ export const addDataset = async (dataset: Dataset) => {
   }
 };
 
-export const updateDataset = async (prevName: string, dataset: Dataset) => {
+export const updateDataset = async (prevId: string, dataset: Dataset) => {
   try {
-    await db.datasets.update(prevName, dataset);
+    await db.datasets.update(prevId, dataset);
     return true;
   } catch (error) {
     console.log(error);
@@ -70,17 +70,17 @@ export const deleteDataset = async (id: string) => {
 };
 
 export const removeResourcesFromDatasetBySource = async (
-  name: string,
+  datasetId: string,
   source: string
 ) => {
   try {
-    const dataset = await db.datasets.get(name);
+    const dataset = await db.datasets.get(datasetId);
     dataset!.resourceContainers = dataset!.resourceContainers.filter(
       (rc) => rc.source !== source
     );
     const newSize = dataset!.resourceContainers.length;
     dataset!.size = newSize;
-    await db.datasets.update(name, dataset!);
+    await db.datasets.update(datasetId, dataset!);
     return true;
   } catch (error) {
     console.log(error);
@@ -159,9 +159,9 @@ export const addResourcesToDataset = async (
   }
 };
 
-export const getPatientsForDataset = async (name: string) => {
+export const getPatientsForDataset = async (id: string) => {
   try {
-    const dataset = await db.datasets.get(name);
+    const dataset = await db.datasets.get(id);
     const patients = dataset!.resourceContainers.filter(
       (rc) => rc.resource.resourceType === "Patient"
     );
@@ -205,9 +205,9 @@ export const getDashboardCards = async () => {
   }
 };
 
-export const dashboardCardExists = async (title: string) => {
+export const dashboardCardExists = async (id: string) => {
   try {
-    const card = await db.dashboardCards.get(title);
+    const card = await db.dashboardCards.get(id);
     return card !== undefined;
   } catch (error) {
     console.log(error);
@@ -225,9 +225,9 @@ export const addDashboardCard = async (card: any) => {
   }
 };
 
-export const updateDashboardCard = async (prevTitle: string, card: any) => {
+export const updateDashboardCard = async (prevId: string, card: any) => {
   try {
-    await db.dashboardCards.update(prevTitle, card);
+    await db.dashboardCards.update(prevId, card);
     return true;
   } catch (error) {
     console.log(error);
@@ -245,9 +245,9 @@ export const deleteDashboardCard = async (id: string) => {
   }
 };
 
-export const getDashboardCard = async (title: string) => {
+export const getDashboardCard = async (id: string) => {
   try {
-    const card = await db.dashboardCards.get(title);
+    const card = await db.dashboardCards.get(id);
     return card;
   } catch (error) {
     console.log(error);

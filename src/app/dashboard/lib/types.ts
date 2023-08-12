@@ -18,6 +18,7 @@ export type ChartJsData = {
 };
 
 export interface DashboardCard {
+  id: string;
   title: string;
   description: string;
   chartType: ChartType;

@@ -7,7 +7,7 @@ import { BiRefresh } from "react-icons/bi";
 const DashboardHeader = () => {
   const [showModal, setShowModal] = useState(false);
   return (
-    <div className="flex flex-row justify-between items-center h-12">
+    <div className="flex flex-row justify-between items-center h-12 shrink-0">
       <h1 className="text-3xl font-bold">Dashboard</h1>
       <span className="grow" />
       <button

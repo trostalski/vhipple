@@ -16,7 +16,7 @@ import { Dataset, ResourceContainer } from "../lib/types";
 import { resolveReferencesForDataset } from "../lib/resolveReferences";
 import { onlyUnique } from "@/app/dashboard/lib/utils";
 import { AiFillDelete } from "react-icons/ai";
-import { getYYYYMMDD } from "@/app/patients/lib/utils";
+import { generateUniqueId } from "@/app/lib/utils";
 
 interface AddDatasetModalProps {
   showModal: boolean;
@@ -29,6 +29,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
   const { showModal, setShowModal, mode, dataset: initialDataset } = props;
   const [dataset, setDataset] = useState<Dataset>(
     initialDataset || {
+      id: "",
       name: "",
       description: "",
       resourceContainers: [],
@@ -42,7 +43,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
   >([]);
 
   // previous dataset name when editing
-  const prevDatasetName = dataset?.name || "";
+  const prevDatasetId = dataset?.id || "";
 
   // previous sources for displaying file names when editing
   const prevSources =
@@ -72,7 +73,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
                 fullUrl: entry.fullUrl,
                 source: file.name,
                 resource: entry.resource,
-                datasetName: "",
+                datasetId: "",
                 references: [],
                 referencedBy: [],
               });
@@ -117,23 +118,23 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       ...newResourceContainers,
     ];
     dataset.resourceContainers = dataset.resourceContainers.map((rc) => {
-      rc.datasetName = dataset.name;
+      rc.datasetId = dataset.id;
       return rc;
     });
     resolveReferencesForDataset(dataset, newResourceContainers);
     dataset.size = dataset.resourceContainers.length;
     if (mode === "add") {
-      if (await datasetExists(dataset.name)) {
+      if (await datasetExists(dataset.id)) {
         toastError("Dataset with the same name already exists.");
         return false;
       }
-      const date = getYYYYMMDD(new Date().toISOString());
       dataset.createdAt = new Date().toISOString();
       dataset.updatedAt = new Date().toISOString();
+      dataset.id = generateUniqueId();
       await addDataset(dataset);
     } else if (mode === "edit") {
       dataset.updatedAt = new Date().toISOString();
-      await updateDataset(prevDatasetName, dataset);
+      await updateDataset(prevDatasetId, dataset);
     }
     return true;
   };

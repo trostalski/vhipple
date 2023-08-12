@@ -8,7 +8,7 @@ interface DatasetsHeaderProps {}
 const DatasetsHeader = (props: DatasetsHeaderProps) => {
   const [showModal, setShowModal] = useState(false);
   return (
-    <div className="flex flex-row justify-between items-center h-12">
+    <div className="flex flex-row justify-between items-center h-12 shrink-0">
       <h1 className="text-3xl font-bold">Datasets</h1>
       <span className="grow" />
       <button

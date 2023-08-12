@@ -6,15 +6,14 @@ import MainWrapper from "@/app/components/MainWrapper";
 import DatasetHeader from "./components/DatasetHeader";
 import ResourceOverview from "./components/ResourceOverview";
 import DisplayTabs from "@/app/patients/components/DisplayTabs";
-import PatientsList from "@/app/patients/components/PatientsList";
 import PatientsTable from "@/app/patients/components/PatientsTable";
 import { getPatientInfo } from "@/app/lib/utils";
 import { Patient } from "fhir/r4";
 
 export const availableDisplayTabs = ["Overview", "Patients", "Resources"];
 
-const page = ({ params }: { params: { name: string } }) => {
-  const dataset = useLiveQuery(() => getDataset(params.name));
+const page = ({ params }: { params: { id: string } }) => {
+  const dataset = useLiveQuery(() => getDataset(params.id));
   const [displayTab, setDisplayTab] = React.useState<
     (typeof availableDisplayTabs)[number]
   >(availableDisplayTabs[0]);

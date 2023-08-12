@@ -12,8 +12,8 @@ export class MySubClassedDexie extends Dexie {
   constructor() {
     super("whipple-db");
     this.version(1).stores({
-      datasets: "name",
-      dashboardCards: "title",
+      datasets: "id",
+      dashboardCards: "id",
     });
   }
 }

@@ -35,11 +35,10 @@ const DatasetBox = (props: DatasetBoxProps) => {
         className="flex flex-col flex-grow cursor-pointer"
         onMouseMove={() => {
           setMainHovered(true);
-          console.log("hovered");
         }}
         onMouseLeave={() => setMainHovered(false)}
         onClick={() => {
-          router.push(`/datasets/${dataset.name}`);
+          router.push(`/datasets/${dataset.id}`);
         }}
       >
         <h1 className="text-2xl font-bold">{dataset.name}</h1>
@@ -60,7 +59,7 @@ const DatasetBox = (props: DatasetBoxProps) => {
         <div className="flex flex-col">
           <span className="text-gray-500" title="">
             {getYYYYMMDD(dataset.updatedAt)}
-          </span>{" "}
+          </span>
         </div>
         <button
           className="py-2 px-4 h-full transition hover:bg-secondary-button hover:text-white rounded-md"

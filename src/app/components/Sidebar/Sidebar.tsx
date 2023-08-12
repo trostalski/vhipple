@@ -20,6 +20,7 @@ const LeftSidebar = () => {
     {
       icon: <BsDatabase size={24} />,
       text: "Datasets",
+      pathname: "/datasets",
       onClick: () => {
         router.push("/datasets");
       },
@@ -27,6 +28,7 @@ const LeftSidebar = () => {
     {
       icon: <RxDashboard size={24} />,
       text: "Dashboard",
+      pathname: "/dashboard",
       onClick: () => {
         router.push("/dashboard");
       },
@@ -34,6 +36,7 @@ const LeftSidebar = () => {
     {
       icon: <BsPeople size={24} />,
       text: "Patients",
+      pathname: "/patients",
       onClick: () => {
         router.push("/patients");
       },
@@ -41,6 +44,7 @@ const LeftSidebar = () => {
     {
       icon: <AiOutlineSetting size={24} />,
       text: "Settings",
+      pathname: "/settings",
       onClick: () => {
         router.push("/settings");
       },
@@ -74,7 +78,7 @@ const LeftSidebar = () => {
             text={icon.text}
             onClick={icon.onClick}
             sidebarOpen={sidebarOpen}
-            isActive={pathname === icon.text.toLowerCase()}
+            isActive={pathname === icon.pathname}
           />
         );
       })}

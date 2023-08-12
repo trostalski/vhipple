@@ -7,22 +7,23 @@ interface SidebarNavIconProps {
 }
 
 const SidebarNavIcon = (props: SidebarNavIconProps) => {
+  const { icon, text, onClick, sidebarOpen, isActive } = props;
   return (
     <button
-      className={`relative flex flex-row w-full items-center gap-4 p-4 hover:bg-sidebar-hover hover:rounded-xl ease-in-out duration-300 ${
-        props.sidebarOpen ? "translate-x-0" : "tanslate-x-[24vw]"
-      }`}
-      title={props.text}
-      onClick={props.onClick}
+      className={`relative flex flex-row w-full items-center gap-4 p-4 rounded-xl transition ${
+        isActive ? "bg-secondary-button " : "hover:bg-secondary-button-hover "
+      }}`}
+      title={text}
+      onClick={onClick}
     >
       <div
         className={`absolute ease-in-out duration-300 ${
-          props.sidebarOpen ? "translate-x-0" : "translate-x-[12vw]"
+          sidebarOpen ? "translate-x-0" : "translate-x-[12vw]"
         }`}
       >
-        {props.icon}
+        {icon}
       </div>
-      <span className="ml-14">{props.text}</span>
+      <span className="ml-14">{text}</span>
     </button>
   );
 };

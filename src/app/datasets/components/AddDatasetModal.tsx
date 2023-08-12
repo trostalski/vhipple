@@ -61,8 +61,8 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       dataset.createdAt = new Date().toISOString();
       dataset.updatedAt = new Date().toISOString();
       dataset.id = generateUniqueId();
-      generateDefaultDatasetDashboardCards(dataset);
       await addDataset(dataset);
+      await generateDefaultDatasetDashboardCards(dataset);
     } else if (mode === editMode) {
       dataset.updatedAt = new Date().toISOString();
       await updateDataset(prevDatasetId, dataset);

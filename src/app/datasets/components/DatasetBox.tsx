@@ -79,7 +79,7 @@ const DatasetBox = (props: DatasetBoxProps) => {
             if (!confirm) {
               return;
             }
-            const res = await deleteDataset(dataset.name);
+            const res = await deleteDataset(dataset.id);
             if (res) {
               toastSuccess("Dataset deleted successfully.");
             }

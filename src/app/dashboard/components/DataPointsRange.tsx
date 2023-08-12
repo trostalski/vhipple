@@ -35,7 +35,7 @@ const DataPointsRange = (props: DataPointsRangeProps) => {
   };
 
   return (
-    <div className="flex items-center h-1/6 justify-center w-full">
+    <div className="flex items-center justify-center w-full">
       <input
         type="range"
         min="1"

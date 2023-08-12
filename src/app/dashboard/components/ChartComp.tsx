@@ -48,43 +48,44 @@ ChartJS.register(
 );
 
 const ChartComp = (props: ChartCompProps) => {
-  const yMin = props.card.yMin === "" ? undefined : props.card.yMin;
-  const yMax = props.card.yMax === "" ? undefined : props.card.yMax;
+  const { card } = props;
+  const yMin = card.yMin === "" ? undefined : card.yMin;
+  const yMax = card.yMax === "" ? undefined : card.yMax;
 
   const options = {
     maintainAspectRatio: false,
     scales: {
       x: {
-        display: props.card.showXLables,
+        display: card.showXLables,
       },
       y: {
-        display: props.card.showYLables,
+        display: card.showYLables,
         min: Number(yMin),
         max: Number(yMax),
       },
     },
     plugins: {
       legend: {
-        display: props.card.showLegend,
-        position: props.card.legendPosition,
+        display: card.showLegend,
+        position: card.legendPosition,
       },
     },
   };
 
   // only show card.numDataPoints number of data points
   let displayData;
-  if (props.card.data) {
+  if (card.data) {
     displayData = sliceChartJsData(
-      props.card.data,
-      props.card.numDataPoints,
-      props.card.datasetColorPalletes.map((d) => d.chartColour)
+      card.data,
+      card.numDataPoints,
+      card.datasetColorPalletes.map((d) => d.chartColour)
     );
   } else {
     return <span className="text-gray-500">No Data.</span>;
   }
   return (
     <div className="h-full overflow-hidden">
-      {props.card.chartType === "bar" && (
+      {card.chartType === "bar" && (
         <Bar
           options={options as ChartOptions<"bar">}
           style={{
@@ -100,7 +101,7 @@ const ChartComp = (props: ChartCompProps) => {
           }
         />
       )}
-      {props.card.chartType === "pie" && (
+      {card.chartType === "pie" && (
         <Pie
           options={options as ChartOptions<"pie">}
           style={{
@@ -116,7 +117,7 @@ const ChartComp = (props: ChartCompProps) => {
           }
         />
       )}
-      {props.card.chartType === "doughnut" && (
+      {card.chartType === "doughnut" && (
         <Doughnut
           options={options as ChartOptions<"doughnut">}
           style={{
@@ -132,7 +133,7 @@ const ChartComp = (props: ChartCompProps) => {
           }
         />
       )}
-      {props.card.chartType === "polar" && (
+      {card.chartType === "polar" && (
         <PolarArea
           options={options as ChartOptions<"polarArea">}
           style={{
@@ -148,7 +149,7 @@ const ChartComp = (props: ChartCompProps) => {
           }
         />
       )}
-      {props.card.chartType === "radar" && (
+      {card.chartType === "radar" && (
         <Radar
           options={options as ChartOptions<"radar">}
           style={{
@@ -164,14 +165,21 @@ const ChartComp = (props: ChartCompProps) => {
           }
         />
       )}
-      {props.card.chartType === "boxplot" && (
+      {card.chartType === "boxplot" && (
         <Chart
           type={"boxplot" as any}
           data={displayData as any}
           options={options as any}
         />
       )}
-      {props.card.chartType === "line" && (
+      {card.chartType === "violin" && (
+        <Chart
+          type={"violin" as any}
+          data={displayData as any}
+          options={options as any}
+        />
+      )}
+      {card.chartType === "line" && (
         <Line
           options={options as ChartOptions<"line">}
           style={{

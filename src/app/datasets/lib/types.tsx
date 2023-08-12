@@ -17,5 +17,6 @@ export interface Dataset {
   description?: string;
   createdAt: string;
   updatedAt: string;
+  dashboardColNums: number;
   resourceContainers: ResourceContainer[];
 }

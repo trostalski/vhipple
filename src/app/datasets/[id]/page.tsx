@@ -4,7 +4,6 @@ import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import MainWrapper from "@/app/components/MainWrapper";
 import DatasetHeader from "./components/DatasetHeader";
-import ResourceOverview from "./components/ResourceOverview";
 import DisplayTabs from "@/app/patients/components/DisplayTabs";
 import PatientsTable from "@/app/patients/components/PatientsTable";
 import { getPatientInfo } from "@/app/lib/utils";
@@ -25,7 +24,7 @@ const page = ({ params }: { params: { id: string } }) => {
   }
 
   const contentToRender = {
-    Overview: <DatasetOverview />,
+    Overview: <DatasetOverview dataset={dataset} />,
     Patients: (
       <PatientsTable
         datasetId={id}

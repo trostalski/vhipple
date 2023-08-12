@@ -16,8 +16,10 @@ import {
   ChartJsLabels,
   ChartJsDatasetData,
   ChartJsDataset,
+  DashboardCard,
 } from "./types";
 import { Resource } from "fhir/r4";
+import { toastError } from "@/app/lib/toasts";
 
 export const onlyUnique = (value: any, index: number, array: any) => {
   return array.indexOf(value) === index;
@@ -193,14 +195,14 @@ export const createNum1DChartJsData = (
   valueFhirpath: string,
   labelFhipath?: string
 ) => {
-  if (labelFhipath) {
+  if (!labelFhipath || labelFhipath === "") {
+    return createNum1DChartJsDataWithoutLabels(datasets, valueFhirpath);
+  } else {
     return createNum1DChartJsDataWithLabels(
       datasets,
       valueFhirpath,
       labelFhipath
     );
-  } else {
-    return createNum1DChartJsDataWithoutLabels(datasets, valueFhirpath);
   }
 };
 
@@ -274,4 +276,41 @@ export const sliceChartJsData = (
     };
   }
   return displayData;
+};
+
+export const validateDashboardCardInput = (card: DashboardCard) => {
+  if (!card.title) {
+    toastError("Title is required.");
+    return false;
+  }
+  if (!card.chartType) {
+    toastError("Chart type is required.");
+    return false;
+  }
+  if (!card.datasetColorPalletes.length) {
+    toastError("At least one dataset is required.");
+    return false;
+  }
+  if (!card.valueFhirpath) {
+    toastError("FHIRPath is required.");
+    return false;
+  }
+  return true;
+};
+
+export const createChartJsDataForDashboardCard = (
+  inputDatasets: Dataset[],
+  card: DashboardCard
+) => {
+  let chartJsData: ChartJsData;
+  if (card.dataType == categoricalDataType) {
+    chartJsData = createCatChartJsData(inputDatasets, card.valueFhirpath);
+  } else if (card.dataType == numerical1DDataType) {
+    chartJsData = createNum1DChartJsData(
+      inputDatasets,
+      card.valueFhirpath,
+      card.labelFhirpath
+    );
+  }
+  return chartJsData!;
 };

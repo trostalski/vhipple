@@ -1,10 +1,12 @@
+import { Dataset } from "./types";
+
 export const mainViewComp = "view";
 export const mainListComp = "list";
 
 export const addMode = "add";
 export const editMode = "edit";
 
-export const defaultDataset = {
+export const defaultDataset: Dataset = {
   id: "",
   name: "",
   description: "",
@@ -12,4 +14,5 @@ export const defaultDataset = {
   updatedAt: "",
   createdAt: "",
   size: 0,
+  dashboardColNums: 4,
 };

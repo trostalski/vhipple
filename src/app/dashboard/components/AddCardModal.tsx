@@ -2,6 +2,7 @@ import ModalWrapper from "@/app/components/ModalWrapper";
 import {
   addDashboardCard,
   dashboardCardExists,
+  getDashboardCards,
   getDatasets,
   updateDashboardCard,
 } from "@/app/db/utils";
@@ -12,20 +13,21 @@ import {
   availableChartColours,
   availableDataTypes,
   categoricalDataType,
-  defaultCard,
-  availableExampleCards,
   numerical1DDataType,
 } from "../lib/constants";
 import { toastError, toastSuccess } from "@/app/lib/toasts";
 import {
   createCatChartJsData,
+  createChartJsDataForDashboardCard,
   createNum1DChartJsData,
   getChartTypeOptions,
+  validateDashboardCardInput,
 } from "@/app/dashboard/lib/utils";
 import { addMode, editMode } from "@/app/datasets/lib/constants";
 import FhirPathInput from "./FhirPathInput";
 import { DashboardCard, ChartJsData } from "../lib/types";
 import { generateUniqueId } from "@/app/lib/utils";
+import { defaultCard, availableExampleCards } from "../lib/exampleCards";
 
 interface AddCardModalProps {
   showModal: boolean;
@@ -39,54 +41,29 @@ const AddCardModal = (props: AddCardModalProps) => {
   const [card, setCard] = useState<DashboardCard>(
     InitialCard || { ...defaultCard }
   );
-  const [dataType, setDataType] = useState<(typeof availableDataTypes)[number]>(
-    card.dataType
-  );
 
   const datasets = useLiveQuery(getDatasets) || [];
+  const dashboardCards = useLiveQuery(getDashboardCards) || [];
   const prevId = card?.id || "";
 
   const handleSubmit = async () => {
-    if (!card.title) {
-      toastError("Title is required.");
-      return;
-    }
-    if (!card.chartType) {
-      toastError("Chart type is required.");
-      return;
-    }
-    if (!card.datasetColorPalletes.length) {
-      toastError("At least one dataset is required.");
-      return;
-    }
-    if (!card.valueFhirpath) {
-      toastError("FHIRPath is required.");
+    const cardIsValid = validateDashboardCardInput(card);
+    if (!cardIsValid) {
       return;
     }
     const inputDatasets = datasets.filter((d) =>
       card.datasetColorPalletes.map((d) => d.name).includes(d.name)
     );
-    let chartJsData: ChartJsData;
-    if (dataType == categoricalDataType) {
-      chartJsData = createCatChartJsData(inputDatasets, card.valueFhirpath);
-    } else if (dataType == numerical1DDataType) {
-      if (!card.labelFhirpath || card.labelFhirpath == "") {
-        chartJsData = createNum1DChartJsData(inputDatasets, card.valueFhirpath);
-      } else {
-        chartJsData = createNum1DChartJsData(
-          inputDatasets,
-          card.valueFhirpath,
-          card.labelFhirpath
-        );
-      }
-    }
-    card.data = chartJsData!;
+    card.data = createChartJsDataForDashboardCard(inputDatasets, card);
     if (mode === addMode) {
       if (await dashboardCardExists(card.title)) {
         toastError("Card with this title already exists.");
         return;
       }
       card.id = generateUniqueId();
+      card.positionIndex = dashboardCards.length;
+      card.createdAt = new Date().toISOString();
+      card.updatedAt = new Date().toISOString();
       const res = await addDashboardCard(card);
       if (res) {
         toastSuccess("Card added successfully.");
@@ -95,6 +72,7 @@ const AddCardModal = (props: AddCardModalProps) => {
         toastError("Something went wrong.");
       }
     } else if (mode === editMode) {
+      card.updatedAt = new Date().toISOString();
       const res = await updateDashboardCard(prevId, card);
       if (res) {
         toastSuccess("Card updated successfully.");
@@ -105,15 +83,15 @@ const AddCardModal = (props: AddCardModalProps) => {
     }
   };
 
-  const chartTypeOptions = getChartTypeOptions(dataType);
+  const chartTypeOptions = getChartTypeOptions(card.dataType);
   const exampleCards = availableExampleCards.filter(
-    (c) => c.dataType == dataType
+    (c) => c.dataType == card.dataType
   );
 
   return (
     <ModalWrapper setShowModal={setShowModal} showModal={showModal}>
       <div className="flex flex-row justify-between items-center py-2 px-4">
-        <h1 className="text-2xl font-bold">CREATE CARD</h1>
+        <h1 className="text-2xl font-bold">Create Card</h1>
       </div>
       <div className="flex flex-col justify-between items-center py-2 px-4">
         <div className="flex flex-col w-full">
@@ -124,8 +102,8 @@ const AddCardModal = (props: AddCardModalProps) => {
             name="data-type"
             className="border border-gray-300 p-2 rounded-lg"
             id="data-type"
-            value={dataType}
-            onChange={(e) => setDataType(e?.target.value)}
+            value={card.dataType}
+            onChange={(e) => setCard({ ...card, dataType: e.target.value })}
           >
             {availableDataTypes.map((d) => (
               <option key={d} value={d}>
@@ -236,7 +214,7 @@ const AddCardModal = (props: AddCardModalProps) => {
             setCard({ ...card, valueFhirpath: e.target.value });
           }}
         />
-        {dataType == numerical1DDataType && (
+        {card.dataType == numerical1DDataType && (
           <FhirPathInput
             inputLabel="Label Fhirpath"
             card={card}

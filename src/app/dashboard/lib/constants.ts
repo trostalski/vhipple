@@ -2,9 +2,9 @@ import { DashboardCard } from "./types";
 
 export const cardStartWidth = 400;
 export const cardStartHeight = 300;
-export const cardMaxHeight = 600;
+export const cardMaxHeight = "90vh";
 export const cardMinHeight = 100;
-export const cardMaxWidth = 1000;
+export const cardMaxWidth = "90vw";
 export const cardMinWidth = 300;
 export const maxNumDataPoints = 100;
 export const startNumDataPoints = 20;
@@ -21,7 +21,7 @@ export const baseExampleCard: DashboardCard = {
   chartType: "bar",
   valueFhirpath: "",
   labelFhirpath: "",
-  datasets: [],
+  datasetColorPalletes: [],
   data: undefined,
   numDataPoints: startNumDataPoints,
   showChart: true,

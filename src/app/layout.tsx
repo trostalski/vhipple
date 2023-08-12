@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import LeftSidebar from "./components/Sidebar/Sidebar";
 import ToastProvider from "./lib/toast.provider";
+import "react-tooltip/dist/react-tooltip.css";
 
 export const metadata: Metadata = {
   title: "Whipple",

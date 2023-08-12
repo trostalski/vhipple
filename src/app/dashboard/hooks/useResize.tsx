@@ -1,12 +1,12 @@
 import { RefObject, useCallback, useEffect, useState } from "react";
-import { scrollOnMouseEdge } from "../lib/utils";
 
 const useResize = (
   resizeRef: RefObject<HTMLElement>,
   startWidth: number,
   startHeight: number
 ) => {
-  const [isResizing, setIsResizing] = useState(false);
+  const [isResizingWidth, setIsResizingWidth] = useState(false);
+  const [isResizingHeight, setIsResizingHeight] = useState(false);
   const [resizeWidth, setResizeWidth] = useState<number>(
     startWidth || resizeRef.current!.offsetWidth
   );
@@ -14,28 +14,50 @@ const useResize = (
     startHeight || resizeRef.current!.offsetHeight
   );
 
+  const startResizingWidth = useCallback(() => {
+    setIsResizingWidth(true);
+  }, []);
+
+  const stopResizingWidth = useCallback(() => {
+    setIsResizingWidth(false);
+  }, []);
+
+  const startResizingHeight = useCallback(() => {
+    setIsResizingHeight(true);
+  }, []);
+
+  const stopResizingHeight = useCallback(() => {
+    setIsResizingHeight(false);
+  }, []);
+
   const startResizing = useCallback(() => {
-    setIsResizing(true);
+    setIsResizingHeight(true);
+    setIsResizingWidth(true);
   }, []);
 
   const stopResizing = useCallback(() => {
-    setIsResizing(false);
+    setIsResizingWidth(false);
+    setIsResizingHeight(false);
   }, []);
+
+  const isResizing = isResizingWidth || isResizingHeight;
 
   const resize = useCallback(
     (mouseMoveEvent: MouseEvent) => {
-      if (isResizing && resizeRef.current) {
+      if (isResizingWidth && resizeRef.current) {
         const newWidth =
           mouseMoveEvent.clientX -
           resizeRef.current.getBoundingClientRect().left;
+        setResizeWidth(newWidth);
+      }
+      if (isResizingHeight && resizeRef.current) {
         const newHeight =
           mouseMoveEvent.clientY -
           resizeRef.current.getBoundingClientRect().top;
-        setResizeWidth(newWidth);
         setResizeHeight(newHeight);
       }
     },
-    [isResizing]
+    [isResizingHeight, isResizingWidth]
   );
 
   useEffect(() => {
@@ -55,8 +77,12 @@ const useResize = (
     resizeHeight,
     setResizeWidth,
     startResizing,
-    stopResizing,
+    startResizingWidth,
     isResizing,
+    stopResizingWidth,
+    startResizingHeight,
+    stopResizingHeight,
+    stopResizing,
   };
 };
 

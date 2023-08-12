@@ -77,7 +77,7 @@ const ChartComp = (props: ChartCompProps) => {
     displayData = sliceChartJsData(
       props.card.data,
       props.card.numDataPoints,
-      props.card.datasets.map((d) => d.chartColour)
+      props.card.datasetColorPalletes.map((d) => d.chartColour)
     );
   } else {
     return <span className="text-gray-500">No Data.</span>;

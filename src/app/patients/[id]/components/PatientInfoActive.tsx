@@ -20,7 +20,7 @@ const PatientInfoActive = (props: PatientInfoActiveProps) => {
             <span className="text-gray-500 text-xs">No active conditions.</span>
           ) : (
             props.patientData.activeConditions.map((condition) => (
-              <span className="text-xs">
+              <span className="text-xs" key={condition.id}>
                 {getCodedResourceDisplay(condition)}
               </span>
             ))
@@ -34,7 +34,7 @@ const PatientInfoActive = (props: PatientInfoActiveProps) => {
             </span>
           ) : (
             props.patientData.activeMedicationRequests.map((medication) => (
-              <span className="text-xs">
+              <span className="text-xs" key={medication.id}>
                 {getMedicationRequestDisplay(medication)}
               </span>
             ))
@@ -46,7 +46,7 @@ const PatientInfoActive = (props: PatientInfoActiveProps) => {
             <span className="text-gray-500 text-xs">No active allergies.</span>
           ) : (
             props.patientData.allergies.map((allergy) => (
-              <span className="text-xs">
+              <span className="text-xs" key={allergy.id}>
                 {getCodedResourceDisplay(allergy)}
               </span>
             ))

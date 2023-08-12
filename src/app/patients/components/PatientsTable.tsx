@@ -1,6 +1,7 @@
 import React from "react";
 import {
   ColumnResizeMode,
+  Row,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
@@ -10,6 +11,7 @@ import {
 } from "@tanstack/react-table";
 import TablePagination from "@/app/components/TablePagination";
 import TableFilter from "@/app/components/TableFilter";
+import { useRouter } from "next/navigation";
 
 export type TablePatient = {
   firstName: string;
@@ -86,10 +88,12 @@ const columns = [
 
 interface PatientsTableProps {
   inputData: TablePatient[];
+  datasetId: string;
 }
 
 const PatientsTable = (props: PatientsTableProps) => {
-  const { inputData } = props;
+  const { inputData, datasetId } = props;
+  const router = useRouter();
   const [data, setData] = React.useState(() => [...inputData]);
 
   const table = useReactTable({
@@ -101,85 +105,91 @@ const PatientsTable = (props: PatientsTableProps) => {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const handleOnRowClick = (row: Row<TablePatient>) => {
+    return () =>
+      router.push(`/patients/${row.original.id}?dataset=${datasetId}`);
+  };
+
   return (
-    <div className="flex flex-col h-full overflow-scroll bg-white rounded-md mt-4">
-      <table
-        {...{
-          style: {
-            width: table.getCenterTotalSize(),
-          },
-        }}
-      >
-        <thead className="h-16 text-sm bg-slate-50">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className="">
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="relative text-left px-2"
-                  colSpan={header.colSpan}
-                  style={{
-                    width: header.getSize(),
-                  }}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  {header.column.getCanFilter() ? (
-                    <div>
-                      <TableFilter column={header.column} table={table} />
-                    </div>
-                  ) : null}
-                  <div
-                    onMouseDown={header.getResizeHandler()}
-                    onTouchStart={header.getResizeHandler()}
-                    className={`absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-gray-200 transition hover:bg-gray-500 ${
-                      header.column.getIsResizing() ? "isResizing" : ""
-                    }`}
-                  />
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody className="text-xs">
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              key={row.id}
-              className="border-y cursor-pointer transition hover:bg-gray-50"
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  {...{ key: cell.id, style: { width: cell.column.getSize() } }}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          {table.getFooterGroups().map((footerGroup) => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.footer,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
-      </table>
+    <div className="flex flex-col h-full w-full bg-white rounded-md mt-2">
+      <div className="h-[75vh] overflow-scroll">
+        <table
+          {...{
+            style: {
+              width: table.getCenterTotalSize(),
+            },
+          }}
+        >
+          <thead className="h-16 text-sm bg-slate-50">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} className="">
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    className="relative text-left px-2"
+                    colSpan={header.colSpan}
+                    style={{
+                      width: header.getSize(),
+                    }}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                    {header.column.getCanFilter() ? (
+                      <div>
+                        <TableFilter column={header.column} table={table} />
+                      </div>
+                    ) : null}
+                    <div
+                      onMouseDown={header.getResizeHandler()}
+                      onTouchStart={header.getResizeHandler()}
+                      className={`absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-gray-200 transition hover:bg-gray-500 ${
+                        header.column.getIsResizing() ? "isResizing" : ""
+                      }`}
+                    />
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody className="text-xs">
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                className="border-y cursor-pointer transition hover:bg-gray-50"
+                onClick={handleOnRowClick(row)}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} style={{ width: cell.column.getSize() }}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            {table.getFooterGroups().map((footerGroup) => (
+              <tr key={footerGroup.id}>
+                {footerGroup.headers.map((header) => (
+                  <th key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.footer,
+                          header.getContext()
+                        )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </tfoot>
+        </table>
+      </div>
       <div className="grow" />
-      <div className="">
+      <div className="p-2">
         <TablePagination table={table} initialPageSize={30} />
       </div>
     </div>

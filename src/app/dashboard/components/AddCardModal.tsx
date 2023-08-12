@@ -35,9 +35,9 @@ interface AddCardModalProps {
 }
 
 const AddCardModal = (props: AddCardModalProps) => {
-  const { showModal, setShowModal, mode, card: initialCard } = props;
+  const { showModal, setShowModal, mode, card: InitialCard } = props;
   const [card, setCard] = useState<DashboardCard>(
-    initialCard || { ...defaultCard }
+    InitialCard || { ...defaultCard }
   );
   const [dataType, setDataType] = useState<(typeof availableDataTypes)[number]>(
     card.dataType
@@ -55,7 +55,7 @@ const AddCardModal = (props: AddCardModalProps) => {
       toastError("Chart type is required.");
       return;
     }
-    if (!card.datasets.length) {
+    if (!card.datasetColorPalletes.length) {
       toastError("At least one dataset is required.");
       return;
     }
@@ -64,7 +64,7 @@ const AddCardModal = (props: AddCardModalProps) => {
       return;
     }
     const inputDatasets = datasets.filter((d) =>
-      card.datasets.map((d) => d.name).includes(d.name)
+      card.datasetColorPalletes.map((d) => d.name).includes(d.name)
     );
     let chartJsData: ChartJsData;
     if (dataType == categoricalDataType) {
@@ -206,18 +206,19 @@ const AddCardModal = (props: AddCardModalProps) => {
           <Select
             options={datasets!.map((d) => ({
               label: d.name,
-              value: d.name,
+              value: d.id,
             }))}
             isMulti={true}
-            value={card.datasets.map((d) => ({
+            value={card.datasetColorPalletes.map((d) => ({
               label: d.name,
-              value: d.name,
+              value: d.id,
             }))}
             onChange={(e) => {
               setCard({
                 ...card,
-                datasets: e.map((d, i) => ({
-                  name: d.value,
+                datasetColorPalletes: e.map((d, i) => ({
+                  name: d.label,
+                  id: d.value,
                   chartColour:
                     availableChartColours[i % availableChartColours.length]
                       .name,

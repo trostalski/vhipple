@@ -19,10 +19,11 @@ export type ChartJsData = {
 
 export interface DashboardCard {
   id: string;
+  positionIndex: number;
   title: string;
   description: string;
   chartType: ChartType;
-  datasets: { name: string; chartColour: string }[];
+  datasetColorPalletes: { id: string; chartColour: string; name: string }[];
   dataType: (typeof availableDataTypes)[number];
   valueFhirpath: string;
   labelFhirpath: string;
@@ -38,5 +39,6 @@ export interface DashboardCard {
   showYLables: boolean;
   showLegend: boolean;
   legendPosition: (typeof availableLegendPositions)[number];
+  forDatasetId?: string;
   data?: ChartJsData;
 }

@@ -225,9 +225,9 @@ export const addDashboardCard = async (card: any) => {
   }
 };
 
-export const updateDashboardCard = async (prevId: string, card: any) => {
+export const updateDashboardCard = async (id: string, card: any) => {
   try {
-    await db.dashboardCards.update(prevId, card);
+    await db.dashboardCards.update(id, card);
     return true;
   } catch (error) {
     console.log(error);

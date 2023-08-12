@@ -9,11 +9,13 @@ import DisplayTabs from "@/app/patients/components/DisplayTabs";
 import PatientsTable from "@/app/patients/components/PatientsTable";
 import { getPatientInfo } from "@/app/lib/utils";
 import { Patient } from "fhir/r4";
+import DatasetOverview from "./components/DatasetOverview";
 
-export const availableDisplayTabs = ["Overview", "Patients", "Resources"];
+export const availableDisplayTabs = ["Overview", "Patients"];
 
 const page = ({ params }: { params: { id: string } }) => {
-  const dataset = useLiveQuery(() => getDataset(params.id));
+  const { id } = params;
+  const dataset = useLiveQuery(() => getDataset(id));
   const [displayTab, setDisplayTab] = React.useState<
     (typeof availableDisplayTabs)[number]
   >(availableDisplayTabs[0]);
@@ -23,9 +25,10 @@ const page = ({ params }: { params: { id: string } }) => {
   }
 
   const contentToRender = {
-    Resources: <ResourceOverview dataset={dataset} />,
+    Overview: <DatasetOverview />,
     Patients: (
       <PatientsTable
+        datasetId={id}
         inputData={dataset.resourceContainers
           .filter((rc) => rc.resource.resourceType === "Patient")
           .map((rc) => getPatientInfo(rc.resource as Patient))}

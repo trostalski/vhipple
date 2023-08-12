@@ -17,6 +17,9 @@ import { resolveReferencesForDataset } from "../lib/resolveReferences";
 import { onlyUnique } from "@/app/dashboard/lib/utils";
 import { AiFillDelete } from "react-icons/ai";
 import { generateUniqueId } from "@/app/lib/utils";
+import { addMode, defaultDataset, editMode } from "../lib/constants";
+import useBundleUpload from "../hooks/useBundleUpload";
+import { generateDefaultDatasetDashboardCards } from "../lib/utils";
 
 interface AddDatasetModalProps {
   showModal: boolean;
@@ -27,20 +30,11 @@ interface AddDatasetModalProps {
 
 const AddDatasetModal = (props: AddDatasetModalProps) => {
   const { showModal, setShowModal, mode, dataset: initialDataset } = props;
+  const { selectedResources, uploadBundles, setSelectedResources } =
+    useBundleUpload();
   const [dataset, setDataset] = useState<Dataset>(
-    initialDataset || {
-      id: "",
-      name: "",
-      description: "",
-      resourceContainers: [],
-      updatedAt: "",
-      createdAt: "",
-      size: 0,
-    }
+    initialDataset || defaultDataset
   );
-  const [selectedResources, setSelectedResources] = useState<
-    { name: string; resourceContainers: ResourceContainer[] }[]
-  >([]);
 
   // previous dataset name when editing
   const prevDatasetId = dataset?.id || "";
@@ -49,67 +43,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
   const prevSources =
     dataset?.resourceContainers.map((rc) => rc.source).filter(onlyUnique) || [];
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) {
-      toastInfo("No files selected.");
-      return;
-    }
-    const updatedResources: {
-      name: string;
-      resourceContainers: ResourceContainer[];
-    }[] = [];
-    const processFile = (index: number) => {
-      const file = e.target.files![index];
-      const reader = new FileReader();
-
-      reader.onload = async (re) => {
-        if (re.target) {
-          const resource = JSON.parse(re.target.result as string);
-          if (resource.resourceType === "Bundle") {
-            let resourceContainers: ResourceContainer[] = [];
-            for (const entry of resource.entry) {
-              resourceContainers.push({
-                id: entry.resource.id,
-                fullUrl: entry.fullUrl,
-                source: file.name,
-                resource: entry.resource,
-                datasetId: "",
-                references: [],
-                referencedBy: [],
-              });
-            }
-            updatedResources.push({
-              name: file.name,
-              resourceContainers: resourceContainers,
-            });
-          } else {
-            toastError(
-              `File ${file.name} is not a valid FHIR Bundle. Please upload a valid FHIR Bundle.`
-            );
-          }
-        }
-
-        if (index + 1 < e.target.files!.length) {
-          processFile(index + 1); // Continue with the next file
-        } else {
-          setSelectedResources((prevSelectedResources) => [
-            ...prevSelectedResources,
-            ...updatedResources,
-          ]);
-        }
-      };
-
-      reader.readAsText(file);
-    };
-
-    processFile(0);
-  };
-
   const handleSubmit = async () => {
-    if (dataset.name === "") {
-      toastError("Please enter a name for the dataset.");
-      return false;
-    }
     const newResourceContainers = selectedResources.flatMap(
       (r) => r.resourceContainers
     );
@@ -123,16 +57,13 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     });
     resolveReferencesForDataset(dataset, newResourceContainers);
     dataset.size = dataset.resourceContainers.length;
-    if (mode === "add") {
-      if (await datasetExists(dataset.id)) {
-        toastError("Dataset with the same name already exists.");
-        return false;
-      }
+    if (mode === addMode) {
       dataset.createdAt = new Date().toISOString();
       dataset.updatedAt = new Date().toISOString();
       dataset.id = generateUniqueId();
+      generateDefaultDatasetDashboardCards(dataset);
       await addDataset(dataset);
-    } else if (mode === "edit") {
+    } else if (mode === editMode) {
       dataset.updatedAt = new Date().toISOString();
       await updateDataset(prevDatasetId, dataset);
     }
@@ -178,15 +109,15 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
             Bundles
           </label>
           <label
-            htmlFor="resource-upload"
+            htmlFor="bundle-upload"
             className="bg-secondary-button text-white py-1 text-center rounded cursor-pointer transition hover:bg-secondary-button-hover"
           >
             <input
-              id="resource-upload"
+              id="bundle-upload"
               type="file"
               hidden
               multiple
-              onChange={(e) => handleUpload(e)}
+              onChange={(e) => uploadBundles(e)}
             />
             Select Bundles
           </label>

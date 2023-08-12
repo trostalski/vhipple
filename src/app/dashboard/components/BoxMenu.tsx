@@ -12,20 +12,20 @@ interface BoxMenuProps {
   card: DashboardCard;
   handleDelete: () => void;
   setShowMenu: (showMenu: boolean) => void;
-  showMenu: boolean;
 }
 
 const BoxMenu = (props: BoxMenuProps) => {
+  const { card, handleDelete, setShowMenu } = props;
   useEffect(() => {
     window.addEventListener("click", function (e: any) {
       if (
         !document.getElementById("dashboard-card-box-menu")?.contains(e.target)
       ) {
-        props.setShowMenu(false);
+        setShowMenu(false);
       }
     });
     return () => {
-      window.removeEventListener("click", () => props.setShowMenu(false));
+      window.removeEventListener("click", () => setShowMenu(false));
     };
   }, []);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -47,10 +47,7 @@ const BoxMenu = (props: BoxMenuProps) => {
         >
           Edit
         </button>
-        <button
-          className="text-red-500 hover:underline"
-          onClick={props.handleDelete}
-        >
+        <button className="text-red-500 hover:underline" onClick={handleDelete}>
           Delete
         </button>
       </div>
@@ -59,11 +56,11 @@ const BoxMenu = (props: BoxMenuProps) => {
           id="show-chart"
           type="checkbox"
           className=""
-          checked={props.card.showChart}
+          checked={card.showChart}
           onChange={() => {
-            updateDashboardCard(props.card.title, {
-              ...props.card,
-              showChart: !props.card.showChart,
+            updateDashboardCard(card.id, {
+              ...card,
+              showChart: !card.showChart,
             });
           }}
         />
@@ -77,11 +74,11 @@ const BoxMenu = (props: BoxMenuProps) => {
           id="x-labels"
           type="checkbox"
           className=""
-          checked={props.card.showXLables}
+          checked={card.showXLables}
           onChange={async () => {
-            await updateDashboardCard(props.card.title, {
-              ...props.card,
-              showXLables: !props.card.showXLables,
+            await updateDashboardCard(card.id, {
+              ...card,
+              showXLables: !card.showXLables,
             });
           }}
         />
@@ -94,11 +91,11 @@ const BoxMenu = (props: BoxMenuProps) => {
           id="y-labels"
           type="checkbox"
           className=""
-          checked={props.card.showYLables}
+          checked={card.showYLables}
           onChange={() => {
-            updateDashboardCard(props.card.title, {
-              ...props.card,
-              showYLables: !props.card.showYLables,
+            updateDashboardCard(card.id, {
+              ...card,
+              showYLables: !card.showYLables,
             });
           }}
         />
@@ -112,10 +109,10 @@ const BoxMenu = (props: BoxMenuProps) => {
             id="y-min"
             type="number"
             className="border border-gray-300 rounded-md w-12"
-            value={props.card.yMin}
+            value={card.yMin}
             onChange={async (e) => {
-              await updateDashboardCard(props.card.title, {
-                ...props.card,
+              await updateDashboardCard(card.id, {
+                ...card,
                 yMin: e.target.value,
               });
             }}
@@ -127,10 +124,10 @@ const BoxMenu = (props: BoxMenuProps) => {
             id="y-max"
             type="number"
             className="border border-gray-300 rounded-md w-12"
-            value={props.card.yMax}
+            value={card.yMax}
             onChange={async (e) => {
-              await updateDashboardCard(props.card.title, {
-                ...props.card,
+              await updateDashboardCard(card.id, {
+                ...card,
                 yMax: e.target.value,
               });
             }}
@@ -146,11 +143,11 @@ const BoxMenu = (props: BoxMenuProps) => {
           id="legend"
           type="checkbox"
           className=""
-          checked={props.card.showLegend}
+          checked={card.showLegend}
           onChange={() => {
-            updateDashboardCard(props.card.title, {
-              ...props.card,
-              showLegend: !props.card.showLegend,
+            updateDashboardCard(card.id, {
+              ...card,
+              showLegend: !card.showLegend,
             });
           }}
         />
@@ -161,12 +158,12 @@ const BoxMenu = (props: BoxMenuProps) => {
       <div className="flex flex-row items-center gap-2 px-1 w-full">
         <select
           id="legend-pos"
-          disabled={!props.card.showLegend}
+          disabled={!card.showLegend}
           className="border border-gray-300 rounded-md w-full"
-          value={props.card.legendPosition}
+          value={card.legendPosition}
           onChange={(e) => {
-            updateDashboardCard(props.card.title, {
-              ...props.card,
+            updateDashboardCard(card.id, {
+              ...card,
               legendPosition: e.target.value,
             });
           }}
@@ -181,18 +178,21 @@ const BoxMenu = (props: BoxMenuProps) => {
       <hr className="border-gray-200 w-full my-1" />
       <div className="flex flex-col px-2 max-h-24 gap-1 w-full overflow-scroll">
         <span>Chart Colours</span>
-        {props.card.datasets.map((dataset) => (
-          <div className="flex flex-row w-full" key={dataset.name}>
+        {card.datasetColorPalletes.map((dataset) => (
+          <div className="flex flex-row w-full" key={dataset.id}>
             <span className="w-24">{dataset.name}</span>
             <select
               id="dataset-colour"
               className="border border-gray-300 rounded-md w-full"
-              value={dataset.chartColour}
+              value={
+                card.datasetColorPalletes.find((d) => d.id === dataset.id)!
+                  .chartColour
+              }
               onChange={(e) => {
-                updateDashboardCard(props.card.title, {
-                  ...props.card,
-                  datasets: props.card.datasets.map((d) => {
-                    if (d.name === dataset.name) {
+                updateDashboardCard(card.id, {
+                  ...card,
+                  datasetColorPalletes: card.datasetColorPalletes.map((d) => {
+                    if (d.id === dataset.id) {
                       return {
                         ...d,
                         chartColour: e.target.value,
@@ -217,7 +217,7 @@ const BoxMenu = (props: BoxMenuProps) => {
           mode={editMode}
           setShowModal={setShowEditModal}
           showModal={showEditModal}
-          card={props.card}
+          card={card}
         />
       )}
     </div>

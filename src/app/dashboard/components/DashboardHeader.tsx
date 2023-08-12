@@ -11,7 +11,7 @@ const DashboardHeader = () => {
       <h1 className="text-3xl font-bold">Dashboard</h1>
       <span className="grow" />
       <button
-        className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded"
+        className="bg-primary-button text-white font-bold py-2 px-4 rounded transition hover:bg-primary-button-hover"
         onClick={() => setShowModal(true)}
       >
         New Card

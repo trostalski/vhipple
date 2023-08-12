@@ -53,7 +53,11 @@ const FhirPathInput = (props: FhirPathInputProps) => {
             setShowMenu={setShowFhirPathPreview}
             fhirPathResults={evalFhirPathOnDatasets(
               datasets.map((d) => {
-                if (props.card.datasets.map((d) => d.name).includes(d.name)) {
+                if (
+                  props.card.datasetColorPalletes
+                    .map((d) => d.name)
+                    .includes(d.name)
+                ) {
                   return d;
                 }
                 return {
@@ -63,7 +67,7 @@ const FhirPathInput = (props: FhirPathInputProps) => {
               })!,
               props.value!
             )}
-            datasetNames={props.card.datasets.map((d) => d.name)}
+            datasetNames={props.card.datasetColorPalletes.map((d) => d.name)}
           />
         )}
       </div>

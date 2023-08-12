@@ -4,10 +4,14 @@ import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import DashboardCardBox from "./DashboardCardBox";
 
-const DashboardCardList = () => {
+interface DashboardCardListProps {
+  datasetId?: string;
+}
+
+const DashboardCardList = (props: DashboardCardListProps) => {
   const dashboardCards = useLiveQuery(getDashboardCards) || [];
   return (
-    <div className="flex flex-row flex-wrap gap-4 mt-4">
+    <div className="grid h-full w-full grid-cols-2 content-start gap-4 items-center justify-center rounded-md mt-2">
       {!dashboardCards || dashboardCards?.length === 0 ? (
         <span className="text-gray-500">No card found.</span>
       ) : (

@@ -3,30 +3,41 @@ import AddDatasetModal from "./AddDatasetModal";
 import { addMode } from "../lib/constants";
 import { IoAdd } from "react-icons/io5";
 import { AiOutlineSetting } from "react-icons/ai";
+import SettingsModal from "./SettingsModal";
 
 interface DatasetsHeaderProps {}
 
 const DatasetsHeader = (props: DatasetsHeaderProps) => {
-  const [showModal, setShowModal] = useState(false);
+  const [showAddDatasetModal, setShowAddDatasetModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   return (
     <div className="flex flex-row justify-between items-center h-12 shrink-0">
       <div className="flex flex-row gap-2">
         <h1 className="text-3xl font-bold">Datasets</h1>
-        <button className="text-primary-button bg-white border rounded-md transition px-2 py-1 hover:scale-110">
+        <button
+          className="text-primary-button bg-white border rounded-md transition px-2 py-1 hover:scale-110"
+          onClick={() => setShowSettingsModal(true)}
+        >
           <AiOutlineSetting size={28} />
         </button>
       </div>
       <span className="grow" />
       <button
         className="bg-primary-button text-white font-bold py-2 px-4 rounded transition hover:bg-primary-button-hover"
-        onClick={() => setShowModal(true)}
+        onClick={() => setShowAddDatasetModal(true)}
       >
         <IoAdd className="" size={24} />
       </button>
-      {showModal && (
+      {showSettingsModal && (
+        <SettingsModal
+          setShowModal={setShowSettingsModal}
+          showModal={showSettingsModal}
+        />
+      )}
+      {showAddDatasetModal && (
         <AddDatasetModal
-          showModal={showModal}
-          setShowModal={setShowModal}
+          showModal={showAddDatasetModal}
+          setShowModal={setShowAddDatasetModal}
           mode={addMode}
         />
       )}

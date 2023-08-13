@@ -8,7 +8,6 @@ import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { getYYYYMMDD } from "@/app/datasets/[datasetId]/patients/lib/utils";
 import { useRouter } from "next/navigation";
-import { useGlobalStore } from "@/app/stores/useGlobalStore";
 
 interface DatasetBoxProps {
   dataset: Dataset;
@@ -16,7 +15,6 @@ interface DatasetBoxProps {
 
 const DatasetBox = (props: DatasetBoxProps) => {
   const { dataset } = props;
-  const setDataset = useGlobalStore((state) => state.setDataset);
   const [showEditDatasetModal, setShowEditDatasetModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [mainHovered, setMainHovered] = useState(false);
@@ -37,7 +35,6 @@ const DatasetBox = (props: DatasetBoxProps) => {
 
   const handleEnterDataset = () => {
     return () => {
-      setDataset(dataset);
       router.push(`/datasets/${dataset.id}`);
     };
   };

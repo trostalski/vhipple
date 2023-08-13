@@ -4,14 +4,17 @@ interface ModalWrapperProps {
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
   children: React.ReactNode;
+  modalWidth?: string;
+  modalHeight?: string;
 }
 
 const ModalWrapper = (props: ModalWrapperProps) => {
+  const { showModal, setShowModal, children, modalWidth, modalHeight } = props;
   useEffect(() => {
     // close on escape
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        props.setShowModal(false);
+        setShowModal(false);
       }
     };
     window.addEventListener("keydown", handleEscape);
@@ -22,27 +25,36 @@ const ModalWrapper = (props: ModalWrapperProps) => {
 
   return (
     <div
-      className={`fixed z-10 inset-0 overflow-y-auto ${
-        props.showModal ? "block" : "hidden"
-      }`}
+      className={`${
+        showModal ? "fixed" : "hidden"
+      } z-10 inset-0 h-screen overflow-y-auto`}
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
-      onClick={props.showModal ? () => props.setShowModal(false) : () => {}}
     >
-      <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-32 text-center">
+      <div className="flex items-center justify-center h-full min-h-screen pt-4 px-4 pb-20 text-center p-0">
+        {/* <!--
+          Background overlay, show/hide based on modal state.
+          }--> */}
         <div
-          className="fixed inset-0 bg-black bg-opacity-25 transition-opacity"
+          className="fixed inset-0 bg-gray-500 bg-opacity-50 transition-opacity"
           aria-hidden="true"
+          onClick={() => setShowModal(false)}
         ></div>
-        <span className="hidden" aria-hidden="true">
+        <span className="hidden align-middle h-screen" aria-hidden="true">
           &#8203;
         </span>
+        {/* <!--
+          Modal panel, show/hide based on modal state.
+          }--> */}
         <div
-          className="inline-block align-bottom bg-white w-[50vw] rounded-lg text-left shadow-xl transform transition-all"
-          onClick={(e) => e.stopPropagation()}
+          className={`${showModal ? "inline-block" : "hidden "} ${
+            modalWidth ? modalWidth : "w-1/2"
+          } ${
+            modalHeight ? modalHeight : "h-auto"
+          } align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all my-8`}
         >
-          {props.children}
+          {children}
         </div>
       </div>
     </div>

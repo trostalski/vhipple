@@ -11,7 +11,9 @@ const SidebarNavIcon = (props: SidebarNavIconProps) => {
   return (
     <button
       className={`relative flex flex-row w-full items-center gap-4 p-4 rounded-xl transition ${
-        isActive ? "bg-secondary-button " : "hover:bg-secondary-button-hover "
+        isActive
+          ? "bg-secondary-button-hover "
+          : "hover:bg-secondary-button-hover "
       }}`}
       title={text}
       onClick={onClick}

@@ -12,7 +12,7 @@ const MainWrapper = (props: MainWrapperProps) => {
     <div
       className={`mx-auto h-full w-full py-6 overflow-y-scroll overflow-x-clip pr-[4vw] transition-all ${
         sidebarOpen ? "pl-[20vw]" : "pl-[8vw]"
-      }`}
+      } `}
     >
       {props.children}
     </div>

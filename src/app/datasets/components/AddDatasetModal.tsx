@@ -1,18 +1,12 @@
 import ModalWrapper from "@/app/components/ModalWrapper";
 import {
   addDataset,
-  datasetExists,
   removeResourcesFromDatasetBySource,
   updateDataset,
 } from "@/app/db/utils";
-import {
-  toastError,
-  toastInfo,
-  toastPromise,
-  toastSuccess,
-} from "@/app/lib/toasts";
+import { toastPromise, toastSuccess } from "@/app/lib/toasts";
 import React, { useState } from "react";
-import { Dataset, ResourceContainer } from "../lib/types";
+import { Dataset } from "../lib/types";
 import { resolveReferencesForDataset } from "../lib/resolveReferences";
 import { onlyUnique } from "@/app/datasets/[datasetId]/dashboard/lib/utils";
 import { AiFillDelete } from "react-icons/ai";
@@ -150,7 +144,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
               >
                 <p>{file.name}</p>
                 <button
-                  className="font-bold py-2 px-4 rounded transition hover:scale-125"
+                  className="text-primary-button border py-1 px-2 rounded-md transition hover:scale-110"
                   onClick={() =>
                     setSelectedResources(
                       selectedResources.filter((f) => f.name !== file.name)

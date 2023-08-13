@@ -3,7 +3,7 @@ import React from "react";
 import { RxDashboard } from "react-icons/rx";
 import { BsPeople } from "react-icons/bs";
 import { usePathname, useRouter } from "next/navigation";
-import { AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineSetting, AiOutlineExport } from "react-icons/ai";
 import AnimatedBurger from "./AnimatedBurger";
 import SidebarNavIcon from "./SidebarNavIcon";
 import { useGlobalStore } from "@/app/stores/useGlobalStore";
@@ -32,7 +32,7 @@ const LeftSidebar = (props: LeftSidebarProps) => {
     {
       icon: <BiHomeAlt size={24} />,
       text: "Overview",
-      pathname: `/datasets/${dataset.id}/`,
+      pathname: `/datasets/${dataset.id}`,
       onClick: () => {
         router.push(`/datasets/${dataset.id}/`);
       },
@@ -51,6 +51,14 @@ const LeftSidebar = (props: LeftSidebarProps) => {
       pathname: `/datasets/${dataset.id}/patients`,
       onClick: () => {
         router.push(`/datasets/${dataset.id}/patients`);
+      },
+    },
+    {
+      icon: <AiOutlineExport size={24} />,
+      text: "Export",
+      pathname: `/datasets/${dataset.id}/export`,
+      onClick: () => {
+        router.push(`/datasets/${dataset.id}/export`);
       },
     },
     {

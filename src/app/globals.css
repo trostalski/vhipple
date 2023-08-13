@@ -1,3 +1,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --main-bg: #f0f9ff;
+    --sidebar-bg: #2f4b7c;
+    --primary-button: #0284c7;
+    --primary-button-hover: #38bdf8;
+    --secondary-button: #64748b;
+    --secondary-button-hover: #94a3b8;
+    --cancel-button: #be123c;
+    --cancel-button-hover: #fb7185;
+  }
+
+  .theme-red {
+    --main-bg: #fde8e8;
+    --sidebar-bg: #7f1d1d;
+    --primary-button: #dc2626;
+    --primary-button-hover: #f87171;
+    --secondary-button: #9b2c2c;
+    --secondary-button-hover: #fca5a5;
+    --cancel-button: #be123c;
+    --cancel-button-hover: #fb7185;
+  }
+
+  .theme-green {
+    --main-bg: #d1fae5;
+    --sidebar-bg: #065f46;
+    --primary-button: #059669;
+    --primary-button-hover: #34d399;
+    --secondary-button: #065f46;
+    --secondary-button-hover: #34d399;
+    --cancel-button: #be123c;
+    --cancel-button-hover: #fb7185;
+  }
+
+  .theme-purple {
+    --main-bg: #e9d8fd;
+    --sidebar-bg: #4c1d95;
+    --primary-button: #6d28d9;
+    --primary-button-hover: #a78bfa;
+    --secondary-button: #4c1d95;
+    --secondary-button-hover: #a78bfa;
+    --cancel-button: #be123c;
+    --cancel-button-hover: #fb7185;
+  }
+
+  .theme-yellow {
+    --main-bg: #fefcbf;
+    --sidebar-bg: #7c6c1f;
+    --primary-button: #d97706;
+    --primary-button-hover: #fbbf24;
+    --secondary-button: #7c6c1f;
+    --secondary-button-hover: #fbbf24;
+    --cancel-button: #be123c;
+    --cancel-button-hover: #fb7185;
+  }
+
+  .theme-blue {
+    --main-bg: #dbf4ff;
+    --sidebar-bg: #1d4ed8;
+    --primary-button: #1d4ed8;
+    --primary-button-hover: #60a5fa;
+    --secondary-button: #1d4ed8;
+    --secondary-button-hover: #60a5fa;
+    --cancel-button: #be123c;
+    --cancel-button-hover: #fb7185;
+  }
+}

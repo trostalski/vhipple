@@ -1,6 +1,5 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import LeftSidebar from "./components/Sidebar/LeftSidebar";
 import ToastProvider from "./lib/toast.provider";
 import "react-tooltip/dist/react-tooltip.css";
 
@@ -16,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full w-full">
-      <body className="h-full w-full bg-main-bg" suppressHydrationWarning>
+      <body className="h-full w-full" suppressHydrationWarning>
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

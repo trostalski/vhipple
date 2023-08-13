@@ -14,15 +14,14 @@ module.exports = {
     },
     extend: {
       colors: {
-        "main-bg": "#f0f9ff",
-        "sidebar-bg": "#2f4b7c",
-        "sidebar-hover": "#665191",
-        "primary-button": "#0284c7",
-        "primary-button-hover": "#38bdf8",
-        "secondary-button": "#64748b",
-        "secondary-button-hover": "#cbd5e1",
-        "cancel-button": "#be123c",
-        "cancel-button-hover": "#fb7185",
+        "main-bg": "var(--main-bg)",
+        "sidebar-bg": "var(--sidebar-bg)",
+        "primary-button": "var(--primary-button)",
+        "primary-button-hover": "var(--primary-button-hover)",
+        "secondary-button": "var(--secondary-button)",
+        "secondary-button-hover": "var(--secondary-button-hover)",
+        "cancel-button": "var(--cancel-button)",
+        "cancel-button-hover": "var(--cancel-button-hover)",
       },
       fontFamily: {},
       spacing: {

@@ -15,8 +15,32 @@ export interface Dataset {
   name: string;
   size: number;
   description?: string;
+  patientCohorts: PatientCohort[];
   createdAt: string;
   updatedAt: string;
   dashboardColNums: number;
   resourceContainers: ResourceContainer[];
+}
+
+export interface PatientCohort {
+  id: string;
+  name: string;
+  inclusionCriteria: PatientCohortCriterium[];
+  exclusionCriteria: PatientCohortCriterium[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type PatientCohortCriteriumType = "include" | "exclude";
+
+export interface PatientCohortCriterium {
+  id: string;
+  type: PatientCohortCriteriumType;
+  name: string;
+  fhirPath: string;
+}
+
+export interface FhirPathAlias {
+  path: string;
+  alias: string;
 }

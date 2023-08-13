@@ -11,6 +11,7 @@ export const defaultDataset: Dataset = {
   name: "",
   description: "",
   resourceContainers: [],
+  patientCohorts: [],
   updatedAt: "",
   createdAt: "",
   size: 0,

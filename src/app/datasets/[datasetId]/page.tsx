@@ -4,6 +4,7 @@ import MainWrapper from "@/app/components/MainWrapper";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDataset } from "@/app/db/utils";
 import DatasetHeader from "./components/DatasetHeader";
+import CohortList from "./components/CohortList";
 
 interface BoxWrapperProps {
   children: React.ReactNode;
@@ -37,9 +38,7 @@ const page = ({ params }: { params: { datasetId: string } }) => {
         ) : (
           <span className="text-gray-500">{dataset.description}</span>
         )}
-        <BoxWrapper>
-          <span className="text-gray-500">No card found.</span>
-        </BoxWrapper>
+        <CohortList dataset={dataset} />
       </div>
     </MainWrapper>
   );

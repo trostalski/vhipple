@@ -2,17 +2,17 @@
 import MainWrapper from "@/app/components/MainWrapper";
 import { getPatient } from "@/app/db/utils";
 import { useLiveQuery } from "dexie-react-hooks";
-import React from "react";
+import React, { useState } from "react";
 import PatientHeader from "./components/PatientHeader";
 import { Patient } from "fhir/r4";
 import { PatientData } from "../lib/patientData";
 import LoadingScreen from "@/app/components/LoadingScreen";
-import PatientDisplayTabs from "../components/DisplayTabs";
+import DisplayTabs from "../components/DisplayTabs";
 import PatientOverview from "./components/PatientOverview";
 import VisTimeline from "./components/VisTimeline";
 import VisNetwork from "./components/VisNetwork";
 
-export const availableDisplayTabs = ["Overview", "Timeline", "Network"];
+export const availablePatientDisplayTabs = ["Overview", "Timeline", "Network"];
 
 const page = ({
   params,
@@ -20,9 +20,9 @@ const page = ({
   params: { datasetId: string; patientId: string };
 }) => {
   const { datasetId, patientId } = params;
-  const [displayTab, setDisplayTab] = React.useState<
-    (typeof availableDisplayTabs)[number]
-  >(availableDisplayTabs[0]);
+  const [displayTab, setDisplayTab] = useState<
+    (typeof availablePatientDisplayTabs)[number]
+  >(availablePatientDisplayTabs[0]);
   const patientContainer = useLiveQuery(() =>
     getPatient(patientId, datasetId)
   )!;
@@ -49,10 +49,10 @@ const page = ({
       ) : (
         <div className="flex flex-col gap-4 h-full w-full">
           <PatientHeader patient={patient! as Patient} />
-          <PatientDisplayTabs
+          <DisplayTabs
             displayTab={displayTab}
             setDisplayTab={setDisplayTab}
-            availableDisplayTabs={availableDisplayTabs}
+            availableDisplayTabs={availablePatientDisplayTabs}
           />
           {displayTab in contentToRender &&
             contentToRender[displayTab as keyof typeof contentToRender]}

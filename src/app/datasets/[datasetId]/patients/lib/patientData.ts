@@ -152,6 +152,12 @@ export class PatientData {
         if (result.nodes.findIndex((node) => node.id === connId) === -1) {
           result.nodes.push({ id: connId, label: connResource.resourceType });
         }
+        const edge = result.edges.find(
+          (edge) => edge.from === id && edge.to === connId
+        );
+        if (edge) {
+          continue;
+        }
         result.edges.push({ from: id, to: connId });
       }
     }

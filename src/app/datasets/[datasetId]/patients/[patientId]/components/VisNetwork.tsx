@@ -2,11 +2,7 @@ import React, { memo, useEffect, useState } from "react";
 import { Network } from "vis-network/standalone";
 import LoadingScreen from "@/app/components/LoadingScreen";
 import { Resource } from "fhir/r4";
-import {
-  convertResourcesToVisNetwork,
-  getDisplayForResource,
-  getValueDisplay,
-} from "../../lib/utils";
+import { getDisplayForResource, getValueDisplay } from "../../lib/utils";
 import { PatientData } from "../../lib/patientData";
 import { VisNetworkData } from "../../lib/types";
 
@@ -58,7 +54,7 @@ const VisNetwork = (props: VisNetworkProps) => {
             enabled: true,
             repulsion: {},
             stabilization: {
-              iterations: 500,
+              iterations: 400,
               updateInterval: 10,
             },
           },

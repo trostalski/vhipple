@@ -94,7 +94,7 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
         </div>
         <TopButtons />
       </div>
-      <div className="h-full">
+      <div className="h-5/6">
         <ChartComp card={card} />
       </div>
       <DataPointsRange

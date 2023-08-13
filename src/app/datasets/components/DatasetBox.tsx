@@ -6,8 +6,9 @@ import AddDatasetModal from "./AddDatasetModal";
 import { Dataset } from "../lib/types";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
-import { getYYYYMMDD } from "@/app/patients/lib/utils";
+import { getYYYYMMDD } from "@/app/datasets/[datasetId]/patients/lib/utils";
 import { useRouter } from "next/navigation";
+import { useGlobalStore } from "@/app/stores/useGlobalStore";
 
 interface DatasetBoxProps {
   dataset: Dataset;
@@ -15,10 +16,32 @@ interface DatasetBoxProps {
 
 const DatasetBox = (props: DatasetBoxProps) => {
   const { dataset } = props;
+  const setDataset = useGlobalStore((state) => state.setDataset);
   const [showEditDatasetModal, setShowEditDatasetModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [mainHovered, setMainHovered] = useState(false);
   const router = useRouter();
+
+  const handleDelete = async () => {
+    const confirm = window.confirm(
+      `Are you sure you want to delete ${dataset.name}?`
+    );
+    if (!confirm) {
+      return;
+    }
+    const res = await deleteDataset(dataset.id);
+    if (res) {
+      toastSuccess("Dataset deleted successfully.");
+    }
+  };
+
+  const handleEnterDataset = () => {
+    return () => {
+      setDataset(dataset);
+      router.push(`/datasets/${dataset.id}`);
+    };
+  };
+
   return (
     <div
       className={`flex flex-row gap-4 items-center bg-white rounded-lg shadow-md ${
@@ -37,9 +60,7 @@ const DatasetBox = (props: DatasetBoxProps) => {
           setMainHovered(true);
         }}
         onMouseLeave={() => setMainHovered(false)}
-        onClick={() => {
-          router.push(`/datasets/${dataset.id}`);
-        }}
+        onClick={handleEnterDataset()}
       >
         <h1 className="text-2xl font-bold">{dataset.name}</h1>
         <p className="text-gray-500 text-sm">{dataset.size} Resources</p>
@@ -71,19 +92,7 @@ const DatasetBox = (props: DatasetBoxProps) => {
         </button>
         <button
           className="py-2 px-4 h-full transition hover:bg-cancel-button hover:text-white rounded-md"
-          onClick={async () => {
-            // alert diaslog
-            const confirm = window.confirm(
-              `Are you sure you want to delete ${dataset.name}?`
-            );
-            if (!confirm) {
-              return;
-            }
-            const res = await deleteDataset(dataset.id);
-            if (res) {
-              toastSuccess("Dataset deleted successfully.");
-            }
-          }}
+          onClick={async () => await handleDelete()}
         >
           <AiFillDelete />
         </button>

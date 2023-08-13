@@ -1,6 +1,6 @@
 import { Patient } from "fhir/r4";
-import { TablePatient } from "../patients/components/PatientsTable";
-import { getAge } from "../patients/lib/utils";
+import { TablePatient } from "../datasets/[datasetId]/patients/components/PatientsTable";
+import { getAge } from "../datasets/[datasetId]/patients/lib/utils";
 import { v4 as uuid } from "uuid";
 
 export const getPatientInfo = (patient: Patient): TablePatient => {

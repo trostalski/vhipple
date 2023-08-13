@@ -14,7 +14,7 @@ import {
 import React, { useState } from "react";
 import { Dataset, ResourceContainer } from "../lib/types";
 import { resolveReferencesForDataset } from "../lib/resolveReferences";
-import { onlyUnique } from "@/app/dashboard/lib/utils";
+import { onlyUnique } from "@/app/datasets/[datasetId]/dashboard/lib/utils";
 import { AiFillDelete } from "react-icons/ai";
 import { generateUniqueId } from "@/app/lib/utils";
 import { addMode, defaultDataset, editMode } from "../lib/constants";

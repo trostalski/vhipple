@@ -1,7 +1,7 @@
 import { Resource } from "fhir/r4";
 import { db } from "./db";
 import { Dataset, ResourceContainer } from "../datasets/lib/types";
-import { DashboardCard } from "../dashboard/lib/types";
+import { DashboardCard } from "../datasets/[datasetId]/dashboard/lib/types";
 
 export const datasetExists = async (id: string) => {
   try {
@@ -190,9 +190,9 @@ export const getAllPatients = async () => {
   }
 };
 
-export const getPatient = async (id: string, datasetName: string) => {
+export const getPatient = async (id: string, datasetId: string) => {
   try {
-    const dataset = await db.datasets.get(datasetName);
+    const dataset = await db.datasets.get(datasetId);
     const patient = dataset!.resourceContainers.find(
       (rc) => rc.resource.id === id
     );

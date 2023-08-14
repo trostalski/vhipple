@@ -94,28 +94,6 @@ export const removeResourcesFromDatasetBySource = async (
   }
 };
 
-export const getConnectedResources = async (
-  datasetId: string,
-  resourceId: string
-) => {
-  try {
-    const dataset = await db.datasets.get(datasetId);
-    const resource = dataset!.resourceContainers.find(
-      (rc) => rc.resource.id === resourceId
-    );
-    if (!resource) {
-      return [];
-    }
-    const connectedResources = [
-      ...resource.referencedBy,
-      ...resource.references,
-    ];
-    return connectedResources;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export const getTargetResources = async (
   datasetId: string,
   resourceId: string

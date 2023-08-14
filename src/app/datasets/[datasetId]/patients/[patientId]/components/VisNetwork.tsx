@@ -1,7 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { Network } from "vis-network/standalone";
 import LoadingScreen from "@/app/components/LoadingScreen";
-import { Resource } from "fhir/r4";
 import { getDisplayForResource, getValueDisplay } from "../../lib/utils";
 import { PatientData } from "../../lib/patientData";
 import { VisNetworkData } from "../../lib/types";

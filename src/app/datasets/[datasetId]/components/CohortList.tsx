@@ -29,6 +29,7 @@ const CohortList = (props: CohortListProps) => {
         <AddPatientCohortModal
           showModal={showModal}
           setShowModal={setShowModal}
+          dataset={dataset}
         />
       )}
     </div>

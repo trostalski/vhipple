@@ -30,4 +30,14 @@ export const availableColorThemes = [
     color: "bg-yellow-500",
     label: "Yellow",
   },
+  {
+    value: "theme-gray",
+    color: "bg-gray-500",
+    label: "Gray",
+  },
+  {
+    value: "theme-orange",
+    color: "bg-orange-500",
+    label: "Orange",
+  },
 ];

@@ -68,4 +68,26 @@
     --cancel-button: #be123c;
     --cancel-button-hover: #fb7185;
   }
+
+  .theme-orange {
+    --main-bg: #fef3c7;
+    --sidebar-bg: #7c4a02;
+    --primary-button: #ea580c;
+    --primary-button-hover: #f97316;
+    --secondary-button: #7c4a02;
+    --secondary-button-hover: #f97316;
+    --cancel-button: #be123c;
+    --cancel-button-hover: #fb7185;
+  }
+
+  .theme-gray {
+    --main-bg: #f3f4f6;
+    --sidebar-bg: #374151;
+    --primary-button: #374151;
+    --primary-button-hover: #9ca3af;
+    --secondary-button: #374151;
+    --secondary-button-hover: #9ca3af;
+    --cancel-button: #be123c;
+    --cancel-button-hover: #fb7185;
+  }
 }

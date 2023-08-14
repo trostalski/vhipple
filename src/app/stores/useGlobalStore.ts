@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { availableColorThemes } from "../lib/constants";
 
 interface GlobalStore {
   sidebarOpen: boolean;

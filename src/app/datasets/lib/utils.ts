@@ -1,5 +1,5 @@
 import { datasetDefaultCards } from "@/app/datasets/[datasetId]/dashboard/lib/exampleCards";
-import { Dataset } from "./types";
+import { Dataset, ResourceContainer } from "./types";
 import { createChartJsDataForDashboardCard } from "@/app/datasets/[datasetId]/dashboard/lib/utils";
 import { addDashboardCards } from "@/app/db/utils";
 import { generateUniqueId } from "@/app/lib/utils";
@@ -29,4 +29,19 @@ export const generateDefaultDatasetDashboardCards = async (
     newCards.push(newCard);
   }
   await addDashboardCards(newCards);
+};
+
+export const getConnectedResources = (
+  resourceContainer: ResourceContainer,
+  includeSource?: boolean
+) => {
+  includeSource = includeSource || false;
+  let connectedResources = [
+    ...resourceContainer.referencedBy,
+    ...resourceContainer.references,
+  ];
+  if (includeSource) {
+    connectedResources.push(resourceContainer.resource);
+  }
+  return connectedResources;
 };

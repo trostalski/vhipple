@@ -3,6 +3,7 @@ import ModalWrapper from "@/app/components/ModalWrapper";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import {
   Dataset,
+  PatientCohort,
   PatientCohortCriterium,
   PatientCohortCriteriumType,
 } from "../../lib/types";
@@ -14,6 +15,8 @@ import { Patient } from "fhir/r4";
 import PatientCohortPreviewMenu from "./PatientCohortPreviewMenu";
 import CriteriumInput from "./CriteriumInput";
 import usePatientCohortCriteria from "../dashboard/hooks/usePatientCohortCriteria";
+import { updateDataset } from "@/app/db/utils";
+import { toastSuccess } from "@/app/lib/toasts";
 
 interface AddPatientCohortModalProps {
   showModal: boolean;
@@ -24,15 +27,33 @@ interface AddPatientCohortModalProps {
 const AddPatientCohortModal = (props: AddPatientCohortModalProps) => {
   const { showModal, setShowModal, dataset } = props;
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [cohortName, setCohortName] = useState("");
   const {
     computePatientCohort,
     criteria,
     handleAddCriterium,
-    handleSave,
     patientCohortIds,
     setCriteria,
     setPatientCohortIds,
   } = usePatientCohortCriteria();
+
+  const handleSave = async () => {
+    const cohort: PatientCohort = {
+      id: generateUniqueId(),
+      name: cohortName,
+      inclusionCriteria: criteria.filter((c) => c.type === "include"),
+      exclusionCriteria: criteria.filter((c) => c.type === "exclude"),
+      patientIds: patientCohortIds,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    const newDataset = {
+      ...dataset,
+      patientCohorts: [...dataset.patientCohorts, cohort],
+    };
+    await updateDataset(dataset.id, newDataset);
+    toastSuccess("Patient cohort added");
+  };
 
   return (
     <ModalWrapper
@@ -48,7 +69,11 @@ const AddPatientCohortModal = (props: AddPatientCohortModalProps) => {
         <div className="flex flex-col gap-4 h-full overflow-scroll">
           <div className="flex flex-row items-center gap-2">
             <span className="text-sm">Patient Cohort Name</span>
-            <input className="border rounded-md px-2 py-1 grow" />
+            <input
+              className="border rounded-md px-2 py-1 grow"
+              value={cohortName}
+              onChange={(e) => setCohortName(e.target.value)}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex flex-row items-center gap-2">
@@ -104,7 +129,7 @@ const AddPatientCohortModal = (props: AddPatientCohortModalProps) => {
             onClick={() => {
               const cohort = computePatientCohort(dataset);
               setPatientCohortIds(cohort);
-              setShowPreviewModal(true);
+              setShowPreviewModal(!showPreviewModal);
             }}
           >
             Preview

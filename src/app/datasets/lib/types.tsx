@@ -25,6 +25,7 @@ export interface Dataset {
 export interface PatientCohort {
   id: string;
   name: string;
+  patientIds: string[];
   inclusionCriteria: PatientCohortCriterium[];
   exclusionCriteria: PatientCohortCriterium[];
   createdAt: string;

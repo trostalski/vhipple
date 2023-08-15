@@ -1,5 +1,3 @@
-import { DashboardCard } from "./types";
-
 export const cardStartWidth = 400;
 export const cardStartHeight = 300;
 export const cardMaxHeight = "90vh";
@@ -65,3 +63,13 @@ export const availableChartColours = [
   { name: "black", rgba: `rgba(0, 0, 0, ${colourReplaceString})` },
   { name: "multi", rgba: "" },
 ];
+
+export const defaultPatientCohort = {
+  id: "",
+  name: "",
+  inclusionCriteria: [],
+  exclusionCriteria: [],
+  patientIds: [],
+  createdAt: "",
+  updatedAt: "",
+};

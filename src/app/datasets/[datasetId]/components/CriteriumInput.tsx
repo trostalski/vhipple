@@ -1,14 +1,18 @@
 import { AiFillDelete } from "react-icons/ai";
-import { PatientCohortCriterium } from "../../lib/types";
+import { PatientCohort, PatientCohortCriterium } from "../../lib/types";
 
 interface CriteriumInputProps {
   criterium: PatientCohortCriterium;
-  criteria: PatientCohortCriterium[];
-  setCriteria: (criteria: PatientCohortCriterium[]) => void;
+  setCriteria: (
+    value: string,
+    propName: string,
+    criterium: PatientCohortCriterium
+  ) => void;
+  handleDelete: () => void;
 }
 
 const CriteriumInput = (props: CriteriumInputProps) => {
-  const { criterium, setCriteria } = props;
+  const { criterium, setCriteria, handleDelete } = props;
   return (
     <div className="flex flex-row items-center gap-4 w-full">
       <div className="flex flex-row items-center gap-2">
@@ -17,13 +21,7 @@ const CriteriumInput = (props: CriteriumInputProps) => {
           className="border rounded-md px-2 py-1"
           value={criterium.name}
           onChange={(e) => {
-            const newCriteria = props.criteria.map((c) => {
-              if (c.id === criterium.id) {
-                return { ...c, name: e.target.value };
-              }
-              return c;
-            });
-            setCriteria(newCriteria);
+            setCriteria(e.target.value, "name", criterium);
           }}
         />
       </div>
@@ -33,13 +31,7 @@ const CriteriumInput = (props: CriteriumInputProps) => {
           className="border rounded-md px-2 py-1 grow"
           value={criterium.fhirPath}
           onChange={(e) => {
-            const newCriteria = props.criteria.map((c) => {
-              if (c.id === criterium.id) {
-                return { ...c, fhirPath: e.target.value };
-              }
-              return c;
-            });
-            setCriteria(newCriteria);
+            setCriteria(e.target.value, "fhirPath", criterium);
           }}
         />
       </div>
@@ -47,10 +39,7 @@ const CriteriumInput = (props: CriteriumInputProps) => {
         <button
           className="text-primary-button border py-1 px-2 rounded-md transition hover:scale-110"
           onClick={() => {
-            const newCriteria = props.criteria.filter(
-              (c) => c.id !== criterium.id
-            );
-            setCriteria(newCriteria);
+            handleDelete();
           }}
         >
           <AiFillDelete size={16} />

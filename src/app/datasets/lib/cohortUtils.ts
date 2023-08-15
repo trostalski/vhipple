@@ -1,7 +1,8 @@
 import { Patient, Resource } from "fhir/r4";
-import { evalFhirPathOnResources, validateFhirPath } from "./fhirpathUilts";
+import { evalFhirPathOnResources } from "./fhirpathUilts";
 import { compile } from "fhirpath";
-import { Interface } from "readline";
+import { Dataset } from "./types";
+import { getConnectedResources } from "./utils";
 
 interface PatientResource {
   patient: Patient;
@@ -72,6 +73,27 @@ export const createPatienCohortFromCriteria = (
   );
   const cohort = includePatientIds.filter(
     (ip) => !excludePatientIds.includes(ip)
+  );
+  return cohort;
+};
+
+export const computePatientCohort = (
+  dataset: Dataset,
+  includeFhirPaths: string[],
+  excludeFhirPaths: string[]
+) => {
+  const patientResources = dataset.resourceContainers
+    .filter((rc) => rc.resource.resourceType === "Patient")
+    .map((rc) => {
+      return {
+        patient: rc.resource as Patient,
+        resources: getConnectedResources(rc, true),
+      };
+    });
+  const cohort = createPatienCohortFromCriteria(
+    includeFhirPaths,
+    excludeFhirPaths,
+    patientResources
   );
   return cohort;
 };

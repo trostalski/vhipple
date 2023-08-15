@@ -17,3 +17,6 @@ export const defaultDataset: Dataset = {
   size: 0,
   dashboardColNums: 4,
 };
+
+export const patientIncludeCritriumString = "include";
+export const patientExcludeCritriumString = "exclude";

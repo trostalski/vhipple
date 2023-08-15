@@ -12,20 +12,17 @@ import Select from "react-select";
 import {
   availableChartColours,
   availableDataTypes,
-  categoricalDataType,
   numerical1DDataType,
 } from "../lib/constants";
 import { toastError, toastSuccess } from "@/app/lib/toasts";
 import {
-  createCatChartJsData,
   createChartJsDataForDashboardCard,
-  createNum1DChartJsData,
   getChartTypeOptions,
   validateDashboardCardInput,
 } from "@/app/datasets/[datasetId]/dashboard/lib/utils";
 import { addMode, editMode } from "@/app/datasets/lib/constants";
 import FhirPathInput from "./FhirPathInput";
-import { DashboardCard, ChartJsData } from "../lib/types";
+import { DashboardCard } from "../lib/types";
 import { generateUniqueId } from "@/app/lib/utils";
 import { defaultCard, availableExampleCards } from "../lib/exampleCards";
 

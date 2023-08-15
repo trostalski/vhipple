@@ -96,8 +96,8 @@ const PatientsTable = (props: PatientsTableProps) => {
   const [data, setData] = React.useState(() => [...inputData]);
 
   const table = useReactTable({
-    data,
-    columns,
+    data: inputData,
+    columns: columns,
     columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

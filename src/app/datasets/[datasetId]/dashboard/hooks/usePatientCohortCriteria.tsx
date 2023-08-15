@@ -5,7 +5,6 @@ import {
   PatientCohortCriteriumType,
 } from "@/app/datasets/lib/types";
 import { getConnectedResources } from "@/app/datasets/lib/utils";
-import { updateDataset } from "@/app/db/utils";
 import { generateUniqueId } from "@/app/lib/utils";
 import { Patient } from "fhir/r4";
 import { useState } from "react";

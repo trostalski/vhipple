@@ -34,9 +34,23 @@ export const availableLegendPositions = [
 ];
 
 export const availableDataTypes = [
-  categoricalDataType,
-  numerical1DDataType,
-  numerical2DDataType,
+  {
+    label: "categorical data",
+    value: categoricalDataType,
+    description:
+      "Same categories are aggregated and the counts are visualized.",
+  },
+  {
+    label: "numerical data one axis",
+    value: numerical1DDataType,
+    description:
+      "The numerical values are aggregated and statistics are shown.",
+  },
+  {
+    label: "numerical data two axis",
+    value: numerical2DDataType,
+    description: "",
+  },
 ];
 
 export const colourReplaceString = "__COLOUR__";

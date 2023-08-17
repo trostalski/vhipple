@@ -10,13 +10,16 @@ import {
   sliceChartJsData,
   validateDashboardCardInput,
 } from "../../lib/utils";
-import { toastError } from "@/app/lib/toasts";
+import { toastError, toastSuccess } from "@/app/lib/toasts";
 import DataPointsRange from "../../components/DataPointsRange";
 import {
   allPatientsCohortId,
   allPatientsCohortName,
   availableChartColours,
 } from "../../lib/constants";
+import { generateUniqueId } from "@/app/lib/utils";
+import { addDashboardCard } from "@/app/db/utils";
+import { addMode } from "@/app/datasets/lib/constants";
 
 interface ChartEditorProps {
   mode: "add" | "edit";
@@ -40,7 +43,7 @@ const ChartEditor = (props: ChartEditorProps) => {
     label: pc.name,
   }));
 
-  const showPreviewCard = (baseCard: DashboardCard) => {
+  const addDataToCard = (baseCard: DashboardCard) => {
     const cardIsValid = validateDashboardCardInput(baseCard);
     if (!cardIsValid) {
       toastError("Invalid card input");
@@ -62,10 +65,43 @@ const ChartEditor = (props: ChartEditorProps) => {
       dataset,
       true
     );
-    data = sliceChartJsData(data, numDataPoints);
     baseCard.data = data;
+    return baseCard;
+  };
+
+  const showPreviewCard = (baseCard: DashboardCard) => {
+    const card = addDataToCard(baseCard);
+    if (!card || !card.data) return;
+    card.data = sliceChartJsData(card.data, numDataPoints);
     const previewCard = { ...baseCard };
     setPreviewCard(previewCard);
+  };
+
+  const handleCreate = async () => {
+    const finalCard = addDataToCard(card);
+    if (!finalCard) return;
+    finalCard.id = generateUniqueId();
+    finalCard.createdAt = new Date().toISOString();
+    finalCard.updatedAt = new Date().toISOString();
+    finalCard.forDatasetId = dataset.id;
+    const res = await addDashboardCard(finalCard);
+    if (res) {
+      toastSuccess("Card created");
+    } else {
+      toastError("Error creating card");
+    }
+  };
+
+  const handleUpdate = async () => {
+    const finalCard = addDataToCard(card);
+    if (!finalCard) return;
+    finalCard.updatedAt = new Date().toISOString();
+    const res = await addDashboardCard(finalCard);
+    if (res) {
+      toastSuccess("Card updated");
+    } else {
+      toastError("Error updating card");
+    }
   };
 
   useEffect(() => {
@@ -85,6 +121,7 @@ const ChartEditor = (props: ChartEditorProps) => {
         patientCohortOptions={patientCohortOptions}
         dataset={dataset}
         showPreviewCard={showPreviewCard}
+        handleSave={mode === addMode ? handleCreate : handleUpdate}
       />
       {previewCard && (
         <div className="flex flex-col h-full w-full">

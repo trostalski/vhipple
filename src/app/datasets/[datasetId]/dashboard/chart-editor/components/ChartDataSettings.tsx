@@ -21,11 +21,18 @@ interface ChartDataSettingsProps {
   dataset: Dataset;
   patientCohortOptions: OptionType[];
   showPreviewCard: (baseCard: DashboardCard) => void;
+  handleSave: (baseCard: DashboardCard) => void;
 }
 
 const ChartDataSettings = (props: ChartDataSettingsProps) => {
-  const { card, setCard, patientCohortOptions, dataset, showPreviewCard } =
-    props;
+  const {
+    card,
+    setCard,
+    patientCohortOptions,
+    dataset,
+    showPreviewCard,
+    handleSave,
+  } = props;
   const [selectedTemplateId, setSelectedTemplateId] = useState<
     OptionType | undefined
   >(undefined);
@@ -199,7 +206,12 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
         >
           Preview
         </button>
-        <button className="rounded-md px-4 py-2 text-white bg-secondary-button transition hover:bg-secondary-button-hover">
+        <button
+          className="rounded-md px-4 py-2 text-white bg-secondary-button transition hover:bg-secondary-button-hover"
+          onClick={() => {
+            handleSave(card);
+          }}
+        >
           Save
         </button>
       </div>

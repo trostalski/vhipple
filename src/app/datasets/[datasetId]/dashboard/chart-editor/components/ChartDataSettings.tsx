@@ -3,6 +3,7 @@ import {
   allPatientsCohortId,
   availableChartColours,
   availableChartTypes,
+  numerical1DChartTypes,
 } from "../../lib/constants";
 import { DashboardCard } from "../../lib/types";
 import { availableExampleCards } from "../../lib/exampleCards";
@@ -19,7 +20,7 @@ interface ChartDataSettingsProps {
   setCard: (card: DashboardCard) => void;
   dataset: Dataset;
   patientCohortOptions: OptionType[];
-  showPreviewCard: () => void;
+  showPreviewCard: (baseCard: DashboardCard) => void;
 }
 
 const ChartDataSettings = (props: ChartDataSettingsProps) => {
@@ -178,13 +179,23 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
             }}
             resources={computeResources()}
           />
+          {numerical1DChartTypes.includes(card.chartType) && (
+            <FhirPathInput
+              inputLabel="Label Fhirpath"
+              value={card.labelFhirpath}
+              onChangeHandler={(e) => {
+                setCard({ ...card, labelFhirpath: e.target.value });
+              }}
+              resources={computeResources()}
+            />
+          )}
         </div>
       </div>
       <div className="grow" />
       <div className="flex flex-row justify-end gap-2">
         <button
           className="rounded-md px-4 py-2 bg-white border border-secondary-button transition hover:text-secondary-button-hover"
-          onClick={() => showPreviewCard()}
+          onClick={() => showPreviewCard(card)}
         >
           Preview
         </button>

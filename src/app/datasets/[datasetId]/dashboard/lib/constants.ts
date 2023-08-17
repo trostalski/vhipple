@@ -18,7 +18,7 @@ export const categoricalChartTypes = [
   "polar",
   "radar",
 ];
-export const numerical1DChartTypes = ["boxplot"];
+export const numerical1DChartTypes = ["boxplot", "violin"];
 export const numerical2DChartTypes = ["scatter", "line"];
 export const availableChartTypes = [
   ...categoricalChartTypes,

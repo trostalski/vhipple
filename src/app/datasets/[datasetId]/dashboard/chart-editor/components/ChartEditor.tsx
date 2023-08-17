@@ -40,38 +40,38 @@ const ChartEditor = (props: ChartEditorProps) => {
     label: pc.name,
   }));
 
-  const showPreviewCard = () => {
-    const cardIsValid = validateDashboardCardInput(card);
+  const showPreviewCard = (baseCard: DashboardCard) => {
+    const cardIsValid = validateDashboardCardInput(baseCard);
     if (!cardIsValid) {
       toastError("Invalid card input");
       return;
     }
-    if (card.cohortColorPalletes.length === 0) {
-      card.cohortColorPalletes.push({
+    if (baseCard.cohortColorPalletes.length === 0) {
+      baseCard.cohortColorPalletes.push({
         id: allPatientsCohortId,
         name: allPatientsCohortName,
         chartColour: availableChartColours[0].name,
       });
     }
     const usedPatientCohorts = patientCohorts.filter((pc) =>
-      card.cohortColorPalletes.map((d) => d.name).includes(pc.name)
+      baseCard.cohortColorPalletes.map((d) => d.name).includes(pc.name)
     );
     let data = createChartJsDataForDashboardCard(
       usedPatientCohorts,
-      card,
+      baseCard,
       dataset,
       true
     );
     data = sliceChartJsData(data, numDataPoints);
-    card.data = data;
-    const previewCard = { ...card };
+    baseCard.data = data;
+    const previewCard = { ...baseCard };
     setPreviewCard(previewCard);
   };
 
   useEffect(() => {
     if (!previewCard) return;
     if (!previewCard.data) return;
-    showPreviewCard();
+    showPreviewCard(previewCard);
   }, [numDataPoints]);
 
   return (

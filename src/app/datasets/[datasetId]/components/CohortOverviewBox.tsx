@@ -37,15 +37,17 @@ const CohortOverviewBox = (props: CohortOverviewBoxProps) => {
 
   return (
     <div
-      className={`bg-white w-1/2 rounded-md relative flex flex-col px-4 py-2 ${
-        mainIsHovered ? "shadow-xl cursor-pointer" : "shadow-md"
-      }`}
-      onMouseEnter={() => setMainIsHovered(true)}
-      onMouseLeave={() => setMainIsHovered(false)}
-      onClick={handleMainClick}
+      className={`bg-white w-1/2 rounded-md relative flex flex-col px-4 py-2 
+      ${mainIsHovered ? "shadow-xl cursor-pointer" : ""}
+      `}
     >
       <div className="flex flex-row w-full justify-between items-center">
-        <div className="flex flex-col">
+        <div
+          className={`flex flex-col w-full h-full`}
+          onMouseEnter={() => setMainIsHovered(true)}
+          onMouseLeave={() => setMainIsHovered(false)}
+          onClick={handleMainClick}
+        >
           <span className="font-bold">{cohort.name}</span>
           <span className="text-gray-500">
             {cohort.patientIds.length + " " + "Patients"}

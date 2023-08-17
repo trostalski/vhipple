@@ -10,7 +10,6 @@ import {
   numerical2DChartTypes,
   numerical2DDataType,
 } from "./constants";
-import { Dataset } from "@/app/datasets/lib/types";
 import {
   ChartJsData,
   ChartJsLabels,
@@ -21,9 +20,11 @@ import {
 import { Resource } from "fhir/r4";
 import { toastError } from "@/app/lib/toasts";
 import {
-  getPathValuesForDatasets,
+  getPathValuesForCohorts,
   getPathValuesForResources,
 } from "@/app/datasets/lib/fhirpathUilts";
+import { Dataset, PatientCohort } from "@/app/datasets/lib/types";
+import { getAllPatientsAsCohort } from "@/app/datasets/lib/cohortUtils";
 
 export const onlyUnique = (value: any, index: number, array: any) => {
   return array.indexOf(value) === index;
@@ -71,19 +72,24 @@ export const sortChartJsDataByValueSum = (data: ChartJsData) => {
   return data;
 };
 
-export const createCatChartJsData = (datasets: Dataset[], fhirpath: string) => {
+export const createCatChartJsData = (
+  cohorts: PatientCohort[],
+  fhirpath: string,
+  dataset: Dataset
+) => {
   let chartJsDatasets: ChartJsDataset[] = [];
-  const datasetValues = getPathValuesForDatasets(datasets, fhirpath);
-  const allUniqueValues = datasetValues.flat().filter(onlyUnique);
-  for (let i = 0; i < datasets.length; i++) {
-    const dataset = datasets[i];
-    const values = datasetValues[i];
+  console.log(cohorts);
+  const cohortValues = getPathValuesForCohorts(cohorts, fhirpath, dataset);
+  const allUniqueValues = cohortValues.flat().filter(onlyUnique);
+  for (let i = 0; i < cohorts.length; i++) {
+    const cohort = cohorts[i];
+    const values = cohortValues[i];
     let datasetData: ChartJsDatasetData = allUniqueValues.map((label) => {
       return values.filter((value) => value === label).length;
     });
     chartJsDatasets.push({
       data: datasetData,
-      label: dataset.name,
+      label: cohort.name,
     });
   }
   let data: ChartJsData = {
@@ -95,17 +101,18 @@ export const createCatChartJsData = (datasets: Dataset[], fhirpath: string) => {
 };
 
 const createNum1DChartJsDataWithLabels = (
-  datasets: Dataset[],
+  cohorts: PatientCohort[],
   valueFhirpath: string,
-  labelFhipath: string
+  labelFhipath: string,
+  dataset: Dataset
 ) => {
   const chartJsDatasets: ChartJsDataset[] = [];
-  const datasetValues = getPathValuesForDatasets(datasets, valueFhirpath);
-  const datasetLabels = getPathValuesForDatasets(datasets, labelFhipath);
+  const cohortValues = getPathValuesForCohorts(cohorts, valueFhirpath, dataset);
+  const datasetLabels = getPathValuesForCohorts(cohorts, labelFhipath, dataset);
   const allUniqueLabels = datasetLabels.flat().filter(onlyUnique);
-  for (let i = 0; i < datasets.length; i++) {
-    const dataset = datasets[i];
-    const values = datasetValues[i];
+  for (let i = 0; i < cohorts.length; i++) {
+    const cohort = cohorts[i];
+    const values = cohortValues[i];
     const labels = datasetLabels[i];
     let datasetData: any[] = [];
 
@@ -120,7 +127,7 @@ const createNum1DChartJsDataWithLabels = (
     }
     chartJsDatasets.push({
       data: datasetData,
-      label: dataset.name,
+      label: cohort.name,
     });
   }
   const data: ChartJsData = {
@@ -131,17 +138,18 @@ const createNum1DChartJsDataWithLabels = (
 };
 
 const createNum1DChartJsDataWithoutLabels = (
-  datasets: Dataset[],
-  valueFhirpath: string
+  cohorts: PatientCohort[],
+  valueFhirpath: string,
+  dataset: Dataset
 ) => {
   const chartJsDatasets: ChartJsDataset[] = [];
-  const datasetValues = getPathValuesForDatasets(datasets, valueFhirpath);
-  for (let i = 0; i < datasets.length; i++) {
-    const dataset = datasets[i];
-    const values = datasetValues[i];
+  const cohortValues = getPathValuesForCohorts(cohorts, valueFhirpath, dataset);
+  for (let i = 0; i < cohorts.length; i++) {
+    const cohort = cohorts[i];
+    const values = cohortValues[i];
     chartJsDatasets.push({
       data: [values],
-      label: dataset.name,
+      label: cohort.name,
     });
   }
   const data: ChartJsData = {
@@ -152,17 +160,19 @@ const createNum1DChartJsDataWithoutLabels = (
 };
 
 export const createNum1DChartJsData = (
-  datasets: Dataset[],
+  cohorts: PatientCohort[],
+  dataset: Dataset,
   valueFhirpath: string,
   labelFhipath?: string
 ) => {
   if (!labelFhipath || labelFhipath === "") {
-    return createNum1DChartJsDataWithoutLabels(datasets, valueFhirpath);
+    return createNum1DChartJsDataWithoutLabels(cohorts, valueFhirpath, dataset);
   } else {
     return createNum1DChartJsDataWithLabels(
-      datasets,
+      cohorts,
       valueFhirpath,
-      labelFhipath
+      labelFhipath,
+      dataset
     );
   }
 };
@@ -172,16 +182,10 @@ export const createNum2DDataForResources = (
   xFhirpath: string,
   yFhirpath: string
 ) => {
-  const datasetLabels = getPathValuesForResources(
-    resources,
-    compile(xFhirpath)
-  );
-  const datasetValues = getPathValuesForResources(
-    resources,
-    compile(yFhirpath)
-  );
-  const zipped = datasetLabels.map((label, index) => {
-    return [label, datasetValues[index]];
+  const cohortLabels = getPathValuesForResources(resources, compile(xFhirpath));
+  const cohortValues = getPathValuesForResources(resources, compile(yFhirpath));
+  const zipped = cohortLabels.map((label, index) => {
+    return [label, cohortValues[index]];
   });
   // sort by label
   zipped.sort((a, b) => {
@@ -246,16 +250,8 @@ export const sliceChartJsData = (
 };
 
 export const validateDashboardCardInput = (card: DashboardCard) => {
-  if (!card.title) {
-    toastError("Title is required.");
-    return false;
-  }
   if (!card.chartType) {
     toastError("Chart type is required.");
-    return false;
-  }
-  if (!card.cohortColorPalletes.length) {
-    toastError("At least one dataset is required.");
     return false;
   }
   if (!card.valueFhirpath) {
@@ -266,15 +262,27 @@ export const validateDashboardCardInput = (card: DashboardCard) => {
 };
 
 export const createChartJsDataForDashboardCard = (
-  inputDatasets: Dataset[],
-  card: DashboardCard
+  inputCohorts: PatientCohort[],
+  card: DashboardCard,
+  dataset: Dataset,
+  allPatientsWhenEmpty?: boolean
 ) => {
   let chartJsData: ChartJsData;
+  allPatientsWhenEmpty = allPatientsWhenEmpty || false;
+  if (allPatientsWhenEmpty && inputCohorts.length === 0) {
+    const allPatientsCohort = getAllPatientsAsCohort(dataset);
+    inputCohorts = [allPatientsCohort];
+  }
   if (card.dataType == categoricalDataType) {
-    chartJsData = createCatChartJsData(inputDatasets, card.valueFhirpath);
+    chartJsData = createCatChartJsData(
+      inputCohorts,
+      card.valueFhirpath,
+      dataset
+    );
   } else if (card.dataType == numerical1DDataType) {
     chartJsData = createNum1DChartJsData(
-      inputDatasets,
+      inputCohorts,
+      dataset,
       card.valueFhirpath,
       card.labelFhirpath
     );

@@ -3,6 +3,10 @@ import { getPathValuesForResources } from "./fhirpathUilts";
 import { compile } from "fhirpath";
 import { Dataset, PatientCohort } from "./types";
 import { getConnectedResourcesForResourceContainer } from "./datasetUtils";
+import {
+  allPatientsCohortId,
+  allPatientsCohortName,
+} from "../[datasetId]/dashboard/lib/constants";
 
 interface PatientResource {
   patient: Patient;
@@ -113,5 +117,21 @@ export const computePatientCohort = (
     excludeFhirPaths,
     patientResources
   );
+  return cohort;
+};
+
+export const getAllPatientsAsCohort = (dataset: Dataset) => {
+  const patientIds = dataset.resourceContainers
+    .filter((rc) => rc.resource.resourceType === "Patient")
+    .map((rc) => rc.resource.id!);
+  const cohort: PatientCohort = {
+    id: allPatientsCohortId,
+    name: allPatientsCohortName,
+    patientIds: patientIds,
+    inclusionCriteria: [],
+    exclusionCriteria: [],
+    createdAt: "",
+    updatedAt: "",
+  };
   return cohort;
 };

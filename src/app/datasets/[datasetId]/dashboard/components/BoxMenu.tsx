@@ -118,7 +118,23 @@ const BoxMenu = (props: BoxMenuProps) => {
         }}
       />
       <hr className="border-gray-200 w-full my-1" />
-      <DatasetColorInput card={card} />
+      <DatasetColorInput
+        card={card}
+        onChange={async (e, itemId) =>
+          await updateDashboardCard(card.id, {
+            ...card,
+            cohortColorPalletes: card.cohortColorPalletes.map((c) => {
+              if (c.id === itemId) {
+                return {
+                  ...c,
+                  chartColour: e.target.value,
+                };
+              }
+              return c;
+            }),
+          })
+        }
+      />
       {showEditModal && (
         <AddCardModal
           mode={editMode}

@@ -11,7 +11,7 @@ export const generateDefaultDatasetDashboardCards = async (
   const newCards = [];
   for (let i = 0; i < datasetDefaultCards.length; i++) {
     const newCard = { ...datasetDefaultCards[i] };
-    const data = createChartJsDataForDashboardCard([dataset], newCard);
+    const data = createChartJsDataForDashboardCard([], newCard, dataset, true);
     newCard.forDatasetId = dataset.id;
     newCard.cohortColorPalletes = [
       {

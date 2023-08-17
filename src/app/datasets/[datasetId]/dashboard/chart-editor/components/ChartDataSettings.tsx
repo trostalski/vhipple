@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  allPatientsCohortId,
   availableChartColours,
   availableChartTypes,
 } from "../../lib/constants";
@@ -18,10 +19,12 @@ interface ChartDataSettingsProps {
   setCard: (card: DashboardCard) => void;
   dataset: Dataset;
   patientCohortOptions: OptionType[];
+  showPreviewCard: () => void;
 }
 
 const ChartDataSettings = (props: ChartDataSettingsProps) => {
-  const { card, setCard, patientCohortOptions, dataset } = props;
+  const { card, setCard, patientCohortOptions, dataset, showPreviewCard } =
+    props;
   const [selectedTemplateId, setSelectedTemplateId] = useState<
     OptionType | undefined
   >(undefined);
@@ -38,13 +41,19 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
 
   const computeResources = () => {
     let resources: Resource[] = [];
-    if (card.cohortColorPalletes.length === 0) {
+    if (
+      card.cohortColorPalletes.length === 0 ||
+      card.cohortColorPalletes[0].id === allPatientsCohortId
+    ) {
       resources = dataset.resourceContainers.map((rc) => rc.resource);
     } else {
       const cohortIds = card.cohortColorPalletes.map((c) => c.id);
       cohortIds.forEach((id) => {
         const patientCohort = dataset.patientCohorts.find((pc) => pc.id === id);
-        const cohortResources = getResourcesForCohort(patientCohort!, dataset);
+        if (!patientCohort) {
+          throw new Error(`Cohort with id ${id} not found`);
+        }
+        const cohortResources = getResourcesForCohort(patientCohort, dataset);
         resources.push(...cohortResources);
       });
     }
@@ -61,6 +70,13 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
     if (selectedTemplate) {
       setCard(selectedTemplate);
     }
+  };
+
+  const handleChangeChartType = (e?: OptionType) => {
+    if (!e) {
+      return;
+    }
+    setCard({ ...card, chartType: e.value });
   };
 
   const handleChangeCohort = (e?: OptionType[]) => {
@@ -92,7 +108,7 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
       id="ce-settings-container"
       className="flex flex-col h-full w-1/4 bg-gray-50 shadow-xl rounded-md px-4 py-2"
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col h-full gap-4 overflow-scroll">
         <div className="flex flex-col">
           <label className="font-bold">From Template</label>
           <Select
@@ -131,6 +147,7 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
             styles={reactSelectStyles}
             options={chartTypeOptions}
             value={{ value: card.chartType, label: card.chartType }}
+            onChange={(e) => handleChangeChartType(e as OptionType)}
           />
         </div>
         <div className="flex flex-col">
@@ -140,10 +157,10 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
             placeholder="Select Cohorts"
             styles={{
               ...reactSelectStyles,
-              control: (provided) => ({ ...provided, height: 80 }),
+              control: (provided) => ({ ...provided, height: 60 }),
               valueContainer: (provided) => ({
                 ...provided,
-                height: 80,
+                height: 60,
                 overflow: "auto",
               }),
             }}
@@ -165,7 +182,10 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
       </div>
       <div className="grow" />
       <div className="flex flex-row justify-end gap-2">
-        <button className="rounded-md px-4 py-2 bg-white border border-secondary-button transition hover:text-secondary-button-hover">
+        <button
+          className="rounded-md px-4 py-2 bg-white border border-secondary-button transition hover:text-secondary-button-hover"
+          onClick={() => showPreviewCard()}
+        >
           Preview
         </button>
         <button className="rounded-md px-4 py-2 text-white bg-secondary-button transition hover:bg-secondary-button-hover">

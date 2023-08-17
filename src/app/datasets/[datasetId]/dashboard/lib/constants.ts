@@ -4,7 +4,7 @@ export const cardMaxHeight = "90vh";
 export const cardMinHeight = 100;
 export const cardMaxWidth = "90vw";
 export const cardMinWidth = 300;
-export const maxNumDataPoints = 100;
+export const maxNumDataPoints = 50;
 export const startNumDataPoints = 20;
 
 export const categoricalDataType = "categorical";
@@ -72,3 +72,6 @@ export const defaultPatientCohort = {
   createdAt: "",
   updatedAt: "",
 };
+
+export const allPatientsCohortId = "all-patients";
+export const allPatientsCohortName = "All Patients";

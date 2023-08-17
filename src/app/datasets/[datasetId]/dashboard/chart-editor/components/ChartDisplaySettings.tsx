@@ -13,7 +13,7 @@ interface ChartDisplaySettingsProps {
 const ChartDisplaySettings = (props: ChartDisplaySettingsProps) => {
   const { card, setCard } = props;
   return (
-    <div className="grid grid-cols-3 bg-gray-100 w-full h-1/6">
+    <>
       <div className="flex flex-col">
         <LabelsInput
           card={card}
@@ -24,6 +24,8 @@ const ChartDisplaySettings = (props: ChartDisplaySettingsProps) => {
             setCard({ ...card, showYLables: e.target.checked })
           }
         />
+      </div>
+      <div className="flex flex-col">
         <YAxisRangeInput
           card={card}
           onChangeYMax={(e) => setCard({ ...card, yMax: e.target.value })}
@@ -41,10 +43,26 @@ const ChartDisplaySettings = (props: ChartDisplaySettingsProps) => {
           }
         />
       </div>
-      <div>
-        <DatasetColorInput card={card} />
+      <div className="col-span-2">
+        <DatasetColorInput
+          card={card}
+          onChange={(e, itemId) =>
+            setCard({
+              ...card,
+              cohortColorPalletes: card.cohortColorPalletes.map((c) => {
+                if (c.id === itemId) {
+                  return {
+                    ...c,
+                    chartColour: e.target.value,
+                  };
+                }
+                return c;
+              }),
+            })
+          }
+        />
       </div>
-    </div>
+    </>
   );
 };
 

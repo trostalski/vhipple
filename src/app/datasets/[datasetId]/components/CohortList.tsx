@@ -29,7 +29,7 @@ const CohortList = (props: CohortListProps) => {
       </div>
       <div className="flex flex-col gap-2">
         {patientCohorts.map((c) => (
-          <CohortOverviewBox cohort={c} dataset={dataset} />
+          <CohortOverviewBox cohort={c} dataset={dataset} key={c.id} />
         ))}
       </div>
       {showModal && (

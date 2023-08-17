@@ -74,6 +74,7 @@ const ChartEditor = (props: ChartEditorProps) => {
     if (!card || !card.data) return;
     card.data = sliceChartJsData(card.data, numDataPoints);
     const previewCard = { ...baseCard };
+    console.log("previewCard", previewCard);
     setPreviewCard(previewCard);
   };
 

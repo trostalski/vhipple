@@ -33,3 +33,14 @@ export const getPatientInfo = (patient: Patient): TablePatient => {
 export const generateUniqueId = (): string => {
   return uuid();
 };
+
+export function logWithCopy(...args: any[]) {
+  for (let i = 0; i < args.length; i++) {
+    if (typeof args[i] === "object") {
+      const c = structuredClone(args[i]);
+      console.log(c);
+    } else {
+      console.log(arguments[i]);
+    }
+  }
+}

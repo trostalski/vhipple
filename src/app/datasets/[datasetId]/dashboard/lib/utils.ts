@@ -25,6 +25,7 @@ import {
 } from "@/app/datasets/lib/fhirpathUilts";
 import { Dataset, PatientCohort } from "@/app/datasets/lib/types";
 import { getAllPatientsAsCohort } from "@/app/datasets/lib/cohortUtils";
+import { logWithCopy } from "@/app/lib/utils";
 
 export const onlyUnique = (value: any, index: number, array: any) => {
   return array.indexOf(value) === index;
@@ -52,51 +53,32 @@ export const generateColourPalette = (numColours: number, name?: string) => {
   return colours;
 };
 
-export const sortChartJsDataByValueSum = (data: ChartJsData) => {
-  let summedValues: number[] = [];
-  for (let i = 0; i < data.datasets[0].data.length; i++) {
-    let sum = 0;
-    for (let j = 0; j < data.datasets.length; j++) {
-      sum += data.datasets[j].data[i];
-    }
-    summedValues.push(sum);
-  }
-  const zipped = data.labels.map((label, index) => {
-    return [label, summedValues[index]];
-  });
-  zipped.sort((a, b) => {
-    return (b[1] as number) - (a[1] as number);
-  });
-  data.labels = zipped.map((z) => z[0]) as ChartJsLabels;
-  data.datasets[0].data = zipped.map((z) => z[1]) as ChartJsDatasetData;
-  return data;
-};
-
 export const createCatChartJsData = (
   cohorts: PatientCohort[],
   fhirpath: string,
   dataset: Dataset
 ) => {
-  let chartJsDatasets: ChartJsDataset[] = [];
-  console.log(cohorts);
+  const chartJsDatasets: ChartJsDataset[] = [];
   const cohortValues = getPathValuesForCohorts(cohorts, fhirpath, dataset);
   const allUniqueValues = cohortValues.flat().filter(onlyUnique);
   for (let i = 0; i < cohorts.length; i++) {
     const cohort = cohorts[i];
     const values = cohortValues[i];
-    let datasetData: ChartJsDatasetData = allUniqueValues.map((label) => {
+    console.log("values: ", values);
+    const datasetData: ChartJsDatasetData = allUniqueValues.map((label) => {
       return values.filter((value) => value === label).length;
     });
+    console.log("datasetData: ", datasetData);
     chartJsDatasets.push({
       data: datasetData,
       label: cohort.name,
     });
+    logWithCopy("chart js data: ", chartJsDatasets);
   }
   let data: ChartJsData = {
     labels: allUniqueValues,
     datasets: chartJsDatasets,
   };
-  data = sortChartJsDataByValueSum(data);
   return data;
 };
 

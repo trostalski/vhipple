@@ -39,8 +39,6 @@ const page = ({ params }: { params: { datasetId: string } }) => {
     getPatientInfo(rc.resource as Patient)
   );
 
-  console.log(patientsInfo);
-
   return (
     <MainWrapper>
       <div className="flex flex-col h-full w-full">

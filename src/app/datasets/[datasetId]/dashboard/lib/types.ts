@@ -23,7 +23,7 @@ export interface DashboardCard {
   description: string;
   positionIndex: number;
   chartType: ChartType;
-  datasetColorPalletes: { id: string; chartColour: string; name: string }[];
+  cohortColorPalletes: { id: string; chartColour: string; name: string }[];
   dataType: (typeof availableDataTypes)[number];
   valueFhirpath: string;
   labelFhirpath: string;

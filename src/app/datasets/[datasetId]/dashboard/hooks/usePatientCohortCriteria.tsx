@@ -4,7 +4,7 @@ import {
   PatientCohortCriterium,
   PatientCohortCriteriumType,
 } from "@/app/datasets/lib/types";
-import { getConnectedResources } from "@/app/datasets/lib/utils";
+import { getConnectedResourcesForResourceContainer } from "@/app/datasets/lib/datasetUtils";
 import { generateUniqueId } from "@/app/lib/utils";
 import { Patient } from "fhir/r4";
 import { useState } from "react";
@@ -51,7 +51,7 @@ const usePatientCohortCriteria = () => {
       .map((rc) => {
         return {
           patient: rc.resource as Patient,
-          resources: getConnectedResources(rc, true),
+          resources: getConnectedResourcesForResourceContainer(rc, true),
         };
       });
     const cohort = createPatienCohortFromCriteria(

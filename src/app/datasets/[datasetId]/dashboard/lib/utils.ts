@@ -21,8 +21,8 @@ import {
 import { Resource } from "fhir/r4";
 import { toastError } from "@/app/lib/toasts";
 import {
-  evalFhirPathOnDatasets,
-  evalFhirPathOnResources,
+  getPathValuesForDatasets,
+  getPathValuesForResources,
 } from "@/app/datasets/lib/fhirpathUilts";
 
 export const onlyUnique = (value: any, index: number, array: any) => {
@@ -73,7 +73,7 @@ export const sortChartJsDataByValueSum = (data: ChartJsData) => {
 
 export const createCatChartJsData = (datasets: Dataset[], fhirpath: string) => {
   let chartJsDatasets: ChartJsDataset[] = [];
-  const datasetValues = evalFhirPathOnDatasets(datasets, fhirpath);
+  const datasetValues = getPathValuesForDatasets(datasets, fhirpath);
   const allUniqueValues = datasetValues.flat().filter(onlyUnique);
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
@@ -100,8 +100,8 @@ const createNum1DChartJsDataWithLabels = (
   labelFhipath: string
 ) => {
   const chartJsDatasets: ChartJsDataset[] = [];
-  const datasetValues = evalFhirPathOnDatasets(datasets, valueFhirpath);
-  const datasetLabels = evalFhirPathOnDatasets(datasets, labelFhipath);
+  const datasetValues = getPathValuesForDatasets(datasets, valueFhirpath);
+  const datasetLabels = getPathValuesForDatasets(datasets, labelFhipath);
   const allUniqueLabels = datasetLabels.flat().filter(onlyUnique);
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
@@ -135,7 +135,7 @@ const createNum1DChartJsDataWithoutLabels = (
   valueFhirpath: string
 ) => {
   const chartJsDatasets: ChartJsDataset[] = [];
-  const datasetValues = evalFhirPathOnDatasets(datasets, valueFhirpath);
+  const datasetValues = getPathValuesForDatasets(datasets, valueFhirpath);
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
     const values = datasetValues[i];
@@ -172,8 +172,14 @@ export const createNum2DDataForResources = (
   xFhirpath: string,
   yFhirpath: string
 ) => {
-  const datasetLabels = evalFhirPathOnResources(resources, compile(xFhirpath));
-  const datasetValues = evalFhirPathOnResources(resources, compile(yFhirpath));
+  const datasetLabels = getPathValuesForResources(
+    resources,
+    compile(xFhirpath)
+  );
+  const datasetValues = getPathValuesForResources(
+    resources,
+    compile(yFhirpath)
+  );
   const zipped = datasetLabels.map((label, index) => {
     return [label, datasetValues[index]];
   });
@@ -248,7 +254,7 @@ export const validateDashboardCardInput = (card: DashboardCard) => {
     toastError("Chart type is required.");
     return false;
   }
-  if (!card.datasetColorPalletes.length) {
+  if (!card.cohortColorPalletes.length) {
     toastError("At least one dataset is required.");
     return false;
   }

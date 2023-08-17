@@ -1,5 +1,6 @@
 import { compile } from "fhirpath";
-import { Dataset } from "./types";
+import { Dataset, PatientCohort } from "./types";
+import { getResourcesForCohort } from "./cohortUtils";
 
 export const validateFhirPath = (fhirpath: string): boolean => {
   if (fhirpath === "" || !fhirpath) {
@@ -13,7 +14,7 @@ export const validateFhirPath = (fhirpath: string): boolean => {
   }
 };
 
-export const evalFhirPathOnResources = (
+export const getPathValuesForResources = (
   resources: any[],
   fpFunc: Compile
 ): any[] => {
@@ -29,7 +30,26 @@ export const evalFhirPathOnResources = (
   return flattenedValues;
 };
 
-export const evalFhirPathOnDatasets = (
+export const getPathValuesForCohorts = (
+  cohorts: PatientCohort[],
+  fhirpath: string,
+  dataset: Dataset
+) => {
+  const isValid = validateFhirPath(fhirpath);
+  if (!isValid) {
+    return [];
+  }
+  const fpFunc = compile(fhirpath);
+  const datasetValues: any[][] = [];
+  for (let i = 0; i < cohorts.length; i++) {
+    const resources = getResourcesForCohort(cohorts[i], dataset);
+    const values = getPathValuesForResources(resources, fpFunc);
+    datasetValues.push(values);
+  }
+  return datasetValues;
+};
+
+export const getPathValuesForDatasets = (
   datasets: Dataset[],
   fhirpath: string
 ) => {
@@ -38,7 +58,7 @@ export const evalFhirPathOnDatasets = (
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
     const resources = dataset.resourceContainers.map((rc) => rc.resource);
-    const values = evalFhirPathOnResources(resources, fpFunc);
+    const values = getPathValuesForResources(resources, fpFunc);
     datasetValues.push(values);
   }
   return datasetValues;

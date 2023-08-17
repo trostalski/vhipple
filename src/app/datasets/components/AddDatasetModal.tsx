@@ -13,7 +13,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { generateUniqueId } from "@/app/lib/utils";
 import { addMode, defaultDataset, editMode } from "../lib/constants";
 import useBundleUpload from "../hooks/useBundleUpload";
-import { generateDefaultDatasetDashboardCards } from "../lib/utils";
+import { generateDefaultDatasetDashboardCards } from "../lib/datasetUtils";
 
 interface AddDatasetModalProps {
   showModal: boolean;

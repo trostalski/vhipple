@@ -41,3 +41,45 @@ export const availableColorThemes = [
     label: "Orange",
   },
 ];
+
+export const reactSelectStyles = {
+  control: (provided: any) => ({
+    ...provided,
+    borderRadius: 8,
+    borderColor: "#e2e8f0",
+    minHeight: 40,
+    height: 40,
+    // boxShadow: "none",
+  }),
+  menu: (provided: any) => ({
+    ...provided,
+    borderRadius: 8,
+    // boxShadow: "none",
+  }),
+  option: (provided: any, state: any) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? "#3182ce" : "white",
+    color: state.isSelected ? "white" : "black",
+    "&:hover": {
+      backgroundColor: "#3182ce",
+      color: "white",
+    },
+  }),
+  multiValue: (provided: any) => ({
+    ...provided,
+    backgroundColor: "#3182ce",
+    color: "white",
+  }),
+  multiValueLabel: (provided: any) => ({
+    ...provided,
+    color: "white",
+  }),
+  multiValueRemove: (provided: any) => ({
+    ...provided,
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#3182ce",
+      color: "white",
+    },
+  }),
+};

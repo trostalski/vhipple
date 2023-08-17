@@ -45,3 +45,5 @@ export interface FhirPathAlias {
   path: string;
   alias: string;
 }
+
+export type SaveModes = "add" | "edit";

@@ -34,9 +34,9 @@ interface AddCardModalProps {
 }
 
 const AddCardModal = (props: AddCardModalProps) => {
-  const { showModal, setShowModal, mode, card: InitialCard } = props;
+  const { showModal, setShowModal, mode, card: initialCard } = props;
   const [card, setCard] = useState<DashboardCard>(
-    InitialCard || { ...defaultCard }
+    initialCard || { ...defaultCard }
   );
 
   const datasets = useLiveQuery(getDatasets) || [];
@@ -49,7 +49,7 @@ const AddCardModal = (props: AddCardModalProps) => {
       return;
     }
     const inputDatasets = datasets.filter((d) =>
-      card.datasetColorPalletes.map((d) => d.name).includes(d.name)
+      card.cohortColorPalletes.map((d) => d.name).includes(d.name)
     );
     card.data = createChartJsDataForDashboardCard(inputDatasets, card);
     if (mode === addMode) {
@@ -184,14 +184,14 @@ const AddCardModal = (props: AddCardModalProps) => {
               value: d.id,
             }))}
             isMulti={true}
-            value={card.datasetColorPalletes.map((d) => ({
+            value={card.cohortColorPalletes.map((d) => ({
               label: d.name,
               value: d.id,
             }))}
             onChange={(e) => {
               setCard({
                 ...card,
-                datasetColorPalletes: e.map((d, i) => ({
+                cohortColorPalletes: e.map((d, i) => ({
                   name: d.label,
                   id: d.value,
                   chartColour:

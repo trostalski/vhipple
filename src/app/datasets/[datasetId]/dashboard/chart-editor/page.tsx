@@ -1,25 +1,40 @@
 "use client";
 import MainWrapper from "@/app/components/MainWrapper";
 import React from "react";
+import { DashboardCard } from "../lib/types";
+import { defaultCard } from "../lib/exampleCards";
+import ChartEditor from "./components/ChartEditor";
+import { useSearchParams } from "next/navigation";
+import { addMode, editMode } from "@/app/datasets/lib/constants";
+import { getDashboardCard, getDataset } from "@/app/db/utils";
+import { useLiveQuery } from "dexie-react-hooks";
+import { SaveModes } from "@/app/datasets/lib/types";
 
-const page = () => {
+const page = ({ params }: { params: { datasetId: string } }) => {
+  const searchParams = useSearchParams();
+  const cardId = searchParams.get("cardId");
+  let mode: SaveModes = addMode;
+  let initialCard: DashboardCard = defaultCard;
+
+  const dataset = useLiveQuery(() => getDataset(params.datasetId))!;
+
+  if (cardId) {
+    mode = editMode;
+    initialCard = useLiveQuery(() => getDashboardCard(cardId))!;
+  }
+
+  if (!dataset) {
+    return null;
+  }
+
   return (
     <MainWrapper>
-      <div
-        id="ce-main-container"
-        className="flex flex-row bg-white rounded-md h-full w-full"
-      >
-        <div
-          id="ce-settings-container"
-          className="flex flex-col h-full w-1/4 bg-gray-50 shadow-xl rounded-md"
-        >
-          <div className="flex flex-row justify-between">
-            <span className="font-bold">Chart Editor</span>
-            <button>Preview</button>
-          </div>
-        </div>
-        <div id="ce-display-container"></div>
-      </div>
+      <ChartEditor
+        initialCard={initialCard}
+        mode={mode}
+        patientCohorts={dataset.patientCohorts}
+        dataset={dataset}
+      />
     </MainWrapper>
   );
 };

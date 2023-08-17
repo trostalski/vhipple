@@ -1,46 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FhirPathPreviewMenu from "./FhirPathPreviewMenu";
-import { evalFhirPathOnDatasets, validateFhirPath } from "../lib/utils";
-import { useLiveQuery } from "dexie-react-hooks";
-import { getDatasets } from "@/app/db/utils";
 import { toastError } from "@/app/lib/toasts";
 import { DashboardCard } from "../lib/types";
+import {
+  getPathValuesForCohorts,
+  getPathValuesForResources,
+  validateFhirPath,
+} from "@/app/datasets/lib/fhirpathUilts";
+import { Dataset } from "@/app/datasets/lib/types";
+import { Resource } from "fhir/r4";
+import { compile } from "fhirpath";
 
 interface FhirPathInputProps {
-  card: DashboardCard;
-  setCard: (card: DashboardCard) => void;
-  value: string | undefined;
+  value: string;
   inputLabel: string;
   onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  resources: Resource[];
 }
 
 const FhirPathInput = (props: FhirPathInputProps) => {
+  const { inputLabel, onChangeHandler, value, resources } = props;
   const [showFhirPathPreview, setShowFhirPathPreview] = useState(false);
-  const datasets = useLiveQuery(getDatasets) || [];
+  const [fhirPathValues, setFhirpathValues] = useState<string[]>([]);
+
+  const computeFhirPathValues = () => {
+    const fhirPathValues = getPathValuesForResources(resources, compile(value));
+    setFhirpathValues(fhirPathValues);
+  };
 
   return (
     <div className="flex flex-col w-full">
       <label className="text-gray-700" htmlFor="fhirpath">
-        {props.inputLabel}
+        {inputLabel}
       </label>
       <div className="relative flex flex-row gap-4 w-full">
         <input
-          className="border w-full border-gray-300 p-2 rounded-lg"
+          className="rounded-md p-2 border"
           type="text"
           name="fhirpath"
           id="fhirpath"
-          value={props.value}
-          onChange={props.onChangeHandler}
+          value={value}
+          onChange={onChangeHandler}
         />
         <button
-          className={`p-2 rounded-md text-orange-600 ${
-            !props.card.valueFhirpath && "opacity-50 cursor-not-allowed"
-          }`}
-          disabled={!props.card.valueFhirpath}
+          className={`p-1 text-md rounded-md text-secondary-button ${
+            !value && "opacity-50 cursor-not-allowed"
+          } transition hover:scale-110`}
+          disabled={!value}
           onClick={() => {
-            if (validateFhirPath(props.card.valueFhirpath)) {
+            if (validateFhirPath(value)) {
+              computeFhirPathValues();
               setShowFhirPathPreview(!showFhirPathPreview);
             } else {
+              setShowFhirPathPreview(false);
               toastError("Invalid FHIRPath expression");
             }
           }}
@@ -48,27 +60,7 @@ const FhirPathInput = (props: FhirPathInputProps) => {
           Preview
         </button>
         {showFhirPathPreview && (
-          <FhirPathPreviewMenu
-            showMenu={showFhirPathPreview}
-            setShowMenu={setShowFhirPathPreview}
-            fhirPathResults={evalFhirPathOnDatasets(
-              datasets.map((d) => {
-                if (
-                  props.card.datasetColorPalletes
-                    .map((d) => d.name)
-                    .includes(d.name)
-                ) {
-                  return d;
-                }
-                return {
-                  ...d,
-                  data: [],
-                };
-              })!,
-              props.value!
-            )}
-            datasetNames={props.card.datasetColorPalletes.map((d) => d.name)}
-          />
+          <FhirPathPreviewMenu fhirPathValues={fhirPathValues} />
         )}
       </div>
     </div>

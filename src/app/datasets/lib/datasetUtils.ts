@@ -13,7 +13,7 @@ export const generateDefaultDatasetDashboardCards = async (
     const newCard = { ...datasetDefaultCards[i] };
     const data = createChartJsDataForDashboardCard([dataset], newCard);
     newCard.forDatasetId = dataset.id;
-    newCard.datasetColorPalletes = [
+    newCard.cohortColorPalletes = [
       {
         id: dataset.id,
         chartColour:
@@ -31,7 +31,7 @@ export const generateDefaultDatasetDashboardCards = async (
   await addDashboardCards(newCards);
 };
 
-export const getConnectedResources = (
+export const getConnectedResourcesForResourceContainer = (
   resourceContainer: ResourceContainer,
   includeSource?: boolean
 ) => {

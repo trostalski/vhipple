@@ -14,3 +14,8 @@ export type CodedResource =
   | Procedure
   | DiagnosticReport
   | Medication;
+
+export type OptionType = {
+  value: string;
+  label: string;
+};

@@ -23,7 +23,6 @@ export const numerical2DChartTypes = ["scatter", "line"];
 export const availableChartTypes = [
   ...categoricalChartTypes,
   ...numerical1DChartTypes,
-  ...numerical2DChartTypes,
 ];
 export const availableLegendPositions = [
   "top",
@@ -34,23 +33,9 @@ export const availableLegendPositions = [
 ];
 
 export const availableDataTypes = [
-  {
-    label: "categorical data",
-    value: categoricalDataType,
-    description:
-      "Same categories are aggregated and the counts are visualized.",
-  },
-  {
-    label: "numerical data one axis",
-    value: numerical1DDataType,
-    description:
-      "The numerical values are aggregated and statistics are shown.",
-  },
-  {
-    label: "numerical data two axis",
-    value: numerical2DDataType,
-    description: "",
-  },
+  categoricalDataType,
+  numerical1DDataType,
+  numerical2DDataType,
 ];
 
 export const colourReplaceString = "__COLOUR__";

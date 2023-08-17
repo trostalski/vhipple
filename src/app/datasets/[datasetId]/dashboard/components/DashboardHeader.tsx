@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import AddCardModal from "./AddCardModal";
 import { addMode } from "@/app/datasets/lib/constants";
 import { BiRefresh } from "react-icons/bi";
 import { usePathname, useRouter } from "next/navigation";
@@ -19,13 +18,6 @@ const DashboardHeader = () => {
       >
         New Card
       </button>
-      {showModal && (
-        <AddCardModal
-          showModal={showModal}
-          setShowModal={setShowModal}
-          mode={addMode}
-        />
-      )}
     </div>
   );
 };

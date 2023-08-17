@@ -21,6 +21,9 @@ const page = ({ params }: { params: { datasetId: string } }) => {
   if (cardId) {
     mode = editMode;
     initialCard = useLiveQuery(() => getDashboardCard(cardId))!;
+    if (!initialCard) {
+      return null;
+    }
   }
 
   if (!dataset) {

@@ -14,10 +14,11 @@ interface DashboardCardBoxProps {
   card: DashboardCard;
   setExpandedId: React.Dispatch<React.SetStateAction<string | undefined>>;
   expandedId: string | undefined;
+  datasetId: string;
 }
 
 const DashboardCardBox = (props: DashboardCardBoxProps) => {
-  const { card, setExpandedId, expandedId } = props;
+  const { card, setExpandedId, expandedId, datasetId } = props;
   const [showMenu, setShowMenu] = useState(false);
   const [numDataPoints, setNumDataPoints] = useState(card.numDataPoints); // specifies the number of data points to show in the chart
 
@@ -47,6 +48,7 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
         </button>
         {showMenu && (
           <BoxMenu
+            datasetId={datasetId}
             card={card}
             handleDelete={handleDelete}
             setShowMenu={setShowMenu}

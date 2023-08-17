@@ -114,7 +114,7 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
   return (
     <div
       id="ce-settings-container"
-      className="flex flex-col h-full w-1/4 bg-gray-50 shadow-xl rounded-md px-4 py-2"
+      className="flex flex-col shrink-0 h-full w-1/4 bg-gray-50 shadow-xl rounded-md px-4 py-2"
     >
       <div className="flex flex-col h-full gap-4 overflow-scroll">
         <div className="flex flex-col">

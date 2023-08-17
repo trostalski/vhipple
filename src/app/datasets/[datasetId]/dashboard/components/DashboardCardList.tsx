@@ -61,6 +61,7 @@ const DashboardCardList = (props: DashboardCardListProps) => {
                 className={`h-[${100 / dataset.dashboardColNums}vh]`}
               >
                 <DashboardCardBox
+                  datasetId={dataset.id}
                   card={card}
                   key={card.title}
                   expandedId={expandedId}
@@ -76,6 +77,7 @@ const DashboardCardList = (props: DashboardCardListProps) => {
           .map((card) => (
             <div className="h-full w-full">
               <DashboardCardBox
+                datasetId={dataset.id}
                 card={card}
                 key={card.id}
                 expandedId={expandedId}

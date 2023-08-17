@@ -1,21 +1,23 @@
 import { updateDashboardCard } from "@/app/db/utils";
 import React, { useEffect, useState } from "react";
-import AddCardModal from "./AddCardModal";
 import { editMode } from "@/app/datasets/lib/constants";
 import { DashboardCard } from "../lib/types";
 import LabelsInput from "./ChartDisplay/LabelsInput";
 import YAxisRangeInput from "./ChartDisplay/YAxisRangeInput";
 import LegendInput from "./ChartDisplay/LegendInput";
 import DatasetColorInput from "./ChartDisplay/DatasetColorInput";
+import { useRouter } from "next/navigation";
 
 interface BoxMenuProps {
   card: DashboardCard;
   handleDelete: () => void;
   setShowMenu: (showMenu: boolean) => void;
+  datasetId: string;
 }
 
 const BoxMenu = (props: BoxMenuProps) => {
-  const { card, handleDelete, setShowMenu } = props;
+  const { card, handleDelete, setShowMenu, datasetId } = props;
+  const router = useRouter();
   useEffect(() => {
     window.addEventListener("click", function (e: any) {
       if (
@@ -28,7 +30,6 @@ const BoxMenu = (props: BoxMenuProps) => {
       window.removeEventListener("click", () => setShowMenu(false));
     };
   }, []);
-  const [showEditModal, setShowEditModal] = useState(false);
 
   return (
     <div
@@ -42,7 +43,9 @@ const BoxMenu = (props: BoxMenuProps) => {
         <button
           className="text-blue-500 hover:underline"
           onClick={() => {
-            setShowEditModal(true);
+            router.push(
+              `/datasets/${datasetId}/dashboard/chart-editor?cardId=${card.id}`
+            );
           }}
         >
           Edit
@@ -135,14 +138,6 @@ const BoxMenu = (props: BoxMenuProps) => {
           })
         }
       />
-      {showEditModal && (
-        <AddCardModal
-          mode={editMode}
-          setShowModal={setShowEditModal}
-          showModal={showEditModal}
-          card={card}
-        />
-      )}
     </div>
   );
 };

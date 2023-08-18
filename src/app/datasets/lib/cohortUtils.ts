@@ -1,7 +1,7 @@
 import { Patient, Resource } from "fhir/r4";
 import { getPathValuesForResources } from "./fhirpathUilts";
 import { compile } from "fhirpath";
-import { Dataset, PatientCohort } from "./types";
+import { Dataset, PatientCohort, ResourceContainer } from "./types";
 import { getConnectedResourcesForResourceContainer } from "./datasetUtils";
 import {
   allPatientsCohortId,
@@ -12,6 +12,23 @@ export interface PatientResource {
   patient: Patient;
   resources: Resource[];
 }
+
+export const getPatientContainersForCohort = (
+  cohort: PatientCohort,
+  dataset: Dataset
+) => {
+  const patientContainers: ResourceContainer[] = [];
+  for (let i = 0; i < cohort.patientIds.length; i++) {
+    const patientId = cohort.patientIds[i];
+    const patientContainer = dataset.resourceContainers.find(
+      (rc) => rc.resource.id === patientId
+    );
+    if (patientContainer) {
+      patientContainers.push(patientContainer);
+    }
+  }
+  return patientContainers;
+};
 
 const evaluateFhirPathResultsForCohortCriteria = (input: any[]) => {
   let result = true;
@@ -99,8 +116,10 @@ export const getResourcesForCohort = (
   return resources;
 };
 
-export const getPatientResourcesForDataset = (dataset: Dataset) => {
-  const patientResources = dataset.resourceContainers
+export const getPatientResourcesForResourceContainer = (
+  rc: ResourceContainer[]
+) => {
+  const patientResources = rc
     .filter((rc) => rc.resource.resourceType === "Patient")
     .map((rc) => {
       return {
@@ -116,7 +135,9 @@ export const computePatientCohort = (
   includeFhirPaths: string[],
   excludeFhirPaths: string[]
 ) => {
-  const patientResources = getPatientResourcesForDataset(dataset);
+  const patientResources = getPatientResourcesForResourceContainer(
+    dataset.resourceContainers
+  );
   const cohort = createPatienCohortFromCriteria(
     includeFhirPaths,
     excludeFhirPaths,

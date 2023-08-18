@@ -36,6 +36,7 @@ const CSVExport = (props: CSVExportProps) => {
         columns={csvColumns}
         dataset={dataset}
         tableInputData={tableInputData}
+        selectedCohorts={selectedCohorts}
         setTableInputData={setTableInputData}
       />
     </div>

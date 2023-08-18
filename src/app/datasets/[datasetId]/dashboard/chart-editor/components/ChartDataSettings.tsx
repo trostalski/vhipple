@@ -14,6 +14,7 @@ import FhirPathInput from "../../components/FhirPathInput";
 import { Dataset } from "@/app/datasets/lib/types";
 import { Resource } from "fhir/r4";
 import { getResourcesForCohort } from "@/app/datasets/lib/cohortUtils";
+import CohortSelect from "../../../components/CohortSelect";
 
 interface ChartDataSettingsProps {
   card: DashboardCard;
@@ -160,20 +161,9 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
         </div>
         <div className="flex flex-col">
           <label className="font-bold">Group by Cohorts</label>
-          <Select
-            isMulti
-            placeholder="Select Cohorts"
-            styles={{
-              ...reactSelectStyles,
-              control: (provided) => ({ ...provided, height: 60 }),
-              valueContainer: (provided) => ({
-                ...provided,
-                height: 60,
-                overflow: "auto",
-              }),
-            }}
-            options={patientCohortOptions}
-            onChange={(e) => handleChangeCohort(e as OptionType[])}
+          <CohortSelect
+            handleChangeCohort={handleChangeCohort}
+            patientCohortOptions={patientCohortOptions}
           />
         </div>
         <div className="flex flex-col">

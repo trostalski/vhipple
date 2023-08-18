@@ -8,7 +8,7 @@ import {
   allPatientsCohortName,
 } from "../[datasetId]/dashboard/lib/constants";
 
-interface PatientResource {
+export interface PatientResource {
   patient: Patient;
   resources: Resource[];
 }
@@ -99,11 +99,7 @@ export const getResourcesForCohort = (
   return resources;
 };
 
-export const computePatientCohort = (
-  dataset: Dataset,
-  includeFhirPaths: string[],
-  excludeFhirPaths: string[]
-) => {
+export const getPatientResourcesForDataset = (dataset: Dataset) => {
   const patientResources = dataset.resourceContainers
     .filter((rc) => rc.resource.resourceType === "Patient")
     .map((rc) => {
@@ -112,6 +108,15 @@ export const computePatientCohort = (
         resources: getConnectedResourcesForResourceContainer(rc, true),
       };
     });
+  return patientResources;
+};
+
+export const computePatientCohort = (
+  dataset: Dataset,
+  includeFhirPaths: string[],
+  excludeFhirPaths: string[]
+) => {
+  const patientResources = getPatientResourcesForDataset(dataset);
   const cohort = createPatienCohortFromCriteria(
     includeFhirPaths,
     excludeFhirPaths,

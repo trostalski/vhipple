@@ -1,7 +1,11 @@
-import { Resource } from "fhir/r4";
 import { db } from "./db";
 import { Dataset, ResourceContainer } from "../datasets/lib/types";
 import { DashboardCard } from "../datasets/[datasetId]/dashboard/lib/types";
+import {
+  CSVColumn,
+  CSVExportColumns,
+} from "../datasets/[datasetId]/export/lib/types";
+import { generateUniqueId } from "../lib/utils";
 
 export const datasetExists = async (id: string) => {
   try {
@@ -260,5 +264,19 @@ export const getDashboardCard = async (id: string) => {
     return card;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const addCSVExportColumns = async (columns: CSVColumn[]) => {
+  const csvDbColumns: CSVExportColumns = {
+    id: generateUniqueId(),
+    columns: columns,
+  };
+  try {
+    await db.csvExportColumns.add(csvDbColumns);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
   }
 };

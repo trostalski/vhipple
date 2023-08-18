@@ -64,16 +64,13 @@ export const createCatChartJsData = (
   for (let i = 0; i < cohorts.length; i++) {
     const cohort = cohorts[i];
     const values = cohortValues[i];
-    console.log("values: ", values);
     const datasetData: ChartJsDatasetData = allUniqueValues.map((label) => {
       return values.filter((value) => value === label).length;
     });
-    console.log("datasetData: ", datasetData);
     chartJsDatasets.push({
       data: datasetData,
       label: cohort.name,
     });
-    logWithCopy("chart js data: ", chartJsDatasets);
   }
   let data: ChartJsData = {
     labels: allUniqueValues,

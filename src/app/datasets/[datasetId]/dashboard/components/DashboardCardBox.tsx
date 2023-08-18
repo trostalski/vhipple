@@ -79,7 +79,7 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
 
   return (
     <div
-      className="relative flex flex-grow flex-col h-full w-full bg-white rounded-lg shadow-md"
+      className="relative flex flex-grow flex-col h-full w-full bg-white rounded-lg shadow-md overflow-scroll"
       onClick={() => setShowMenu(false)}
     >
       <div className="flex flex-row justify-between items-center p-4">

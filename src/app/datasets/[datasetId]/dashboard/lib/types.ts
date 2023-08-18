@@ -27,8 +27,6 @@ export interface DashboardCard {
   dataType: (typeof availableDataTypes)[number];
   valueFhirpath: string;
   labelFhirpath: string;
-  width: number;
-  height: number;
   yMin?: number | string;
   yMax?: number | string;
   numDataPoints: number;

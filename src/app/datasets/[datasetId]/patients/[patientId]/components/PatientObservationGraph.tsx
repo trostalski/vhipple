@@ -29,9 +29,11 @@ const PatientObservationGraph = (props: PatientLabGraphProps) => {
   const generateCard = (input: string, observations: Observation[]) => {
     const card: DashboardCard = {
       ...defaultCard,
+      chartType: "line",
       title: input,
       showXLables: true,
       showYLables: true,
+      showLegend: false,
       data: {
         labels: observations.map((observation) =>
           getObservationDateDisplay(observation)

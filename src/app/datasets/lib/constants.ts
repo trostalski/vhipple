@@ -15,7 +15,7 @@ export const defaultDataset: Dataset = {
   updatedAt: "",
   createdAt: "",
   size: 0,
-  dashboardColNums: 4,
+  dashboardColNums: 2,
 };
 
 export const patientIncludeCritriumString = "include";

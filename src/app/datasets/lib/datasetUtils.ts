@@ -3,7 +3,10 @@ import { Dataset, ResourceContainer } from "./types";
 import { createChartJsDataForDashboardCard } from "@/app/datasets/[datasetId]/dashboard/lib/utils";
 import { addDashboardCards } from "@/app/db/utils";
 import { generateUniqueId } from "@/app/lib/utils";
-import { availableChartColours } from "../[datasetId]/dashboard/lib/constants";
+import {
+  allPatientsCohortId,
+  availableChartColours,
+} from "../[datasetId]/dashboard/lib/constants";
 
 export const generateDefaultDatasetDashboardCards = async (
   dataset: Dataset
@@ -15,7 +18,7 @@ export const generateDefaultDatasetDashboardCards = async (
     newCard.forDatasetId = dataset.id;
     newCard.cohortColorPalletes = [
       {
-        id: dataset.id,
+        id: allPatientsCohortId,
         chartColour:
           availableChartColours[i % availableChartColours.length].name,
         name: dataset.name,

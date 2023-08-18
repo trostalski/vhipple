@@ -1,9 +1,7 @@
 import {
-  cardStartHeight,
-  cardStartWidth,
   categoricalDataType,
   numerical1DDataType,
-  startNumDataPoints,
+  defaultNumDataPoints,
 } from "./constants";
 import { DashboardCard } from "./types";
 
@@ -19,12 +17,10 @@ export const baseExampleCard: DashboardCard = {
   cohortColorPalletes: [],
   data: undefined,
   dataType: categoricalDataType,
-  numDataPoints: startNumDataPoints,
+  numDataPoints: defaultNumDataPoints,
   showChart: true,
   yMin: undefined,
   yMax: undefined,
-  width: cardStartWidth,
-  height: cardStartHeight,
   showLegend: true,
   legendPosition: "top",
   showXLables: true,

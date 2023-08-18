@@ -16,6 +16,7 @@ import {
   allPatientsCohortId,
   allPatientsCohortName,
   availableChartColours,
+  defaultNumDataPoints,
 } from "../../lib/constants";
 import { generateUniqueId } from "@/app/lib/utils";
 import { addDashboardCard } from "@/app/db/utils";
@@ -30,7 +31,8 @@ interface ChartEditorProps {
 
 const ChartEditor = (props: ChartEditorProps) => {
   const { mode, initialCard, patientCohorts, dataset } = props;
-  const [numDataPoints, setNumDataPoints] = useState<number>(20);
+  const [numDataPoints, setNumDataPoints] =
+    useState<number>(defaultNumDataPoints);
   const [card, setCard] = useState<DashboardCard>(
     initialCard || { ...defaultCard }
   );

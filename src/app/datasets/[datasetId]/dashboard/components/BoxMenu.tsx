@@ -1,6 +1,5 @@
 import { updateDashboardCard } from "@/app/db/utils";
-import React, { useEffect, useState } from "react";
-import { editMode } from "@/app/datasets/lib/constants";
+import React, { useEffect } from "react";
 import { DashboardCard } from "../lib/types";
 import LabelsInput from "./ChartDisplay/LabelsInput";
 import YAxisRangeInput from "./ChartDisplay/YAxisRangeInput";

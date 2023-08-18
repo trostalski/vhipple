@@ -47,7 +47,7 @@ const DashboardCardList = (props: DashboardCardListProps) => {
       </div>
       {!expandedId ? (
         <div
-          className={`grid h-full w-full  content-start gap-4 rounded-md`}
+          className={`grid h-full w-full content-start gap-4 rounded-md`}
           style={{
             gridTemplateColumns: `repeat(${dataset.dashboardColNums}, minmax(0, 1fr))`,
           }}
@@ -58,7 +58,9 @@ const DashboardCardList = (props: DashboardCardListProps) => {
             dashboardCards.map((card) => (
               <div
                 key={card.id}
-                className={`h-[${100 / dataset.dashboardColNums}vh]`}
+                style={{
+                  height: `${Math.min(140 / dataset.dashboardColNums, 100)}vh`,
+                }}
               >
                 <DashboardCardBox
                   datasetId={dataset.id}

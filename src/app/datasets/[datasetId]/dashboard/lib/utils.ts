@@ -32,7 +32,8 @@ export const onlyUnique = (value: any, index: number, array: any) => {
 };
 
 export const generateColourPalette = (numColours: number, name?: string) => {
-  name = name || "blue";
+  const index = Math.floor(Math.random() * availableChartColours.length);
+  name = name || availableChartColours[index].name;
   const colours: string[] = [];
   const baseColour = availableChartColours.find((c) => c.name === name);
   for (let i = 0; i < numColours; i++) {

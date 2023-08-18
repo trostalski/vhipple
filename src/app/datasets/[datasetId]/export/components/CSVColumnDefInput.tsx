@@ -61,7 +61,7 @@ const CSVColumnDefInput = (props: CSVColumnDefInputProps) => {
         onChange={(e) => handleOnChange(e)}
       />
       <input
-        className={`border border-gray-300 bg-white rounded-md px-2 py-1 ${
+        className={`border col-span-2 border-gray-300 bg-white rounded-md px-2 py-1 ${
           isPatientIdCol && "opacity-50"
         }`}
         name="valueFhirpath"

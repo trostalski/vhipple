@@ -43,7 +43,7 @@ export const parseValuesAccordingToPolicy = (
   }
 };
 
-export const computeCSVTableData = (
+export const computeCSVTableRows = (
   csvColumns: CSVColumn[],
   patientResources: PatientResource[]
 ) => {
@@ -68,6 +68,52 @@ export const computeCSVTableData = (
     });
     rows.push(row);
   });
-  console.log(rows);
   return rows;
+};
+
+export const convertRowsToCSV = (data: object[]): string => {
+  const csvRows: string[] = [];
+
+  // Get the headers from the first object's keys
+  const headers = Object.keys(data[0]);
+  csvRows.push(headers.join(","));
+
+  // Convert each object to a CSV row
+  for (const row of data) {
+    const values = headers.map((header) => {
+      const value = (row as any)[header];
+      return typeof value === "string" ? `"${value}"` : value;
+    });
+    csvRows.push(values.join(","));
+  }
+  return csvRows.join("\n");
+};
+
+export const downloadCSV = (csvContent: string, filename?: string) => {
+  filename = filename || `vhi-fhir-export-${Date.now().toString()}.csv`;
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.style.display = "none";
+
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+export const downloadJson = (jsonContent: Object, filename?: string) => {
+  filename = filename || `vhi-fhir-export-${Date.now().toString()}.json`;
+  const blob = new Blob([JSON.stringify(jsonContent, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
 };

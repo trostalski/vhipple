@@ -111,7 +111,7 @@ export const getResourcesForCohort = (
       patientContainer!,
       true
     );
-    resources.push(...connectedResources);
+    resources.push(patientContainer!.resource, ...connectedResources);
   }
   return resources;
 };

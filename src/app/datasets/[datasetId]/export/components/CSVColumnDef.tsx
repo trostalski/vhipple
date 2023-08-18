@@ -28,7 +28,7 @@ const CSVColumnDef = (props: CSVColumnDefInputProps) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-1">
       <div className="flex flex-row items-center gap-2 mt-4">
         <span className="text-xl font-bold">Columns</span>
         <button
@@ -39,9 +39,9 @@ const CSVColumnDef = (props: CSVColumnDefInputProps) => {
           <IoAdd size={24} />
         </button>
       </div>
-      <div className="grid grid-cols-4 w-3/4 gap-2 items-center">
+      <div className="grid grid-cols-5 items-start content-start w-full gap-2 bg-white p-4 rounded-md shadow-md h-64 overflow-scroll">
         <label className="text-sm font-bold">Column Name</label>
-        <label className="text-sm font-bold">Value Path</label>
+        <label className="text-sm font-bold col-span-2">Value Path</label>
         <label className="text-sm font-bold">Multiple Value Policy</label>
         <label className="text-sm font-bold">Delete</label>
         {csvColumns.map((column, i) => (

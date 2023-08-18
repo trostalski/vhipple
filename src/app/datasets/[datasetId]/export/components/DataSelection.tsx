@@ -3,12 +3,12 @@ import CohortSelect from "../../components/CohortSelect";
 import { OptionType } from "@/app/lib/types";
 import { PatientCohort } from "@/app/datasets/lib/types";
 
-interface CSVDataSelectionProps {
+interface DataSelectionProps {
   patientCohorts: PatientCohort[];
   setSelectedCohorts: React.Dispatch<React.SetStateAction<PatientCohort[]>>;
 }
 
-const CSVDataSelection = (props: CSVDataSelectionProps) => {
+const DataSelection = (props: DataSelectionProps) => {
   const { patientCohorts, setSelectedCohorts } = props;
 
   const patientCohortOptions = patientCohorts.map((cohort) => {
@@ -33,6 +33,7 @@ const CSVDataSelection = (props: CSVDataSelectionProps) => {
       </div>
       <div>
         <CohortSelect
+          placeholder="Filter by Cohorts"
           patientCohortOptions={patientCohortOptions}
           handleChangeCohort={handleChangeCohort}
         />
@@ -41,4 +42,4 @@ const CSVDataSelection = (props: CSVDataSelectionProps) => {
   );
 };
 
-export default CSVDataSelection;
+export default DataSelection;

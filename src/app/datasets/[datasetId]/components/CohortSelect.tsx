@@ -6,14 +6,15 @@ import Select from "react-select";
 interface CohortSelectProps {
   handleChangeCohort: (e: OptionType[]) => void;
   patientCohortOptions: OptionType[];
+  placeholder?: string;
 }
 
 const CohortSelect = (props: CohortSelectProps) => {
-  const { handleChangeCohort, patientCohortOptions } = props;
+  const { handleChangeCohort, patientCohortOptions, placeholder } = props;
   return (
     <Select
       isMulti
-      placeholder="Select Cohorts"
+      placeholder={placeholder || "Select Cohorts"}
       styles={{
         ...reactSelectStyles,
         control: (provided) => ({ ...provided, height: 40 }),

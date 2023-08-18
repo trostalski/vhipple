@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { addMode } from "@/app/datasets/lib/constants";
-import { BiRefresh } from "react-icons/bi";
 import { usePathname, useRouter } from "next/navigation";
 
 const DashboardHeader = () => {
@@ -16,7 +14,7 @@ const DashboardHeader = () => {
         className="bg-primary-button text-white font-bold py-2 px-4 rounded transition hover:bg-primary-button-hover"
         onClick={() => router.push(path + "/chart-editor")}
       >
-        New Card
+        New Chart
       </button>
     </div>
   );

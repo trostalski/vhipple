@@ -6,6 +6,7 @@ import DisplayTabs from "../patients/components/DisplayTabs";
 import CSVExport from "./components/CSVExport";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDataset } from "@/app/db/utils";
+import FHIRExport from "./components/FHIRExport";
 
 export const availableExportDisplayTabs = ["CSV", "FHIR"];
 
@@ -21,7 +22,7 @@ const page = ({ params }: { params: { datasetId: string } }) => {
 
   const contentToRender = {
     CSV: <CSVExport dataset={dataset} />,
-    FHIR: <div>FHIR</div>,
+    FHIR: <FHIRExport dataset={dataset} />,
   };
 
   return (

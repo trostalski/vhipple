@@ -32,13 +32,17 @@ const CSVTable = (props: CSVTableProps) => {
   });
 
   return (
-    <div className="flex flex-col h-[60vh] w-full bg-white rounded-md border shadow-lg">
-      <table>
-        <thead>
+    <div className="flex flex-col h-[40vh] w-full bg-white rounded-md border shadow-lg px-4">
+      <table className="overflow-scroll">
+        <thead className="h-12 bg-slate-50 p-2">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} colSpan={header.colSpan}>
+                <th
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  className="text-left"
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -51,7 +55,7 @@ const CSVTable = (props: CSVTableProps) => {
           ))}
         </thead>
         {inputData.length !== 0 && (
-          <tbody>
+          <tbody className="text-sm">
             {table.getRowModel().rows.map((row) => (
               <tr
                 key={row.id}
@@ -60,7 +64,7 @@ const CSVTable = (props: CSVTableProps) => {
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="px-2"
+                    className="px-2 border-y"
                     style={{ width: cell.column.getSize() }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

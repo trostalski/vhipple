@@ -49,7 +49,7 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
     );
   };
 
-  const resourceNums = [
+  let resourceNums = [
     { resource: "Patients", num: datasetInfo.numPatients },
     { resource: "Observations", num: datasetInfo.numObservations },
     { resource: "Conditions", num: datasetInfo.numConditions },
@@ -79,6 +79,12 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
     },
   ];
 
+  const filteredMostCommons = mostCommons.filter(
+    (mostCommon) => mostCommon.list.length > 0
+  );
+
+  console.log("filteredMostCommons", filteredMostCommons.length);
+
   return (
     <div className="flex flex-col gap-2">
       <div className="">
@@ -100,20 +106,24 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
           </div>
         </div>
       </div>
-      <div className="bg-white px-4 py-2 w-full rounded-md shadow-md">
-        <div className="flex flex-col">
-          <span className="font-bold text-lg">Most Common</span>
-          <div className="grid grid-cols-4">
-            {mostCommons.map((mostCommon) => (
-              <MostCommon
-                key={mostCommon.resource}
-                resource={mostCommon.resource}
-                list={mostCommon.list}
-              />
-            ))}
+      {filteredMostCommons.length > 0 && (
+        <div className="bg-white px-4 py-2 w-full rounded-md shadow-md">
+          <div className="flex flex-col">
+            <span className="font-bold text-lg">Most Common</span>
+            <div className="grid grid-cols-4">
+              {mostCommons
+                .filter((mostCommon) => mostCommon.list.length !== 0)
+                .map((mostCommon) => (
+                  <MostCommon
+                    key={mostCommon.resource}
+                    resource={mostCommon.resource}
+                    list={mostCommon.list}
+                  />
+                ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="flex flex-row justify-start items-center gap-4">
         {dashboardCards
           .filter((card) => card.showOnHomePage)

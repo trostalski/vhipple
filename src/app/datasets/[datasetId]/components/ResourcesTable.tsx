@@ -1,17 +1,17 @@
 import {
   Row,
+  SortingState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
-import TableFilter from "@/app/components/TableFilter";
 import TablePagination from "@/app/components/TablePagination";
 import { useState } from "react";
 import { Resource } from "fhir/r4";
 import PreviewModal from "../../components/PreviewModal";
+import { FaSortUp, FaSortDown } from "react-icons/fa";
 
 export type TableResource = {
   id?: string;
@@ -35,11 +35,6 @@ const columns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: () => <span>Resource Type</span>,
   }),
-  columnHelper.accessor((row) => row.profile, {
-    id: "profile",
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: () => <span>Profile</span>,
-  }),
   columnHelper.accessor((row) => row.lastUpdated, {
     id: "lastUpdated",
     cell: (info) => <span>{info.getValue()}</span>,
@@ -58,13 +53,17 @@ const ResourcesTable = (props: ResourcesTableProps) => {
   const [previewResource, setPreviewResource] = useState<Resource | undefined>(
     undefined
   );
+  const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
     data: inputData,
-    columns: columns,
-    columnResizeMode: "onChange",
+    columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    debugTable: true,
   });
 
   const handleOnRowClick = (row: Row<TableResource>) => {
@@ -90,30 +89,43 @@ const ResourcesTable = (props: ResourcesTableProps) => {
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="relative text-left px-2"
                     colSpan={header.colSpan}
-                    style={{
-                      width: header.getSize(),
-                    }}
+                    className="text-left px-2"
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
+                    {header.isPlaceholder ? null : (
+                      <div
+                        {...{
+                          className: header.column.getCanSort()
+                            ? "cursor-pointer select-none flex flex-row gap-2"
+                            : "",
+                          onClick: header.column.getToggleSortingHandler(),
+                        }}
+                      >
+                        {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                    {header.column.getCanFilter() ? (
-                      <div>
-                        <TableFilter column={header.column} table={table} />
+
+                        <div className="flex flex-col items-center relative">
+                          <FaSortUp
+                            className={`absolute top-0 ${
+                              header.column.getIsSorted() && !sorting[0].desc
+                                ? "text-black"
+                                : "text-gray-400"
+                            }`}
+                            size={20}
+                          />
+                          <FaSortDown
+                            className={`absolute top-0 ${
+                              header.column.getIsSorted() && sorting[0].desc
+                                ? "text-black"
+                                : "text-gray-400"
+                            }`}
+                            size={20}
+                          />
+                        </div>
                       </div>
-                    ) : null}
-                    <div
-                      onMouseDown={header.getResizeHandler()}
-                      onTouchStart={header.getResizeHandler()}
-                      className={`absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-gray-200 transition hover:bg-gray-500 ${
-                        header.column.getIsResizing() ? "isResizing" : ""
-                      }`}
-                    />
+                    )}
                   </th>
                 ))}
               </tr>

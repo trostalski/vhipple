@@ -1,5 +1,5 @@
 import React from "react";
-import CohortSelect from "../../components/CohortSelect";
+import CohortSelect from "../../components/CohortMultiSelect";
 import { OptionType } from "@/app/lib/types";
 import { PatientCohort } from "@/app/datasets/lib/types";
 

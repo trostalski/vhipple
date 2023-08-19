@@ -37,11 +37,13 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
       <div className="flex flex-col text-sm">
         <span className="text-gray-500">{props.resource + ": "}</span>
         <div className="flex flex-col">
-          {props.list.map((item) => (
-            <span key={item.value} className="font-bold text-xs">
-              {item.value + " (" + item.count + ")"}
-            </span>
-          ))}
+          {props.list
+            .sort((a, b) => b.count - a.count)
+            .map((item) => (
+              <span key={item.value} className="font-bold text-xs">
+                {item.value + " (" + item.count + ")"}
+              </span>
+            ))}
         </div>
       </div>
     );
@@ -86,13 +88,15 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
         <div className="flex flex-col">
           <span className="font-bold text-lg">Resource Counts</span>
           <div className="grid grid-cols-4">
-            {resourceNums.map((resourceNum) => (
-              <ResourceNum
-                key={resourceNum.resource}
-                resource={resourceNum.resource}
-                num={resourceNum.num}
-              />
-            ))}
+            {resourceNums
+              .sort((a, b) => b.num - a.num)
+              .map((resourceNum) => (
+                <ResourceNum
+                  key={resourceNum.resource}
+                  resource={resourceNum.resource}
+                  num={resourceNum.num}
+                />
+              ))}
           </div>
         </div>
       </div>

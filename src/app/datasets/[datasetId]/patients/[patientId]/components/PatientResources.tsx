@@ -70,14 +70,13 @@ const TabContent = <T extends unknown>(props: TabContentProps<T>) => {
                     const date = props.getDateDisplay(resource);
                     return date === "Unknown" ? 1 : -1;
                   })
-                  .map((resource) => (
-                    <div className="flex flex-row items-center">
+                  .map((resource, i) => (
+                    <div key={i} className="flex flex-row items-center">
                       <span className="w-24 text-gray-500">
                         {props.getDateDisplay(resource)}
                       </span>
                       {props.getValueDisplay && (
                         <span className="font-bold">
-                          {" "}
                           {props.getValueDisplay(resource)}
                         </span>
                       )}

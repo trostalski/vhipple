@@ -25,7 +25,6 @@ import {
 } from "@/app/datasets/lib/fhirpathUilts";
 import { Dataset, PatientCohort } from "@/app/datasets/lib/types";
 import { getAllPatientsAsCohort } from "@/app/datasets/lib/cohortUtils";
-import { logWithCopy } from "@/app/lib/utils";
 
 export const onlyUnique = (value: any, index: number, array: any) => {
   return array.indexOf(value) === index;
@@ -61,6 +60,8 @@ export const createCatChartJsData = (
 ) => {
   const chartJsDatasets: ChartJsDataset[] = [];
   const cohortValues = getPathValuesForCohorts(cohorts, fhirpath, dataset);
+  console.log("fhirpath: ", fhirpath);
+  console.log("cohortValues", cohortValues);
   const allUniqueValues = cohortValues.flat().filter(onlyUnique);
   for (let i = 0; i < cohorts.length; i++) {
     const cohort = cohorts[i];
@@ -95,7 +96,6 @@ const createNum1DChartJsDataWithLabels = (
     const values = cohortValues[i];
     const labels = datasetLabels[i];
     let datasetData: any[] = [];
-
     const zipped = labels.map((label, index) => {
       return [label, values[index]];
     });

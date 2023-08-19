@@ -1,6 +1,9 @@
 import React, { useMemo } from "react";
 import { Dataset } from "../../lib/types";
 import { computeDatasetInfo } from "../../lib/datasetUtils";
+import DashboardCardBox from "../dashboard/components/DashboardCardBox";
+import { useLiveQuery } from "dexie-react-hooks";
+import { getDashboardCards } from "@/app/db/utils";
 
 export interface DatasetInfoProps {
   dataset: Dataset;
@@ -8,9 +11,14 @@ export interface DatasetInfoProps {
 
 export const DatasetInfo = (props: DatasetInfoProps) => {
   const { dataset } = props;
+  const dashboardCards = useLiveQuery(() => getDashboardCards(dataset.id));
   const datasetInfo = useMemo(() => {
     return computeDatasetInfo(dataset);
   }, [dataset]);
+
+  if (!dashboardCards) {
+    return null;
+  }
 
   const ResourceNum = (props: { resource: string; num: number }) => {
     return (
@@ -30,7 +38,7 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
         <span className="text-gray-500">{props.resource + ": "}</span>
         <div className="flex flex-col">
           {props.list.map((item) => (
-            <span className="font-bold text-xs">
+            <span key={item.value} className="font-bold text-xs">
               {item.value + " (" + item.count + ")"}
             </span>
           ))}
@@ -80,6 +88,7 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
           <div className="grid grid-cols-4">
             {resourceNums.map((resourceNum) => (
               <ResourceNum
+                key={resourceNum.resource}
                 resource={resourceNum.resource}
                 num={resourceNum.num}
               />
@@ -93,12 +102,27 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
           <div className="grid grid-cols-4">
             {mostCommons.map((mostCommon) => (
               <MostCommon
+                key={mostCommon.resource}
                 resource={mostCommon.resource}
                 list={mostCommon.list}
               />
             ))}
           </div>
         </div>
+      </div>
+      <div className="flex flex-row justify-start items-center gap-4">
+        {dashboardCards
+          .filter((card) => card.showOnHomePage)
+          .map((card) => (
+            <div key={card.id} className="h-[50vh] w-5/12">
+              <DashboardCardBox
+                card={card}
+                datasetId={dataset.id}
+                expandedId=""
+                setExpandedId={() => {}}
+              />
+            </div>
+          ))}
       </div>
     </div>
   );

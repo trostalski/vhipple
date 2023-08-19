@@ -56,18 +56,23 @@ const getResourcesFromReferences = (
   const foundResources: ResourceContainer[] = [];
   for (const reference of references) {
     const referenceValue = reference.reference;
-    let foundResource: ResourceContainer | undefined;
     if (!referenceValue) {
       continue;
     }
+    let foundResource: ResourceContainer | undefined;
     if (isInternalReference(referenceValue)) {
       foundResource = resourceContainers.find((rc) => {
         return rc.fullUrl === referenceValue;
       });
     } else if (isRelativeUrl(referenceValue)) {
       foundResource = resourceContainers.find((rc) => {
-        return rc.id === referenceValue;
+        return rc.fullUrl === referenceValue;
       });
+      if (!foundResource) {
+        foundResource = resourceContainers.find((rc) => {
+          return rc.id === referenceValue;
+        });
+      }
     } else {
       const relUrl = tryGetRelativeUrl(referenceValue);
       if (relUrl) {

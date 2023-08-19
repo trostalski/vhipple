@@ -59,6 +59,8 @@ const PatientObservationGraph = (props: PatientLabGraphProps) => {
     )
   );
 
+  console.log(card);
+
   return (
     <div className="flex flex-col bg-white rounded-md shadow-md p-4 overflow-scroll">
       <h1 className="text-3xl font-bold">Observations Graphs</h1>

@@ -37,7 +37,7 @@ const CohortOverviewBox = (props: CohortOverviewBoxProps) => {
 
   return (
     <div
-      className={`bg-white w-1/2 rounded-md relative flex flex-col px-4 py-2 
+      className={`bg-white w-1/2 shadow-md rounded-md relative flex flex-col px-4 py-2 
       ${mainIsHovered ? "shadow-xl cursor-pointer" : ""}
       `}
     >

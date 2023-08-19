@@ -27,7 +27,7 @@ const useBundleUpload = () => {
             let resourceContainers: ResourceContainer[] = [];
             for (const entry of resource.entry) {
               resourceContainers.push({
-                id: entry.resource.id,
+                id: entry.resource.resourceType + "/" + entry.resource.id,
                 fullUrl: entry.fullUrl,
                 source: file.name,
                 resource: entry.resource,

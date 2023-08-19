@@ -37,6 +37,7 @@ export interface DashboardCard {
   legendPosition: (typeof availableLegendPositions)[number];
   createdAt: string;
   updatedAt: string;
+  showOnHomePage?: boolean;
   forDatasetId?: string;
   data?: ChartJsData;
 }

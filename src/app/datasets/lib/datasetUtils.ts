@@ -12,6 +12,8 @@ import { DatasetInfo } from "../[datasetId]/lib/types";
 import { getMostCommonPathValue } from "./fhirpathUilts";
 import { getAge } from "../[datasetId]/patients/lib/utils";
 
+const homePageCards = ["Condition.code.coding.display", "Patient.gender"];
+
 export const generateDefaultDatasetDashboardCards = async (
   dataset: Dataset
 ) => {
@@ -19,12 +21,15 @@ export const generateDefaultDatasetDashboardCards = async (
   for (let i = 0; i < datasetDefaultCards.length; i++) {
     const newCard = { ...datasetDefaultCards[i] };
     const data = createChartJsDataForDashboardCard([], newCard, dataset, true);
+    if (data.labels.length === 0) {
+      continue;
+    }
+    const rndColIdx = Math.floor(Math.random() * availableChartColours.length);
     newCard.forDatasetId = dataset.id;
     newCard.cohortColorPalletes = [
       {
         id: allPatientsCohortId,
-        chartColour:
-          availableChartColours[i % availableChartColours.length].name,
+        chartColour: availableChartColours[rndColIdx].name,
         name: dataset.name,
       },
     ];
@@ -33,6 +38,9 @@ export const generateDefaultDatasetDashboardCards = async (
     newCard.createdAt = new Date().toISOString();
     newCard.updatedAt = new Date().toISOString();
     newCard.id = generateUniqueId();
+    if (homePageCards.includes(newCard.valueFhirpath)) {
+      newCard.showOnHomePage = true;
+    }
     newCards.push(newCard);
   }
   await addDashboardCards(newCards);

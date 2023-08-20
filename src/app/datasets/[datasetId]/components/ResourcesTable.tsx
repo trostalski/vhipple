@@ -4,6 +4,8 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -12,6 +14,7 @@ import { useState } from "react";
 import { Resource } from "fhir/r4";
 import PreviewModal from "../../components/PreviewModal";
 import { FaSortUp, FaSortDown } from "react-icons/fa";
+import TableFilter from "@/app/components/TableFilter";
 
 export type TableResource = {
   id?: string;
@@ -56,14 +59,15 @@ const ResourcesTable = (props: ResourcesTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
     data: inputData,
-    columns,
+    columns: columns,
     state: {
       sorting,
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    debugTable: true,
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const handleOnRowClick = (row: Row<TableResource>) => {
@@ -92,40 +96,46 @@ const ResourcesTable = (props: ResourcesTableProps) => {
                     colSpan={header.colSpan}
                     className="text-left px-2"
                   >
-                    {header.isPlaceholder ? null : (
-                      <div
-                        {...{
-                          className: header.column.getCanSort()
-                            ? "cursor-pointer select-none flex flex-row gap-2"
-                            : "",
-                          onClick: header.column.getToggleSortingHandler(),
-                        }}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-
-                        <div className="flex flex-col items-center relative">
-                          <FaSortUp
-                            className={`absolute top-0 ${
-                              header.column.getIsSorted() && !sorting[0].desc
-                                ? "text-black"
-                                : "text-gray-400"
-                            }`}
-                            size={20}
-                          />
-                          <FaSortDown
-                            className={`absolute top-0 ${
-                              header.column.getIsSorted() && sorting[0].desc
-                                ? "text-black"
-                                : "text-gray-400"
-                            }`}
-                            size={20}
-                          />
+                    <div className="flex flex-col">
+                      {header.isPlaceholder ? null : (
+                        <div
+                          {...{
+                            className: header.column.getCanSort()
+                              ? "cursor-pointer select-none flex flex-row gap-4"
+                              : "",
+                            onClick: header.column.getToggleSortingHandler(),
+                          }}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                          <div className="flex flex-col items-center relative">
+                            <FaSortUp
+                              className={`absolute top-0 ${
+                                header.column.getIsSorted() && !sorting[0].desc
+                                  ? "text-black"
+                                  : "text-gray-400"
+                              }`}
+                              size={20}
+                            />
+                            <FaSortDown
+                              className={`absolute top-0 ${
+                                header.column.getIsSorted() && sorting[0].desc
+                                  ? "text-black"
+                                  : "text-gray-400"
+                              }`}
+                              size={20}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                      {header.column.getCanFilter() ? (
+                        <div>
+                          <TableFilter column={header.column} table={table} />
+                        </div>
+                      ) : null}
+                    </div>
                   </th>
                 ))}
               </tr>
@@ -170,7 +180,7 @@ const ResourcesTable = (props: ResourcesTableProps) => {
       </div>
       <div className="grow" />
       <div className="p-2">
-        <TablePagination table={table} initialPageSize={30} />
+        <TablePagination table={table} initialPageSize={20} />
       </div>
       {showPreviewModal && previewResource && (
         <PreviewModal

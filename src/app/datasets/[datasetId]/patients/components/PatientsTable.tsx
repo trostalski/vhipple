@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Row,
+  SortingState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import TablePagination from "@/app/components/TablePagination";
 import TableFilter from "@/app/components/TableFilter";
 import { useRouter } from "next/navigation";
+import { FaSortDown, FaSortUp } from "react-icons/fa";
 
 export type TablePatient = {
   firstName: string;
@@ -93,13 +96,19 @@ interface PatientsTableProps {
 const PatientsTable = (props: PatientsTableProps) => {
   const { inputData, datasetId } = props;
   const router = useRouter();
-  const [data, setData] = React.useState(() => [...inputData]);
+  const [data, setData] = useState(() => [...inputData]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data: inputData,
     columns: columns,
+    state: {
+      sorting: sorting,
+    },
     columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -131,12 +140,39 @@ const PatientsTable = (props: PatientsTableProps) => {
                       width: header.getSize(),
                     }}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
+                    {header.isPlaceholder ? null : (
+                      <div
+                        {...{
+                          className: header.column.getCanSort()
+                            ? "cursor-pointer select-none flex flex-row gap-4"
+                            : "",
+                          onClick: header.column.getToggleSortingHandler(),
+                        }}
+                      >
+                        {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
+                        <div className="flex flex-col items-center relative">
+                          <FaSortUp
+                            className={`absolute top-0 ${
+                              header.column.getIsSorted() && !sorting[0].desc
+                                ? "text-black"
+                                : "text-gray-400"
+                            }`}
+                            size={20}
+                          />
+                          <FaSortDown
+                            className={`absolute top-0 ${
+                              header.column.getIsSorted() && sorting[0].desc
+                                ? "text-black"
+                                : "text-gray-400"
+                            }`}
+                            size={20}
+                          />
+                        </div>
+                      </div>
+                    )}
                     {header.column.getCanFilter() ? (
                       <div>
                         <TableFilter column={header.column} table={table} />
@@ -193,7 +229,7 @@ const PatientsTable = (props: PatientsTableProps) => {
       </div>
       <div className="grow" />
       <div className="p-2">
-        <TablePagination table={table} initialPageSize={30} />
+        <TablePagination table={table} initialPageSize={20} />
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ export interface Dataset {
   updatedAt: string;
   dashboardColNums: number;
   resourceContainers: ResourceContainer[];
+  fhirPathAliases: FhirPathAlias[];
 }
 
 export interface PatientCohort {
@@ -44,6 +45,7 @@ export interface PatientCohortCriterium {
 export interface FhirPathAlias {
   path: string;
   alias: string;
+  id: string;
 }
 
 export type SaveModes = "add" | "edit";

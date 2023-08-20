@@ -1,5 +1,9 @@
 import { db } from "./db";
-import { Dataset, ResourceContainer } from "../datasets/lib/types";
+import {
+  Dataset,
+  FhirPathAlias,
+  ResourceContainer,
+} from "../datasets/lib/types";
 import { DashboardCard } from "../datasets/[datasetId]/dashboard/lib/types";
 import {
   CSVColumn,

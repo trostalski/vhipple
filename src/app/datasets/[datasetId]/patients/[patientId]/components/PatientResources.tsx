@@ -6,6 +6,7 @@ import {
   getConditionDateDisplay,
   getImmunizationDisplay,
   getMedicationRequestDateDisplay,
+  getMedicationRequestDisplay,
   getObservationDateDisplay,
   getOccurrenceDateDisplay,
   getPerformedDateDisplay,
@@ -66,9 +67,10 @@ const TabContent = <T extends unknown>(props: TabContentProps<T>) => {
               {expandedItems.includes(display) &&
                 displayResourceMap
                   .get(display)
-                  ?.sort((resource) => {
-                    const date = props.getDateDisplay(resource);
-                    return date === "Unknown" ? 1 : -1;
+                  ?.sort((a, b) => {
+                    const dateA = props.getDateDisplay(a);
+                    const dateB = props.getDateDisplay(b);
+                    return dateA > dateB ? -1 : 1;
                   })
                   .map((resource, i) => (
                     <div key={i} className="flex flex-row items-center">
@@ -101,8 +103,8 @@ const PatientResources = (props: PatientResourcesProps) => {
     },
     {
       name: "Prescriptions",
-      resources: props.patientData.medications,
-      getDisplay: getCodedResourceDisplay,
+      resources: props.patientData.medicationRequests,
+      getDisplay: getMedicationRequestDisplay,
       getDateDisplay: getMedicationRequestDateDisplay,
     },
     {

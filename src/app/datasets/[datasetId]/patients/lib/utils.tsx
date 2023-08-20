@@ -29,12 +29,13 @@ const getCodedDisplay = (
   if (code?.text) {
     return code.text;
   }
-
   if (coding && coding.length > 0) {
     const primaryCoding = coding[0];
     if (primaryCoding.display) {
+      console.log("display: ", primaryCoding);
       return primaryCoding.display;
     } else if (primaryCoding.code) {
+      console.log("code: ", primaryCoding);
       let result = primaryCoding.code;
       result += primaryCoding.system
         ? ` (${primaryCoding.system})`

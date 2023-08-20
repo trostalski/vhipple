@@ -15,6 +15,7 @@ module.exports = {
     extend: {
       colors: {
         "main-bg": "var(--main-bg)",
+        "hns-blue": "#05386B",
         "sidebar-bg": "var(--sidebar-bg)",
         "primary-button": "var(--primary-button)",
         "primary-button-hover": "var(--primary-button-hover)",

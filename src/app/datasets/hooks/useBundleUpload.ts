@@ -21,8 +21,16 @@ const useBundleUpload = () => {
       const reader = new FileReader();
 
       reader.onload = async (re) => {
+        let resource;
         if (re.target) {
-          const resource = JSON.parse(re.target.result as string);
+          try {
+            resource = JSON.parse(re.target.result as string);
+          } catch (error) {
+            toastError(
+              `File ${file.name} is not a valid JSON file. Please upload a valid JSON file.`
+            );
+            return;
+          }
           if (resource.resourceType === "Bundle") {
             let resourceContainers: ResourceContainer[] = [];
             for (const entry of resource.entry) {

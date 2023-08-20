@@ -60,8 +60,6 @@ export const createCatChartJsData = (
 ) => {
   const chartJsDatasets: ChartJsDataset[] = [];
   const cohortValues = getPathValuesForCohorts(cohorts, fhirpath, dataset);
-  console.log("fhirpath: ", fhirpath);
-  console.log("cohortValues", cohortValues);
   const allUniqueValues = cohortValues.flat().filter(onlyUnique);
   for (let i = 0; i < cohorts.length; i++) {
     const cohort = cohorts[i];

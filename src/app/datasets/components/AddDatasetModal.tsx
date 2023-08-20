@@ -4,7 +4,7 @@ import {
   removeResourcesFromDatasetBySource,
   updateDataset,
 } from "@/app/db/utils";
-import { toastPromise, toastSuccess } from "@/app/lib/toasts";
+import { toastError, toastPromise, toastSuccess } from "@/app/lib/toasts";
 import React, { useState } from "react";
 import { Dataset } from "../lib/types";
 import { resolveReferencesForDataset } from "../lib/resolveReferences";
@@ -49,7 +49,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       rc.datasetId = dataset.id;
       return rc;
     });
-    resolveReferencesForDataset(dataset, newResourceContainers);
+    resolveReferencesForDataset(dataset);
     dataset.size = dataset.resourceContainers.length;
     if (mode === addMode) {
       dataset.createdAt = new Date().toISOString();
@@ -123,17 +123,20 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
               >
                 <p>{source}</p>
                 <button
-                  className="text-red-500 font-bold py-2 px-4 rounded transition hover:text-red-600"
-                  onClick={async () =>
-                    toastPromise(
-                      removeResourcesFromDatasetBySource(dataset.name, source),
-                      "Removing resources from dataset...",
-                      "Resources removed from dataset successfully.",
-                      "Failed to remove resources from dataset."
-                    )
-                  }
+                  className="text-primary-button border py-1 px-2 rounded-md transition hover:scale-110"
+                  onClick={async () => {
+                    const res = await removeResourcesFromDatasetBySource(
+                      dataset.id,
+                      source
+                    );
+                    if (res) {
+                      toastSuccess("Successfully removed resources");
+                    } else {
+                      toastError("Failed to remove resources");
+                    }
+                  }}
                 >
-                  Remove
+                  <AiFillDelete size={16} />
                 </button>
               </div>
             ))}

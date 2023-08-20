@@ -11,7 +11,7 @@ const FhirPathPreviewMenu = (props: FhirPathPreviewMenuProps) => {
       <h1 className="text-lg font-bold">FHIR Path Preview</h1>
       {fhirPathValues.map((result, i) => (
         <div className="flex flex-col" key={i}>
-          <span className="text-xs">{result}</span>
+          <span className="text-xs">{JSON.stringify(result)}</span>
         </div>
       ))}
     </div>

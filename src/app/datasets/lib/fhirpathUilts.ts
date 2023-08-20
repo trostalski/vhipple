@@ -45,9 +45,7 @@ export const getPathValuesForCohorts = (
   const datasetValues: any[][] = [];
   for (let i = 0; i < cohorts.length; i++) {
     const resources = getResourcesForCohort(cohorts[i], dataset);
-    console.log("resources: ", resources);
     const values = getPathValuesForResources(resources, fpFunc);
-    console.log("values: ", values);
     datasetValues.push(values);
   }
   return datasetValues;

@@ -85,11 +85,14 @@ export const removeResourcesFromDatasetBySource = async (
 ) => {
   try {
     const dataset = await db.datasets.get(datasetId);
-    dataset!.resourceContainers = dataset!.resourceContainers.filter(
+    if (!dataset) {
+      return false;
+    }
+    dataset.resourceContainers = dataset!.resourceContainers.filter(
       (rc) => rc.source !== source
     );
     const newSize = dataset!.resourceContainers.length;
-    dataset!.size = newSize;
+    dataset.size = newSize;
     await db.datasets.update(datasetId, dataset!);
     return true;
   } catch (error) {

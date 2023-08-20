@@ -1,17 +1,13 @@
 import { Reference, Resource } from "fhir/r4";
 import { Dataset, ResourceContainer } from "./types";
 
-export const resolveReferencesForDataset = (
-  dataset: Dataset,
-  newResourceContainers: ResourceContainer[]
-) => {
-  const oldResourceContainers = dataset.resourceContainers;
-  const allResources = [...oldResourceContainers, ...newResourceContainers];
-  newResourceContainers.forEach((rc) => {
+export const resolveReferencesForDataset = (dataset: Dataset) => {
+  const resourceContainers = dataset.resourceContainers;
+  resourceContainers.forEach((rc) => {
     const targetReferences: Reference[] = getAllReferences(rc.resource);
     const foundResources = getResourcesFromReferences(
       targetReferences,
-      allResources
+      resourceContainers
     );
     rc.references = foundResources.map((fr) => fr.resource);
     foundResources.forEach((fr) => {

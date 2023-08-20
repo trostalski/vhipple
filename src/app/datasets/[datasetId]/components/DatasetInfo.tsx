@@ -83,8 +83,6 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
     (mostCommon) => mostCommon.list.length > 0
   );
 
-  console.log("filteredMostCommons", filteredMostCommons.length);
-
   return (
     <div className="flex flex-col gap-2">
       <div className="">

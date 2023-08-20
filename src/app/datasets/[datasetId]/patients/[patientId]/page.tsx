@@ -11,8 +11,7 @@ import DisplayTabs from "../components/DisplayTabs";
 import PatientOverview from "./components/PatientOverview";
 import VisTimeline from "./components/VisTimeline";
 import VisNetwork from "./components/VisNetwork";
-
-export const availablePatientDisplayTabs = ["Overview", "Timeline", "Network"];
+import { availablePatientDisplayTabs } from "./lib/constants";
 
 const page = ({
   params,

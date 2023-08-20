@@ -7,8 +7,7 @@ import CSVExport from "./components/CSVExport";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDataset } from "@/app/db/utils";
 import FHIRExport from "./components/FHIRExport";
-
-export const availableExportDisplayTabs = ["CSV", "FHIR"];
+import { availableExportDisplayTabs } from "./lib/constants";
 
 const page = ({ params }: { params: { datasetId: string } }) => {
   const [displayTab, setDisplayTab] = React.useState<

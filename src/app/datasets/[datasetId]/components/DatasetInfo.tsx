@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Dataset } from "../../lib/types";
 import { computeDatasetInfo } from "../../lib/datasetUtils";
 import DashboardCardBox from "../dashboard/components/DashboardCardBox";
@@ -12,6 +12,7 @@ export interface DatasetInfoProps {
 export const DatasetInfo = (props: DatasetInfoProps) => {
   const { dataset } = props;
   const dashboardCards = useLiveQuery(() => getDashboardCards(dataset.id));
+  const [expandedId, setExpandedId] = useState<string | undefined>(undefined);
   const datasetInfo = useMemo(() => {
     return computeDatasetInfo(dataset);
   }, [dataset]);
@@ -84,7 +85,7 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
   );
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="relative flex flex-col gap-2">
       <div className="">
         <span className="text-xl font-bold">Dataset Info</span>
       </div>
@@ -123,18 +124,34 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
         </div>
       )}
       <div className="flex flex-row justify-start items-center gap-4">
-        {dashboardCards
-          .filter((card) => card.showOnHomePage)
-          .map((card) => (
-            <div key={card.id} className="h-[50vh] w-5/12">
-              <DashboardCardBox
-                card={card}
-                datasetId={dataset.id}
-                expandedId=""
-                setExpandedId={() => {}}
-              />
-            </div>
-          ))}
+        {!expandedId
+          ? dashboardCards
+              .filter((card) => card.showOnHomePage)
+              .map((card) => (
+                <div key={card.id} className="h-[50vh] w-5/12">
+                  <DashboardCardBox
+                    card={card}
+                    datasetId={dataset.id}
+                    expandedId={expandedId}
+                    setExpandedId={setExpandedId}
+                  />
+                </div>
+              ))
+          : dashboardCards
+              .filter((card) => card.id === expandedId)
+              .map((card) => (
+                <div
+                  key={card.id}
+                  className="absolute top-0 left-0 h-[100vh] w-full"
+                >
+                  <DashboardCardBox
+                    card={card}
+                    datasetId={dataset.id}
+                    expandedId={expandedId}
+                    setExpandedId={setExpandedId}
+                  />
+                </div>
+              ))}
       </div>
     </div>
   );

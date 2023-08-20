@@ -76,6 +76,33 @@ export const createCatChartJsData = (
     labels: allUniqueValues,
     datasets: chartJsDatasets,
   };
+  data = sortDataByValueSums(data);
+  return data;
+};
+
+const sortDataByValueSums = (data: ChartJsData) => {
+  const valueSums: number[] = [];
+  for (let i = 0; i < data.labels.length; i++) {
+    const sum = data.datasets.map((d) => d.data[i]).reduce((a, b) => a + b, 0);
+    valueSums.push(sum);
+  }
+  const zipped = data.labels.map((label, index) => {
+    return [label, valueSums[index]];
+  });
+  const sorted = zipped.sort((a, b) => (b[1] as number) - (a[1] as number));
+  const sortedLabels = sorted.map((s) => s[0]);
+  const sortedDatasets = data.datasets.map((d) => {
+    const sortedData = sorted.map((s) => {
+      const index = data.labels.indexOf(s[0] as string);
+      return d.data[index];
+    });
+    return { ...d, data: sortedData };
+  });
+  data = {
+    ...data,
+    labels: sortedLabels as string[],
+    datasets: sortedDatasets,
+  };
   return data;
 };
 
@@ -143,16 +170,19 @@ export const createNum1DChartJsData = (
   valueFhirpath: string,
   labelFhipath?: string
 ) => {
+  let data;
   if (!labelFhipath || labelFhipath === "") {
-    return createNum1DChartJsDataWithoutLabels(cohorts, valueFhirpath, dataset);
+    data = createNum1DChartJsDataWithoutLabels(cohorts, valueFhirpath, dataset);
   } else {
-    return createNum1DChartJsDataWithLabels(
+    data = createNum1DChartJsDataWithLabels(
       cohorts,
       valueFhirpath,
       labelFhipath,
       dataset
     );
   }
+  data = sortDataByValueSums(data);
+  return data;
 };
 
 export const createNum2DDataForResources = (

@@ -2,7 +2,7 @@ import React from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { RiAncientGateFill } from "react-icons/ri";
 
-const Header = () => {
+const HNSHeader = () => {
   return (
     <header>
       <nav className="flex flex-row fixed left-0 top-0 w-full h-10 bg-primary-button items-center text-white font-light px-4 z-10">
@@ -21,4 +21,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HNSHeader;

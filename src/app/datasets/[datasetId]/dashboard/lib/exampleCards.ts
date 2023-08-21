@@ -44,15 +44,6 @@ const genderCard = {
   valueFhirpath: "Patient.gender",
 };
 
-const birthDateCard = {
-  ...baseExampleCard,
-  title: "Birth Date",
-  dataType: categoricalDataType,
-  description: "Shows the distribution of birth dates within the datasets.",
-  chartType: "bar",
-  valueFhirpath: "Patient.birthDate",
-};
-
 const conditionCard = {
   ...baseExampleCard,
   title: "Conditions",
@@ -118,7 +109,6 @@ export const datasetDefaultCards: DashboardCard[] = [
   prescriptionCard,
   bodyHeightCard,
   observationCard,
-  birthDateCard,
 ];
 
 export const catExampleCards: DashboardCard[] = [

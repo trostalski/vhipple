@@ -59,6 +59,10 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
     { resource: "Immunizations", num: datasetInfo.numImmunizations },
     { resource: "CarePlans", num: datasetInfo.numCarePlans },
     { resource: "Encounters", num: datasetInfo.numEncounters },
+    { resource: "AllergyIntolerances", num: datasetInfo.numAllergies },
+    { resource: "DiagnosticReport", num: datasetInfo.numDiagnosticReports },
+    { resource: "ImagingStudy", num: datasetInfo.numImagingStudies },
+    { resource: "Practitioner", num: datasetInfo.numPractitioners },
   ];
 
   const mostCommons = [

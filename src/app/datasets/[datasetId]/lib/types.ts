@@ -15,6 +15,9 @@ export interface DatasetInfo {
   numMedications: number;
   numAllergies: number;
   numCarePlans: number;
+  numPractitioners: number;
+  numImagingStudies: number;
+  numDiagnosticReports: number;
   mostCommonConditions: ValueCount[];
   mostCommonProcedures: ValueCount[];
   mostCommonMedications: ValueCount[];

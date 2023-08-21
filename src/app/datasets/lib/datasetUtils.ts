@@ -129,6 +129,9 @@ export const computeDatasetInfo = (dataset: Dataset) => {
     numMedications: getResourceCountForType(dataset, "MedicationRequest"),
     numAllergies: getResourceCountForType(dataset, "AllergyIntolerance"),
     numCarePlans: getResourceCountForType(dataset, "CarePlan"),
+    numDiagnosticReports: getResourceCountForType(dataset, "DiagnosticReport"),
+    numImagingStudies: getResourceCountForType(dataset, "ImagingStudy"),
+    numPractitioners: getResourceCountForType(dataset, "Practitioner"),
     mostCommonAllergies: getMostCommonPathValue(
       getResourcesForDatasetByType(dataset, "AllergyIntolerance"),
       "AllergyIntolerance.code.coding.display",

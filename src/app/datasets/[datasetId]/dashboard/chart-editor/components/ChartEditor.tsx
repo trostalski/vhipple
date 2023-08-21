@@ -19,7 +19,7 @@ import {
   defaultNumDataPoints,
 } from "../../lib/constants";
 import { generateUniqueId } from "@/app/lib/utils";
-import { addDashboardCard } from "@/app/db/utils";
+import { addDashboardCard, updateDashboardCard } from "@/app/db/utils";
 import { addMode } from "@/app/datasets/lib/constants";
 
 interface ChartEditorProps {
@@ -98,7 +98,7 @@ const ChartEditor = (props: ChartEditorProps) => {
     const finalCard = addDataToCard(card);
     if (!finalCard) return;
     finalCard.updatedAt = new Date().toISOString();
-    const res = await addDashboardCard(finalCard);
+    const res = await updateDashboardCard(finalCard.id, finalCard);
     if (res) {
       toastSuccess("Card updated");
     } else {

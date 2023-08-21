@@ -4,10 +4,11 @@ interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: (searchTerm: string) => void;
   handleSearch: () => void;
+  placeholder: string;
 }
 
 const SearchBar = (props: SearchBarProps) => {
-  const { searchTerm, setSearchTerm, handleSearch } = props;
+  const { searchTerm, setSearchTerm, handleSearch, placeholder } = props;
   return (
     <div className="flex flex-row items-center w-full">
       <input
@@ -15,7 +16,7 @@ const SearchBar = (props: SearchBarProps) => {
         type="text"
         name="search"
         id="search"
-        placeholder="Search by id or type"
+        placeholder={placeholder}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={(e) => {

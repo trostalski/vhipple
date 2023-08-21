@@ -169,21 +169,29 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
         <div className="flex flex-col">
           <label className="font-bold">Select Data</label>
           <FhirPathInput
+            fhirPathAliases={dataset.fhirPathAliases}
+            datasetId={dataset.id}
             inputLabel="Value Fhirpath"
             value={card.valueFhirpath}
             onChangeHandler={(e) => {
               setCard({ ...card, valueFhirpath: e.target.value });
             }}
             resources={computeResources()}
+            enablPreview={true}
+            enableSelect={true}
           />
           {numerical1DChartTypes.includes(card.chartType) && (
             <FhirPathInput
+              fhirPathAliases={dataset.fhirPathAliases}
+              datasetId={dataset.id}
               inputLabel="Label Fhirpath"
               value={card.labelFhirpath}
               onChangeHandler={(e) => {
                 setCard({ ...card, labelFhirpath: e.target.value });
               }}
               resources={computeResources()}
+              enablPreview={true}
+              enableSelect={true}
             />
           )}
         </div>

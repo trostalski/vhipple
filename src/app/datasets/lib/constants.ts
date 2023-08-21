@@ -10,7 +10,7 @@ const defaulFhirPathAliases: FhirPathAlias[] = [
   {
     alias: "patient gender",
     path: "Patient.gender",
-    id: "1",
+    id: "0",
   },
   {
     alias: "male patients",

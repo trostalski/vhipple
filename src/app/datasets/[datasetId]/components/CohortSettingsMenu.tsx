@@ -1,3 +1,4 @@
+import useCloseOnOutsideClick from "@/app/hooks/useCloseOnOutsideClick";
 import { useEffect } from "react";
 
 interface CohortSettingsMenuProps {
@@ -9,18 +10,10 @@ interface CohortSettingsMenuProps {
 const CohortSettingsMenu = (props: CohortSettingsMenuProps) => {
   const { setShowMenu, handleDelete, setShowEditModal } = props;
   // add listener to close menu when clicked outside
-  useEffect(() => {
-    const listener = (e: any) => {
-      if (!e.target.closest("#cohort-menu")) {
-        setShowMenu(false);
-      }
-    };
-    document.addEventListener("click", listener);
-    return () => {
-      document.removeEventListener("click", listener);
-    };
-  }, []);
-
+  useCloseOnOutsideClick({
+    setShowMenu: setShowMenu,
+    elementId: "#cohort-menu",
+  });
   return (
     <div
       id="cohort-menu"

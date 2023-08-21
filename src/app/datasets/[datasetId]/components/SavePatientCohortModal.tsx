@@ -20,6 +20,7 @@ import {
 } from "../../lib/constants";
 import { computePatientCohort } from "../../lib/cohortUtils";
 import { validateFhirPath } from "../../lib/fhirpathUilts";
+import { Resource } from "fhir/r4";
 
 interface SavePatientCohortModalProps {
   showModal: boolean;
@@ -27,6 +28,7 @@ interface SavePatientCohortModalProps {
   dataset: Dataset;
   inputPatientCohort?: PatientCohort;
   mode: "add" | "edit";
+  resources: Resource[];
 }
 
 const SavePatientCohortModal = (props: SavePatientCohortModalProps) => {
@@ -252,6 +254,11 @@ const SavePatientCohortModal = (props: SavePatientCohortModalProps) => {
                   criterium={c}
                   setCriteria={handleSetIncludeCriteria}
                   handleDelete={() => handleDeleteIncludeCriteria(c)}
+                  datasetId={dataset.id}
+                  fhirPathAliases={dataset.fhirPathAliases}
+                  resources={dataset.resourceContainers.map(
+                    (rc) => rc.resource
+                  )}
                 />
               ))}
             </div>
@@ -273,6 +280,11 @@ const SavePatientCohortModal = (props: SavePatientCohortModalProps) => {
                   criterium={c}
                   setCriteria={handleSetExcludeCriteria}
                   handleDelete={() => handleDeleteExcludeCriteria(c)}
+                  datasetId={dataset.id}
+                  fhirPathAliases={dataset.fhirPathAliases}
+                  resources={dataset.resourceContainers.map(
+                    (rc) => rc.resource
+                  )}
                 />
               ))}
             </div>

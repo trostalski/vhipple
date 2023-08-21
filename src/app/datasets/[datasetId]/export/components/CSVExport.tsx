@@ -11,7 +11,6 @@ import DataSelection from "./DataSelection";
 import {
   getPatientContainersForCohort,
   getPatientResourcesForResourceContainer,
-  getResourcesForCohort,
   getResourcesForCohorts,
 } from "@/app/datasets/lib/cohortUtils";
 import {

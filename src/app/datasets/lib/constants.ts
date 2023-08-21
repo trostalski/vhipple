@@ -1,12 +1,10 @@
-import { Dataset, FhirPathAlias } from "./types";
-
-export const mainViewComp = "view";
-export const mainListComp = "list";
+import { generateUniqueId } from "@/app/lib/utils";
+import { Dataset, FhirPathAlias, PatientCohort } from "./types";
 
 export const addMode = "add";
 export const editMode = "edit";
 
-const defaulFhirPathAliases: FhirPathAlias[] = [
+const defaultFhirPathAliases: FhirPathAlias[] = [
   {
     alias: "patient gender",
     path: "Patient.gender",
@@ -44,7 +42,7 @@ export const defaultDataset: Dataset = {
   createdAt: "",
   size: 0,
   dashboardColNums: 2,
-  fhirPathAliases: defaulFhirPathAliases,
+  fhirPathAliases: defaultFhirPathAliases,
 };
 
 export const patientIncludeCritriumString = "include";

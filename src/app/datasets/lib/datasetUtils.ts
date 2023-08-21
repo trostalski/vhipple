@@ -46,6 +46,8 @@ export const generateDefaultDatasetDashboardCards = async (
   await addDashboardCards(newCards);
 };
 
+export const generateDefaultPatientCohorts = async (dataset: Dataset) => {};
+
 export const getConnectedResourcesForResourceContainer = (
   resourceContainer: ResourceContainer,
   includeSource?: boolean

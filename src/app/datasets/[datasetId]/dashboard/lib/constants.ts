@@ -1,3 +1,7 @@
+import { patientIncludeCritriumString } from "@/app/datasets/lib/constants";
+import { PatientCohort } from "@/app/datasets/lib/types";
+import { generateUniqueId } from "@/app/lib/utils";
+
 export const maxNumDataPoints = 50;
 export const defaultNumDataPoints = 10;
 
@@ -65,6 +69,23 @@ export const defaultPatientCohort = {
   patientIds: [],
   createdAt: "",
   updatedAt: "",
+};
+
+const defaultMaleCohort: PatientCohort = {
+  id: generateUniqueId(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  exclusionCriteria: [],
+  name: "Male Patients",
+  patientIds: [],
+  inclusionCriteria: [
+    {
+      id: generateUniqueId(),
+      name: "Only Male Patients",
+      fhirPath: "Patient.gender='male'",
+      type: patientIncludeCritriumString,
+    },
+  ],
 };
 
 export const allPatientsCohortId = "all-patients";

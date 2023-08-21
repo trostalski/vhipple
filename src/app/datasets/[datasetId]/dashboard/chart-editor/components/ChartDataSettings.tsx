@@ -166,34 +166,39 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
             patientCohortOptions={patientCohortOptions}
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-1">
           <label className="font-bold">Select Data</label>
-          <FhirPathInput
-            fhirPathAliases={dataset.fhirPathAliases}
-            datasetId={dataset.id}
-            inputLabel="Value Fhirpath"
-            value={card.valueFhirpath}
-            onChangeHandler={(e) => {
-              setCard({ ...card, valueFhirpath: e.target.value });
-            }}
-            resources={computeResources()}
-            enablPreview={true}
-            enableSelect={true}
-          />
-          {numerical1DChartTypes.includes(card.chartType) && (
+          <div className="flex flex-col">
+            <label className="text-gray-500">Value Fhirpath</label>
             <FhirPathInput
               fhirPathAliases={dataset.fhirPathAliases}
               datasetId={dataset.id}
-              inputLabel="Label Fhirpath"
-              value={card.labelFhirpath}
+              value={card.valueFhirpath}
               onChangeHandler={(e) => {
-                setCard({ ...card, labelFhirpath: e.target.value });
+                setCard({ ...card, valueFhirpath: e.target.value });
               }}
               resources={computeResources()}
               enablPreview={true}
               enableSelect={true}
             />
-          )}
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-gray-500">Label Fhirpath</label>
+            {numerical1DChartTypes.includes(card.chartType) && (
+              <FhirPathInput
+                fhirPathAliases={dataset.fhirPathAliases}
+                datasetId={dataset.id}
+                value={card.labelFhirpath}
+                onChangeHandler={(e) => {
+                  setCard({ ...card, labelFhirpath: e.target.value });
+                }}
+                resources={computeResources()}
+                enablPreview={true}
+                enableSelect={true}
+              />
+            )}
+          </div>
         </div>
       </div>
       <div className="grow" />

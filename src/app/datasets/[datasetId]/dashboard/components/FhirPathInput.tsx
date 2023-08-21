@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import FhirPathPreviewMenu from "./FhirPathPreviewMenu";
 import { toastError } from "@/app/lib/toasts";
-import {
-  getPathValuesForResources,
-  validateFhirPath,
-} from "@/app/datasets/lib/fhirpathUilts";
+import { validateFhirPath } from "@/app/datasets/lib/fhirpathUilts";
 import { Resource } from "fhir/r4";
-import { compile } from "fhirpath";
 import FhirPathSelectModal from "./FhirPathSelectModal";
 import { FhirPathAlias } from "@/app/datasets/lib/types";
 import useFhirPathPreview from "../hooks/useFhirPathPreview";
@@ -20,6 +16,10 @@ interface FhirPathInputProps {
   enablPreview: boolean;
   enableSelect: boolean;
   disabled?: boolean;
+  top?: string;
+  left?: string;
+  bottom?: string;
+  right?: string;
 }
 
 const FhirPathInput = (props: FhirPathInputProps) => {
@@ -32,6 +32,10 @@ const FhirPathInput = (props: FhirPathInputProps) => {
     enablPreview,
     enableSelect,
     disabled,
+    bottom,
+    right,
+    top,
+    left,
   } = props;
 
   const [showFhirPathSelect, setShowFhirPathSelect] = useState(false);
@@ -97,6 +101,10 @@ const FhirPathInput = (props: FhirPathInputProps) => {
         <FhirPathPreviewMenu
           fhirPathValues={fhirPathValues}
           setShowMenu={setShowFhirPathPreview}
+          bottom={bottom}
+          right={right}
+          top={top || "top-10 right-0"}
+          left={left}
         />
       )}
       {showFhirPathSelect && (

@@ -53,7 +53,7 @@ const CSVColumnDef = (props: CSVColumnDefInputProps) => {
       </div>
       <div className="grid grid-cols-5 items-start content-start w-full gap-2 bg-white p-4 rounded-md shadow-md h-64 overflow-scroll">
         <label className="text-sm font-bold">Column Name</label>
-        <label className="text-sm font-bold col-span-2">Value Path</label>
+        <label className="text-sm font-bold col-span-2">Value Fhirpath</label>
         <label className="text-sm font-bold">Multiple Value Policy</label>
         <label className="text-sm font-bold">Delete</label>
         {csvColumns.map((column, i) => (

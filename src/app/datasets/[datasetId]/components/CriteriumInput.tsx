@@ -1,5 +1,7 @@
 import { AiFillDelete } from "react-icons/ai";
-import { PatientCohort, PatientCohortCriterium } from "../../lib/types";
+import { FhirPathAlias, PatientCohortCriterium } from "../../lib/types";
+import FhirPathInput from "../dashboard/components/FhirPathInput";
+import { Resource } from "fhir/r4";
 
 interface CriteriumInputProps {
   criterium: PatientCohortCriterium;
@@ -9,10 +11,20 @@ interface CriteriumInputProps {
     criterium: PatientCohortCriterium
   ) => void;
   handleDelete: () => void;
+  datasetId: string;
+  fhirPathAliases: FhirPathAlias[];
+  resources: Resource[];
 }
 
 const CriteriumInput = (props: CriteriumInputProps) => {
-  const { criterium, setCriteria, handleDelete } = props;
+  const {
+    criterium,
+    setCriteria,
+    handleDelete,
+    datasetId,
+    fhirPathAliases,
+    resources,
+  } = props;
   return (
     <div className="flex flex-row items-center gap-4 w-full">
       <div className="flex flex-row items-center gap-2">
@@ -26,13 +38,17 @@ const CriteriumInput = (props: CriteriumInputProps) => {
         />
       </div>
       <div className="flex flex-row items-center gap-2 w-full">
-        <span className="text-sm">Path</span>
-        <input
-          className="border rounded-md px-2 py-1 grow"
-          value={criterium.fhirPath}
-          onChange={(e) => {
+        <span className="text-sm">Fhirpath</span>
+        <FhirPathInput
+          datasetId={datasetId}
+          enablPreview={true}
+          enableSelect={true}
+          fhirPathAliases={fhirPathAliases}
+          onChangeHandler={(e: React.ChangeEvent<HTMLInputElement>) => {
             setCriteria(e.target.value, "fhirPath", criterium);
           }}
+          resources={resources}
+          value={criterium.fhirPath}
         />
       </div>
       <div>

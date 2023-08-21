@@ -28,7 +28,6 @@ interface SavePatientCohortModalProps {
   dataset: Dataset;
   inputPatientCohort?: PatientCohort;
   mode: "add" | "edit";
-  resources: Resource[];
 }
 
 const SavePatientCohortModal = (props: SavePatientCohortModalProps) => {

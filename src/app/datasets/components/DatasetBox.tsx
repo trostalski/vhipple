@@ -1,7 +1,7 @@
 import { deleteDataset } from "@/app/db/utils";
 import { toastSuccess } from "@/app/lib/toasts";
 import React, { useState } from "react";
-import { editMode, mainViewComp } from "../lib/constants";
+import { editMode } from "../lib/constants";
 import AddDatasetModal from "./AddDatasetModal";
 import { Dataset } from "../lib/types";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";

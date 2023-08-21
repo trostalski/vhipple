@@ -71,22 +71,5 @@ export const defaultPatientCohort = {
   updatedAt: "",
 };
 
-const defaultMaleCohort: PatientCohort = {
-  id: generateUniqueId(),
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  exclusionCriteria: [],
-  name: "Male Patients",
-  patientIds: [],
-  inclusionCriteria: [
-    {
-      id: generateUniqueId(),
-      name: "Only Male Patients",
-      fhirPath: "Patient.gender='male'",
-      type: patientIncludeCritriumString,
-    },
-  ],
-};
-
 export const allPatientsCohortId = "all-patients";
 export const allPatientsCohortName = "All Patients";

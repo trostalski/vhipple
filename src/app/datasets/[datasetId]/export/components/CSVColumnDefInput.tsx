@@ -1,22 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import { CSVColumn } from "../lib/types";
-import {
-  availableCSVColumnTypes,
-  availableMultipleValuePolicies,
-  defaultCsvColumn,
-} from "../lib/constants";
-import { MdDelete } from "react-icons/md";
+import { availableMultipleValuePolicies } from "../lib/constants";
 import { AiFillDelete } from "react-icons/ai";
 import { toastError } from "@/app/lib/toasts";
+import FhirPathInput from "../../dashboard/components/FhirPathInput";
+import { FhirPathAlias } from "@/app/datasets/lib/types";
+import { Resource } from "fhir/r4";
 
 interface CSVColumnDefInputProps {
   column: CSVColumn;
+  datasetId: string;
   setCSVColumns: React.Dispatch<React.SetStateAction<CSVColumn[]>>;
   csvColumns: CSVColumn[];
+  fhirPathAliases: FhirPathAlias[];
+  resources: Resource[];
 }
 
 const CSVColumnDefInput = (props: CSVColumnDefInputProps) => {
-  const { column, setCSVColumns } = props;
+  const {
+    column,
+    setCSVColumns,
+    datasetId,
+    csvColumns,
+    fhirPathAliases,
+    resources,
+  } = props;
 
   const isPatientIdCol = column.name === "Patient ID";
 
@@ -60,15 +68,18 @@ const CSVColumnDefInput = (props: CSVColumnDefInputProps) => {
         }`}
         onChange={(e) => handleOnChange(e)}
       />
-      <input
-        className={`border col-span-2 border-gray-300 bg-white rounded-md px-2 py-1 ${
-          isPatientIdCol && "opacity-50"
-        }`}
-        name="valueFhirpath"
-        disabled={isPatientIdCol}
-        value={column.valueFhirpath}
-        onChange={(e) => handleOnChange(e)}
-      />
+      <div className="col-span-2">
+        <FhirPathInput
+          fhirPathAliases={fhirPathAliases}
+          resources={resources}
+          datasetId={datasetId}
+          enablPreview={false}
+          enableSelect={true}
+          value={column.valueFhirpath}
+          onChangeHandler={(e) => handleOnChange(e)}
+          disabled={isPatientIdCol}
+        />
+      </div>
       <select
         className={`border border-gray-300 bg-white rounded-md px-2 py-1 ${
           isPatientIdCol && "opacity-50"

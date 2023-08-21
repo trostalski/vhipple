@@ -11,6 +11,8 @@ import DataSelection from "./DataSelection";
 import {
   getPatientContainersForCohort,
   getPatientResourcesForResourceContainer,
+  getResourcesForCohort,
+  getResourcesForCohorts,
 } from "@/app/datasets/lib/cohortUtils";
 import {
   computeCSVTableRows,
@@ -63,6 +65,19 @@ const CSVExport = (props: CSVExportProps) => {
     downloadCSV(csvContent, "export.csv");
   };
 
+  const getResources = () => {
+    let resources;
+    if (selectedCohorts.length === 0) {
+      resources = dataset.resourceContainers.map((container) => {
+        return container.resource;
+      });
+    } else {
+      resources = getResourcesForCohorts(selectedCohorts, dataset);
+    }
+
+    return resources;
+  };
+
   return (
     <div className="flex flex-col h-full w-full mt-2 gap-2">
       <DataSelection
@@ -71,6 +86,9 @@ const CSVExport = (props: CSVExportProps) => {
       />
       <CSVColumnDef
         csvColumns={csvColumns}
+        datasetId={dataset.id}
+        fhirPathAliases={dataset.fhirPathAliases}
+        resources={getResources()}
         setCSVColumns={setCSVColumns}
         setTableInputData={setTableInputData}
       />

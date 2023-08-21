@@ -116,6 +116,18 @@ export const getResourcesForCohort = (
   return resources;
 };
 
+export const getResourcesForCohorts = (
+  cohorts: PatientCohort[],
+  dataset: Dataset
+): Resource[] => {
+  const resources: Resource[] = [];
+  for (const cohort of cohorts) {
+    const cohortResources = getResourcesForCohort(cohort, dataset);
+    resources.push(...cohortResources);
+  }
+  return resources;
+};
+
 export const getPatientResourcesForResourceContainer = (
   rc: ResourceContainer[]
 ) => {

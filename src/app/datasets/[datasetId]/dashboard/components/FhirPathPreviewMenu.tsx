@@ -4,10 +4,10 @@ import React from "react";
 interface FhirPathPreviewMenuProps {
   fhirPathValues: string[];
   setShowMenu: (e: boolean) => void;
-  top?: number;
-  left?: number;
-  bottom?: number;
-  right?: number;
+  top?: string;
+  left?: string;
+  bottom?: string;
+  right?: string;
 }
 
 const FhirPathPreviewMenu = (props: FhirPathPreviewMenuProps) => {
@@ -20,10 +20,10 @@ const FhirPathPreviewMenu = (props: FhirPathPreviewMenuProps) => {
     <div
       id="fhirpath-preview-menu"
       className={`absolute flex flex-col border-2 p-2 shadow-md bg-white w-64 h-64 rounded-md overflow-scroll z-10 ${
-        props.top ? `top-${props.top}` : ""
-      } ${props.left ? `left-${props.left}` : ""} ${
-        props.bottom ? `bottom-${props.bottom}` : ""
-      } ${props.right ? `right-${props.right}` : ""}`}
+        props.top && props.top
+      } ${props.left && props.left} ${props.bottom && props.bottom} ${
+        props.right && props.right
+      }`}
     >
       <h1 className="text-lg font-bold">FHIR Path Preview</h1>
       {fhirPathValues.map((result, i) => (

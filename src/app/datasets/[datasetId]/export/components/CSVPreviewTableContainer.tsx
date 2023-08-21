@@ -14,7 +14,7 @@ const CSVPreviewTableContainer = (props: CSVPreviewTableContainerProps) => {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex flex-row items-center gap-2 mt-4">
-        <span className="text-xl font-bold">Preview</span>
+        <span className="text-xl font-bold">Preview Table</span>
         <button
           title="Show Preview"
           className="border bg-white rounded-md px-2 py-1 text-secondary-button transition hover:border-secondary-button"

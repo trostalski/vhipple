@@ -15,23 +15,23 @@ interface FhirPathInputProps {
   fhirPathAliases: FhirPathAlias[];
   datasetId: string;
   value: string;
-  inputLabel: string;
   onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   resources: Resource[];
   enablPreview: boolean;
   enableSelect: boolean;
+  disabled?: boolean;
 }
 
 const FhirPathInput = (props: FhirPathInputProps) => {
   const {
     fhirPathAliases,
     datasetId,
-    inputLabel,
     onChangeHandler,
     resources,
     value,
     enablPreview,
     enableSelect,
+    disabled,
   } = props;
 
   const [showFhirPathSelect, setShowFhirPathSelect] = useState(false);
@@ -48,53 +48,56 @@ const FhirPathInput = (props: FhirPathInputProps) => {
   };
 
   return (
-    <div className="flex flex-col w-full relative">
-      <label className="text-gray-700" htmlFor="fhirpath">
-        {inputLabel}
-      </label>
-      <div className="relative flex flex-row w-full gap-1">
-        <input
-          className="rounded-md p-2 border grow"
-          type="text"
-          name="fhirpath"
-          id="fhirpath"
-          value={value}
-          onChange={onChangeHandler}
-        />
-        <div className="text-sm w-16">
-          {enableSelect && (
-            <button
-              className="text-primary-button transition hover:underline"
-              onClick={() => {
-                setShowFhirPathSelect(!showFhirPathSelect);
-              }}
-            >
-              Select
-            </button>
-          )}
-          {enablPreview && (
-            <button
-              className={`text-secondary-button ${
-                !value && "opacity-50 cursor-not-allowed"
-              } transition hover:underline`}
-              disabled={!value}
-              onClick={() => {
-                if (validateFhirPath(value)) {
-                  computeFhirPathValues(value, resources);
-                  setShowFhirPathPreview(!showFhirPathPreview);
-                } else {
-                  setShowFhirPathPreview(false);
-                  toastError("Invalid FHIRPath expression");
-                }
-              }}
-            >
-              Preview
-            </button>
-          )}
-        </div>
+    <div className="relative flex flex-row w-full gap-1">
+      <input
+        disabled={disabled || false}
+        className={`rounded-md px-2 py-1 border w-full ${
+          disabled && "opacity-50"
+        }`}
+        type="text"
+        name="fhirpath"
+        id="fhirpath"
+        value={value}
+        onChange={onChangeHandler}
+      />
+      <div className="flex flex-col justify-center items-start text-sm w-16">
+        {enableSelect && (
+          <button
+            hidden={!enableSelect}
+            className="text-primary-button transition hover:underline"
+            onClick={() => {
+              setShowFhirPathSelect(!showFhirPathSelect);
+            }}
+          >
+            Select
+          </button>
+        )}
+        {enablPreview && (
+          <button
+            hidden={!enablPreview}
+            className={`text-secondary-button ${
+              !value && "opacity-50 cursor-not-allowed"
+            } transition hover:underline`}
+            disabled={!value}
+            onClick={() => {
+              if (validateFhirPath(value)) {
+                computeFhirPathValues(value, resources);
+                setShowFhirPathPreview(!showFhirPathPreview);
+              } else {
+                setShowFhirPathPreview(false);
+                toastError("Invalid FHIRPath expression");
+              }
+            }}
+          >
+            Preview
+          </button>
+        )}
       </div>
       {showFhirPathPreview && (
-        <FhirPathPreviewMenu fhirPathValues={fhirPathValues} />
+        <FhirPathPreviewMenu
+          fhirPathValues={fhirPathValues}
+          setShowMenu={setShowFhirPathPreview}
+        />
       )}
       {showFhirPathSelect && (
         <FhirPathSelectModal

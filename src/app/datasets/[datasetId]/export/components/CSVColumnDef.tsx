@@ -3,15 +3,27 @@ import { IoAdd } from "react-icons/io5";
 import { CSVColumn } from "../lib/types";
 import CSVColumnDefInput from "./CSVColumnDefInput";
 import { defaultCsvColumn } from "../lib/constants";
+import { Resource } from "fhir/r4";
+import { FhirPathAlias } from "@/app/datasets/lib/types";
 
 interface CSVColumnDefInputProps {
   setCSVColumns: React.Dispatch<React.SetStateAction<CSVColumn[]>>;
   setTableInputData: React.Dispatch<React.SetStateAction<any[]>>;
+  datasetId: string;
+  resources: Resource[];
+  fhirPathAliases: FhirPathAlias[];
   csvColumns: CSVColumn[];
 }
 
 const CSVColumnDef = (props: CSVColumnDefInputProps) => {
-  const { setCSVColumns, csvColumns, setTableInputData } = props;
+  const {
+    setCSVColumns,
+    csvColumns,
+    setTableInputData,
+    datasetId,
+    resources,
+    fhirPathAliases,
+  } = props;
 
   const handleAddColumn = () => {
     return () => {
@@ -47,6 +59,9 @@ const CSVColumnDef = (props: CSVColumnDefInputProps) => {
         {csvColumns.map((column, i) => (
           <CSVColumnDefInput
             key={i}
+            fhirPathAliases={fhirPathAliases}
+            resources={resources}
+            datasetId={datasetId}
             column={column}
             setCSVColumns={setCSVColumns}
             csvColumns={csvColumns}

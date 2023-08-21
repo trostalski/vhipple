@@ -45,7 +45,8 @@ const FhirPathAliasBox = (props: FhirPathAliasBoxProps) => {
           <FhirPathPreviewMenu
             setShowMenu={setShowPreview}
             fhirPathValues={fhirPathValues}
-            left={12}
+            left="right-0"
+            top="top-8"
           />
         )}
         {isEditing ? (

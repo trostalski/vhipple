@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { CiMenuKebab } from "react-icons/ci";
-import { deleteDashboardCard, updateDashboardCard } from "@/app/db/utils";
 import BoxMenu from "./BoxMenu";
 import ChartComp from "./ChartComp";
 import { DashboardCard } from "../lib/types";
@@ -9,21 +8,23 @@ import { IoExpand } from "react-icons/io5";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { Tooltip } from "react-tooltip";
 import { BiCollapse } from "react-icons/bi";
+import { Dataset } from "@/app/datasets/lib/types";
+import { deleteDashboardCard } from "@/app/datasets/lib/dashboardCardUtils";
 
 interface DashboardCardBoxProps {
   card: DashboardCard;
   setExpandedId: React.Dispatch<React.SetStateAction<string | undefined>>;
   expandedId: string | undefined;
-  datasetId: string;
+  dataset: Dataset;
 }
 
 const DashboardCardBox = (props: DashboardCardBoxProps) => {
-  const { card, setExpandedId, expandedId, datasetId } = props;
+  const { card, setExpandedId, expandedId, dataset } = props;
   const [showMenu, setShowMenu] = useState(false);
   const [numDataPoints, setNumDataPoints] = useState(card.numDataPoints); // specifies the number of data points to show in the chart
 
   const handleDelete = async () => {
-    await deleteDashboardCard(card.id);
+    await deleteDashboardCard(card.id, dataset);
   };
 
   const isExpanded = card.id === expandedId;
@@ -42,7 +43,7 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
         </button>
         {showMenu && (
           <BoxMenu
-            datasetId={datasetId}
+            dataset={dataset}
             card={card}
             handleDelete={handleDelete}
             setShowMenu={setShowMenu}

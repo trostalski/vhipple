@@ -37,6 +37,7 @@ export const defaultDataset: Dataset = {
   name: "",
   description: "",
   resourceContainers: [],
+  dashboardCards: [],
   patientCohorts: [],
   updatedAt: "",
   createdAt: "",

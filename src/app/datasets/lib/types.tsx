@@ -1,4 +1,5 @@
 import { Resource } from "fhir/r4";
+import { DashboardCard } from "../[datasetId]/dashboard/lib/types";
 
 export interface ResourceContainer {
   id: string;
@@ -20,6 +21,7 @@ export interface Dataset {
   updatedAt: string;
   dashboardColNums: number;
   resourceContainers: ResourceContainer[];
+  dashboardCards: DashboardCard[];
   fhirPathAliases: FhirPathAlias[];
 }
 

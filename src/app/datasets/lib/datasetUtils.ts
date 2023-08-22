@@ -1,7 +1,6 @@
 import { datasetDefaultCards } from "@/app/datasets/[datasetId]/dashboard/lib/exampleCards";
 import { Dataset, ResourceContainer } from "./types";
 import { createChartJsDataForDashboardCard } from "@/app/datasets/[datasetId]/dashboard/lib/utils";
-import { addDashboardCards } from "@/app/db/utils";
 import { generateUniqueId } from "@/app/lib/utils";
 import {
   allPatientsCohortId,
@@ -11,6 +10,7 @@ import { Patient } from "fhir/r4";
 import { DatasetInfo } from "../[datasetId]/lib/types";
 import { getMostCommonPathValue } from "./fhirpathUilts";
 import { getAge } from "../[datasetId]/patients/lib/utils";
+import { updateDataset } from "@/app/db/utils";
 
 const homePageCards = ["Condition.code.coding.display", "Patient.gender"];
 
@@ -43,7 +43,9 @@ export const generateDefaultDatasetDashboardCards = async (
     }
     newCards.push(newCard);
   }
-  await addDashboardCards(newCards);
+  dataset.dashboardCards = newCards;
+  const res = await updateDataset(dataset.id, dataset);
+  return res;
 };
 
 export const generateDefaultPatientCohorts = async (dataset: Dataset) => {};

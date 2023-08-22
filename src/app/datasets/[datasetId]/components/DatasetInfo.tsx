@@ -2,8 +2,6 @@ import React, { useMemo, useState } from "react";
 import { Dataset } from "../../lib/types";
 import { computeDatasetInfo } from "../../lib/datasetUtils";
 import DashboardCardBox from "../dashboard/components/DashboardCardBox";
-import { useLiveQuery } from "dexie-react-hooks";
-import { getDashboardCards } from "@/app/db/utils";
 
 export interface DatasetInfoProps {
   dataset: Dataset;
@@ -11,11 +9,12 @@ export interface DatasetInfoProps {
 
 export const DatasetInfo = (props: DatasetInfoProps) => {
   const { dataset } = props;
-  const dashboardCards = useLiveQuery(() => getDashboardCards(dataset.id));
   const [expandedId, setExpandedId] = useState<string | undefined>(undefined);
   const datasetInfo = useMemo(() => {
     return computeDatasetInfo(dataset);
   }, [dataset]);
+
+  const dashboardCards = dataset.dashboardCards;
 
   if (!dashboardCards) {
     return null;
@@ -135,7 +134,7 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
                 <div key={card.id} className="h-[50vh] w-5/12">
                   <DashboardCardBox
                     card={card}
-                    datasetId={dataset.id}
+                    dataset={dataset}
                     expandedId={expandedId}
                     setExpandedId={setExpandedId}
                   />
@@ -150,7 +149,7 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
                 >
                   <DashboardCardBox
                     card={card}
-                    datasetId={dataset.id}
+                    dataset={dataset}
                     expandedId={expandedId}
                     setExpandedId={setExpandedId}
                   />

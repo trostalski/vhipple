@@ -1,6 +1,5 @@
 "use client";
-import { getDashboardCards, updateDataset } from "@/app/db/utils";
-import { useLiveQuery } from "dexie-react-hooks";
+import { updateDataset } from "@/app/db/utils";
 import React from "react";
 import DashboardCardBox from "./DashboardCardBox";
 import { Dataset } from "@/app/datasets/lib/types";
@@ -12,10 +11,11 @@ interface DashboardCardListProps {
 
 const DashboardCardList = (props: DashboardCardListProps) => {
   const { dataset } = props;
-  const dashboardCards = useLiveQuery(() => getDashboardCards(dataset.id));
   const [expandedId, setExpandedId] = React.useState<string | undefined>(
     undefined
   );
+
+  const dashboardCards = dataset.dashboardCards;
 
   if (!dashboardCards) {
     return null;
@@ -63,7 +63,7 @@ const DashboardCardList = (props: DashboardCardListProps) => {
                 }}
               >
                 <DashboardCardBox
-                  datasetId={dataset.id}
+                  dataset={dataset}
                   card={card}
                   key={card.title}
                   expandedId={expandedId}
@@ -79,7 +79,7 @@ const DashboardCardList = (props: DashboardCardListProps) => {
           .map((card) => (
             <div className="h-full w-full">
               <DashboardCardBox
-                datasetId={dataset.id}
+                dataset={dataset}
                 card={card}
                 key={card.id}
                 expandedId={expandedId}

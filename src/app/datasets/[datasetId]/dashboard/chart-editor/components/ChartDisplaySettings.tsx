@@ -7,34 +7,37 @@ import DatasetColorInput from "../../components/ChartDisplay/DatasetColorInput";
 
 interface ChartDisplaySettingsProps {
   card: DashboardCard;
+  previewCard: DashboardCard;
   setPreviewCard: (card: DashboardCard) => void;
   setCard: (card: DashboardCard) => void;
 }
 
 const ChartDisplaySettings = (props: ChartDisplaySettingsProps) => {
-  const { card, setPreviewCard, setCard } = props;
+  const { previewCard, card, setPreviewCard, setCard } = props;
   return (
     <>
       <div className="flex flex-col">
         <LabelsInput
           card={card}
-          onChangeXLabels={(e) =>
-            setCard({ ...card, showXLabels: e.target.checked })
-          }
-          onChangeYLabels={(e) =>
-            setCard({ ...card, showYLabels: e.target.checked })
-          }
+          onChangeXLabels={(e) => {
+            setCard({ ...card, showXLabels: !card.showXLabels });
+            setPreviewCard({ ...card, showXLabels: !card.showXLabels });
+          }}
+          onChangeYLabels={(e) => {
+            setCard({ ...card, showYLabels: !card.showYLabels });
+            setPreviewCard({ ...card, showYLabels: !card.showYLabels });
+          }}
         />
       </div>
       <div className="flex flex-col">
         <YAxisRangeInput
           card={card}
           onChangeYMax={(e) => {
-            setPreviewCard({ ...card, yMax: e.target.value });
+            setPreviewCard({ ...previewCard, yMax: e.target.value });
             setCard({ ...card, yMax: e.target.value });
           }}
           onChangeYMin={(e) => {
-            setPreviewCard({ ...card, yMin: e.target.value });
+            setPreviewCard({ ...previewCard, yMin: e.target.value });
             setCard({ ...card, yMin: e.target.value });
           }}
         />
@@ -43,11 +46,11 @@ const ChartDisplaySettings = (props: ChartDisplaySettingsProps) => {
         <LegendInput
           card={card}
           onChangeLegendPosition={(e) => {
-            setPreviewCard({ ...card, legendPosition: e.target.value });
+            setPreviewCard({ ...previewCard, legendPosition: e.target.value });
             setCard({ ...card, legendPosition: e.target.value });
           }}
           onChangeShowLegend={(e) => {
-            setPreviewCard({ ...card, showLegend: e.target.checked });
+            setPreviewCard({ ...previewCard, showLegend: !card.showLegend });
             setCard({ ...card, showLegend: e.target.checked });
           }}
         />
@@ -67,7 +70,7 @@ const ChartDisplaySettings = (props: ChartDisplaySettingsProps) => {
             });
 
             setPreviewCard({
-              ...card,
+              ...previewCard,
               cohortColorPalletes: newColorPallets,
             });
 

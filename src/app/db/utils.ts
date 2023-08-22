@@ -70,11 +70,6 @@ export const updateDataset = async (prevId: string, dataset: Dataset) => {
 
 export const deleteDataset = async (id: string) => {
   try {
-    const dashboardCards = await getDashboardCards(id);
-    const dashboardCardIds = dashboardCards?.map((dc) => dc.id);
-    if (dashboardCardIds) {
-      await db.dashboardCards.bulkDelete(dashboardCardIds);
-    }
     await db.datasets.delete(id);
     return true;
   } catch (error) {
@@ -188,102 +183,5 @@ export const getPatient = async (id: string, datasetId: string) => {
     return patient;
   } catch (error) {
     console.log(error);
-  }
-};
-
-export const getDashboardCards = async (forDatasetId?: string) => {
-  try {
-    const cards = await db.dashboardCards.toArray();
-    if (forDatasetId) {
-      const cardsForDataset = cards.filter(
-        (card) => card.forDatasetId === forDatasetId
-      );
-      return cardsForDataset;
-    }
-    return cards;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const dashboardCardExists = async (id: string) => {
-  try {
-    const card = await db.dashboardCards.get(id);
-    return card !== undefined;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-};
-
-export const addDashboardCard = async (card: DashboardCard) => {
-  try {
-    await db.dashboardCards.add(card);
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-};
-export const addDashboardCards = async (cards: DashboardCard[]) => {
-  try {
-    await db.dashboardCards.bulkAdd(cards);
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-};
-
-export const updateDashboardCard = async (id: string, card: any) => {
-  try {
-    await db.dashboardCards.update(id, card);
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-};
-
-export const deleteDashboardCard = async (id: string) => {
-  try {
-    await db.dashboardCards.delete(id);
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-};
-
-export const deleteDashboardCards = async (ids: string[]) => {
-  try {
-    await db.dashboardCards.bulkDelete(ids);
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-};
-
-export const getDashboardCard = async (id: string) => {
-  try {
-    const card = await db.dashboardCards.get(id);
-    return card;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const addCSVExportColumns = async (columns: CSVColumn[]) => {
-  const csvDbColumns: CSVExportColumns = {
-    id: generateUniqueId(),
-    columns: columns,
-  };
-  try {
-    await db.csvExportColumns.add(csvDbColumns);
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
   }
 };

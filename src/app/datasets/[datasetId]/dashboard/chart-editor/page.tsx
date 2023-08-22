@@ -6,9 +6,10 @@ import { defaultCard } from "../lib/exampleCards";
 import ChartEditor from "./components/ChartEditor";
 import { useSearchParams } from "next/navigation";
 import { addMode, editMode } from "@/app/datasets/lib/constants";
-import { getDashboardCard, getDataset } from "@/app/db/utils";
+import { getDataset } from "@/app/db/utils";
 import { useLiveQuery } from "dexie-react-hooks";
 import { SaveModes } from "@/app/datasets/lib/types";
+import { getDashboardCard } from "@/app/datasets/lib/dashboardCardUtils";
 
 const page = ({ params }: { params: { datasetId: string } }) => {
   const searchParams = useSearchParams();
@@ -18,16 +19,16 @@ const page = ({ params }: { params: { datasetId: string } }) => {
 
   const dataset = useLiveQuery(() => getDataset(params.datasetId))!;
 
+  if (!dataset) {
+    return null;
+  }
+
   if (cardId) {
     mode = editMode;
-    initialCard = useLiveQuery(() => getDashboardCard(cardId))!;
+    initialCard = getDashboardCard(cardId, dataset)!;
     if (!initialCard) {
       return null;
     }
-  }
-
-  if (!dataset) {
-    return null;
   }
 
   return (

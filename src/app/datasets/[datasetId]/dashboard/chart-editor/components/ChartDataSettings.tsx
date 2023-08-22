@@ -81,10 +81,8 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
     );
     if (selectedTemplate) {
       if (mode === editMode) {
-        console.log("template: ", selectedTemplate);
-        console.log("card: ", card);
-        // selectedTemplate.id = card.id;
-        // selectedTemplate.showOnHomePage = card.showOnHomePage;
+        selectedTemplate.id = card.id;
+        selectedTemplate.showOnHomePage = card.showOnHomePage;
       }
       setCard(selectedTemplate);
     }

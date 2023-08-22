@@ -4,7 +4,7 @@ import {
   removeResourcesFromDatasetBySource,
   updateDataset,
 } from "@/app/db/utils";
-import { toastError, toastPromise, toastSuccess } from "@/app/lib/toasts";
+import { toastError, toastSuccess } from "@/app/lib/toasts";
 import React, { useState } from "react";
 import { Dataset } from "../lib/types";
 import { resolveReferencesForDataset } from "../lib/resolveReferences";

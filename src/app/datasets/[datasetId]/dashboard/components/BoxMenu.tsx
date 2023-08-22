@@ -1,4 +1,3 @@
-import { updateDashboardCard } from "@/app/db/utils";
 import React, { useEffect } from "react";
 import { DashboardCard } from "../lib/types";
 import LabelsInput from "./ChartDisplay/LabelsInput";
@@ -6,16 +5,18 @@ import YAxisRangeInput from "./ChartDisplay/YAxisRangeInput";
 import LegendInput from "./ChartDisplay/LegendInput";
 import DatasetColorInput from "./ChartDisplay/DatasetColorInput";
 import { useRouter } from "next/navigation";
+import { updateDashboardCard } from "@/app/datasets/lib/dashboardCardUtils";
+import { Dataset } from "@/app/datasets/lib/types";
 
 interface BoxMenuProps {
   card: DashboardCard;
   handleDelete: () => void;
   setShowMenu: (showMenu: boolean) => void;
-  datasetId: string;
+  dataset: Dataset;
 }
 
 const BoxMenu = (props: BoxMenuProps) => {
-  const { card, handleDelete, setShowMenu, datasetId } = props;
+  const { card, handleDelete, setShowMenu, dataset } = props;
   const router = useRouter();
   useEffect(() => {
     window.addEventListener("click", function (e: any) {
@@ -43,7 +44,7 @@ const BoxMenu = (props: BoxMenuProps) => {
           className="text-blue-500 hover:underline"
           onClick={() => {
             router.push(
-              `/datasets/${datasetId}/dashboard/chart-editor?cardId=${card.id}`
+              `/datasets/${dataset.id}/dashboard/chart-editor?cardId=${card.id}`
             );
           }}
         >
@@ -57,32 +58,44 @@ const BoxMenu = (props: BoxMenuProps) => {
       <LabelsInput
         card={card}
         onChangeXLabels={async (e) => {
-          await updateDashboardCard(card.id, {
-            ...card,
-            showXLabels: !card.showXLabels,
-          });
+          await updateDashboardCard(
+            {
+              ...card,
+              showXLabels: !card.showXLabels,
+            },
+            dataset
+          );
         }}
         onChangeYLabels={async (e) => {
-          await updateDashboardCard(card.id, {
-            ...card,
-            showYLabels: !card.showYLabels,
-          });
+          await updateDashboardCard(
+            {
+              ...card,
+              showYLabels: !card.showYLabels,
+            },
+            dataset
+          );
         }}
       />
       <div className="flex flex-row items-center gap-2 px-2">
         <YAxisRangeInput
           card={card}
           onChangeYMax={async (e) => {
-            await updateDashboardCard(card.id, {
-              ...card,
-              yMax: e.target.value,
-            });
+            await updateDashboardCard(
+              {
+                ...card,
+                yMax: e.target.value,
+              },
+              dataset
+            );
           }}
           onChangeYMin={async (e) => {
-            await updateDashboardCard(card.id, {
-              ...card,
-              yMin: e.target.value,
-            });
+            await updateDashboardCard(
+              {
+                ...card,
+                yMin: e.target.value,
+              },
+              dataset
+            );
           }}
         />
       </div>
@@ -90,34 +103,43 @@ const BoxMenu = (props: BoxMenuProps) => {
       <LegendInput
         card={card}
         onChangeLegendPosition={async (e) => {
-          await updateDashboardCard(card.id, {
-            ...card,
-            legendPosition: e.target.value,
-          });
+          await updateDashboardCard(
+            {
+              ...card,
+              legendPosition: e.target.value,
+            },
+            dataset
+          );
         }}
         onChangeShowLegend={async (e) => {
-          await updateDashboardCard(card.id, {
-            ...card,
-            showLegend: !card.showLegend,
-          });
+          await updateDashboardCard(
+            {
+              ...card,
+              showLegend: !card.showLegend,
+            },
+            dataset
+          );
         }}
       />
       <hr className="border-gray-200 w-full my-1" />
       <DatasetColorInput
         card={card}
         onChange={async (e, itemId) =>
-          await updateDashboardCard(card.id, {
-            ...card,
-            cohortColorPalletes: card.cohortColorPalletes.map((c) => {
-              if (c.id === itemId) {
-                return {
-                  ...c,
-                  chartColour: e.target.value,
-                };
-              }
-              return c;
-            }),
-          })
+          await updateDashboardCard(
+            {
+              ...card,
+              cohortColorPalletes: card.cohortColorPalletes.map((c) => {
+                if (c.id === itemId) {
+                  return {
+                    ...c,
+                    chartColour: e.target.value,
+                  };
+                }
+                return c;
+              }),
+            },
+            dataset
+          )
         }
       />
     </div>

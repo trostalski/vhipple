@@ -19,9 +19,12 @@ import {
   defaultNumDataPoints,
 } from "../../lib/constants";
 import { generateUniqueId } from "@/app/lib/utils";
-import { addDashboardCard, updateDashboardCard } from "@/app/db/utils";
 import { addMode } from "@/app/datasets/lib/constants";
 import { useRouter } from "next/navigation";
+import {
+  addDashboardCard,
+  updateDashboardCard,
+} from "@/app/datasets/lib/dashboardCardUtils";
 
 interface ChartEditorProps {
   mode: "add" | "edit";
@@ -88,7 +91,7 @@ const ChartEditor = (props: ChartEditorProps) => {
     finalCard.createdAt = new Date().toISOString();
     finalCard.updatedAt = new Date().toISOString();
     finalCard.forDatasetId = dataset.id;
-    const res = await addDashboardCard(finalCard);
+    const res = await addDashboardCard(finalCard, dataset);
     if (res) {
       toastSuccess("Card created");
       router.back();
@@ -101,10 +104,10 @@ const ChartEditor = (props: ChartEditorProps) => {
     const finalCard = addDataToCard(card);
     if (!finalCard) return;
     finalCard.updatedAt = new Date().toISOString();
-    const res = await updateDashboardCard(finalCard.id, finalCard);
+    const res = await updateDashboardCard(finalCard, dataset);
     if (res) {
       toastSuccess("Card updated");
-      // router.back();
+      router.back();
     } else {
       toastError("Error updating card");
     }
@@ -146,6 +149,7 @@ const ChartEditor = (props: ChartEditorProps) => {
               card={previewCard}
               setCard={setCard}
               setPreviewCard={setPreviewCard}
+              previewCard={previewCard}
             />
           </div>
         </div>

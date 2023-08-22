@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import AddDatasetModal from "./AddDatasetModal";
-import { addMode } from "../lib/constants";
+import { addMode, defaultDataset } from "../lib/constants";
 import { IoAdd } from "react-icons/io5";
 import { AiOutlineSetting } from "react-icons/ai";
 import SettingsModal from "./SettingsModal";
+import { generateUniqueId } from "@/app/lib/utils";
 
 interface DatasetsHeaderProps {}
 
@@ -36,6 +37,7 @@ const DatasetsHeader = (props: DatasetsHeaderProps) => {
       )}
       {showAddDatasetModal && (
         <AddDatasetModal
+          dataset={{ ...defaultDataset }}
           showModal={showAddDatasetModal}
           setShowModal={setShowAddDatasetModal}
           mode={addMode}

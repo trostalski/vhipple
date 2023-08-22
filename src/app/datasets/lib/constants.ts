@@ -1,8 +1,11 @@
-import { generateUniqueId } from "@/app/lib/utils";
 import { Dataset, FhirPathAlias, PatientCohort } from "./types";
+import { allPatientsCohortName } from "../[datasetId]/dashboard/lib/constants";
 
 export const addMode = "add";
 export const editMode = "edit";
+
+export const patientIncludeCritriumString = "include";
+export const patientExcludeCritriumString = "exclude";
 
 const defaultFhirPathAliases: FhirPathAlias[] = [
   {
@@ -32,6 +35,50 @@ const defaultFhirPathAliases: FhirPathAlias[] = [
   },
 ];
 
+export const defaultPatientCohorts: PatientCohort[] = [
+  {
+    id: "0",
+    name: allPatientsCohortName,
+    createdAt: "",
+    updatedAt: "",
+    exclusionCriteria: [],
+    inclusionCriteria: [],
+    patientIds: [],
+  },
+  {
+    id: "1",
+    name: "Male Patients",
+    createdAt: "",
+    updatedAt: "",
+    exclusionCriteria: [],
+    inclusionCriteria: [
+      {
+        id: "0",
+        fhirPath: "Patient.gender='male'",
+        name: "Only Male",
+        type: patientIncludeCritriumString,
+      },
+    ],
+    patientIds: [],
+  },
+  {
+    id: "2",
+    name: "Female Patients",
+    createdAt: "",
+    updatedAt: "",
+    exclusionCriteria: [],
+    inclusionCriteria: [
+      {
+        id: "0",
+        fhirPath: "Patient.gender='female'",
+        name: "Only Female",
+        type: patientIncludeCritriumString,
+      },
+    ],
+    patientIds: [],
+  },
+];
+
 export const defaultDataset: Dataset = {
   id: "",
   name: "",
@@ -45,6 +92,3 @@ export const defaultDataset: Dataset = {
   dashboardColNums: 2,
   fhirPathAliases: defaultFhirPathAliases,
 };
-
-export const patientIncludeCritriumString = "include";
-export const patientExcludeCritriumString = "exclude";

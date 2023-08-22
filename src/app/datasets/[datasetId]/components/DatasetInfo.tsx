@@ -88,7 +88,7 @@ export const DatasetInfo = (props: DatasetInfoProps) => {
   );
 
   return (
-    <div className="relative flex flex-col gap-2">
+    <div className="relative flex flex-col gap-2 pb-12">
       <div className="">
         <span className="text-xl font-bold">Dataset Info</span>
       </div>

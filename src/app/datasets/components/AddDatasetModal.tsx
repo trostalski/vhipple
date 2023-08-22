@@ -13,12 +13,15 @@ import { AiFillDelete } from "react-icons/ai";
 import { generateUniqueId } from "@/app/lib/utils";
 import { addMode, defaultDataset, editMode } from "../lib/constants";
 import useBundleUpload from "../hooks/useBundleUpload";
-import { generateDefaultDatasetDashboardCards } from "../lib/datasetUtils";
+import {
+  generateDefaultDatasetDashboardCards,
+  generateDefaultPatientCohorts,
+} from "../lib/datasetUtils";
 
 interface AddDatasetModalProps {
   showModal: boolean;
   setShowModal: (showModal: boolean) => void;
-  dataset?: Dataset;
+  dataset: Dataset;
   mode: "add" | "edit";
 }
 
@@ -26,16 +29,14 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
   const { showModal, setShowModal, mode, dataset: initialDataset } = props;
   const { selectedResources, uploadBundles, setSelectedResources } =
     useBundleUpload();
-  const [dataset, setDataset] = useState<Dataset>(
-    initialDataset || defaultDataset
-  );
+  const [dataset, setDataset] = useState<Dataset>(initialDataset);
 
   // previous dataset name when editing
-  const prevDatasetId = dataset?.id || "";
+  const prevDatasetId = dataset.id;
 
   // previous sources for displaying file names when editing
   const prevSources =
-    dataset?.resourceContainers.map((rc) => rc.source).filter(onlyUnique) || [];
+    dataset.resourceContainers.map((rc) => rc.source).filter(onlyUnique) || [];
 
   const handleSubmit = async () => {
     const newResourceContainers = selectedResources.flatMap(
@@ -57,8 +58,11 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       dataset.id = generateUniqueId();
       await addDataset(dataset);
       await generateDefaultDatasetDashboardCards(dataset);
+      await generateDefaultPatientCohorts(dataset);
     } else if (mode === editMode) {
       dataset.updatedAt = new Date().toISOString();
+      await generateDefaultDatasetDashboardCards(dataset);
+      await generateDefaultPatientCohorts(dataset);
       await updateDataset(prevDatasetId, dataset);
     }
     return true;

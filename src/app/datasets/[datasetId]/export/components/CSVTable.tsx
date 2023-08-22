@@ -32,7 +32,7 @@ const CSVTable = (props: CSVTableProps) => {
   });
 
   return (
-    <div className="flex flex-col h-[40vh] w-full bg-white rounded-md border shadow-lg px-4">
+    <div className="flex flex-col max-h-[60vh] w-full bg-white rounded-md border shadow-lg px-4 overflow-scroll">
       <table className="overflow-scroll">
         <thead className="h-12 bg-slate-50 p-2">
           {table.getHeaderGroups().map((headerGroup) => (

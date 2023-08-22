@@ -10,6 +10,7 @@ import { Tooltip } from "react-tooltip";
 import { BiCollapse } from "react-icons/bi";
 import { Dataset } from "@/app/datasets/lib/types";
 import { deleteDashboardCard } from "@/app/datasets/lib/dashboardCardUtils";
+import { toastSuccess } from "@/app/lib/toasts";
 
 interface DashboardCardBoxProps {
   card: DashboardCard;
@@ -24,7 +25,12 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
   const [numDataPoints, setNumDataPoints] = useState(card.numDataPoints); // specifies the number of data points to show in the chart
 
   const handleDelete = async () => {
-    await deleteDashboardCard(card.id, dataset);
+    const res = await deleteDashboardCard(card.id, dataset);
+    if (res) {
+      toastSuccess("Card deleted successfully");
+    } else {
+      toastSuccess("Error deleting card");
+    }
   };
 
   const isExpanded = card.id === expandedId;

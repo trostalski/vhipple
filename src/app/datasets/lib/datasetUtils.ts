@@ -5,12 +5,15 @@ import { generateUniqueId } from "@/app/lib/utils";
 import {
   allPatientsCohortId,
   availableChartColours,
+  defaultPatientCohort,
 } from "../[datasetId]/dashboard/lib/constants";
 import { Patient } from "fhir/r4";
 import { DatasetInfo } from "../[datasetId]/lib/types";
 import { getMostCommonPathValue } from "./fhirpathUilts";
 import { getAge } from "../[datasetId]/patients/lib/utils";
 import { updateDataset } from "@/app/db/utils";
+import { computePatientCohort } from "./cohortUtils";
+import { defaultPatientCohorts } from "./constants";
 
 const homePageCards = ["Condition.code.coding.display", "Patient.gender"];
 
@@ -48,7 +51,23 @@ export const generateDefaultDatasetDashboardCards = async (
   return res;
 };
 
-export const generateDefaultPatientCohorts = async (dataset: Dataset) => {};
+export const generateDefaultPatientCohorts = async (dataset: Dataset) => {
+  const cohorts = [];
+  for (const cohort of defaultPatientCohorts) {
+    cohort.id = generateUniqueId();
+    cohort.createdAt = new Date().toISOString();
+    cohort.updatedAt = new Date().toISOString();
+    cohort.patientIds = computePatientCohort(
+      dataset,
+      cohort.inclusionCriteria.map((c) => c.fhirPath),
+      cohort.inclusionCriteria.map((c) => c.type)
+    );
+    cohorts.push(cohort);
+  }
+  dataset.patientCohorts = cohorts;
+  const res = await updateDataset(dataset.id, dataset);
+  return res;
+};
 
 export const getConnectedResourcesForResourceContainer = (
   resourceContainer: ResourceContainer,

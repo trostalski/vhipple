@@ -16,6 +16,7 @@ interface FhirPathInputProps {
   enablPreview: boolean;
   enableSelect: boolean;
   disabled?: boolean;
+  name?: string;
   top?: string;
   left?: string;
   bottom?: string;
@@ -32,6 +33,7 @@ const FhirPathInput = (props: FhirPathInputProps) => {
     enablPreview,
     enableSelect,
     disabled,
+    name,
     bottom,
     right,
     top,
@@ -45,11 +47,14 @@ const FhirPathInput = (props: FhirPathInputProps) => {
   const handleSelect = (fhirPathAlias: FhirPathAlias) => {
     onChangeHandler({
       target: {
+        name: elementName,
         value: fhirPathAlias.path,
       },
     } as React.ChangeEvent<HTMLInputElement>);
     setShowFhirPathSelect(false);
   };
+
+  const elementName = name || "fhirpath";
 
   return (
     <div className="relative flex flex-row w-full gap-1">
@@ -59,7 +64,7 @@ const FhirPathInput = (props: FhirPathInputProps) => {
           disabled && "opacity-50"
         }`}
         type="text"
-        name="fhirpath"
+        name={elementName}
         id="fhirpath"
         value={value}
         onChange={onChangeHandler}

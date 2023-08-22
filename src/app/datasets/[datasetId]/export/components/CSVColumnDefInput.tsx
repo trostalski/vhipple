@@ -71,6 +71,7 @@ const CSVColumnDefInput = (props: CSVColumnDefInputProps) => {
       <div className="col-span-2">
         <FhirPathInput
           fhirPathAliases={fhirPathAliases}
+          name="valueFhirpath"
           resources={resources}
           datasetId={datasetId}
           enablPreview={false}

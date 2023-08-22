@@ -53,36 +53,19 @@ const BoxMenu = (props: BoxMenuProps) => {
           Delete
         </button>
       </div>
-      <div className="flex flex-row items-center gap-2 px-2">
-        <input
-          id="show-chart"
-          type="checkbox"
-          className=""
-          checked={card.showChart}
-          onChange={() => {
-            updateDashboardCard(card.id, {
-              ...card,
-              showChart: !card.showChart,
-            });
-          }}
-        />
-        <label htmlFor="show-chart" className="">
-          show Chart
-        </label>
-      </div>
-      <hr className="border-gray-200 w-full my-1" />
+      <hr className="border-gray-200 w-full my-1" />{" "}
       <LabelsInput
         card={card}
         onChangeXLabels={async (e) => {
           await updateDashboardCard(card.id, {
             ...card,
-            xLabels: e.target.value,
+            showXLabels: !card.showXLabels,
           });
         }}
         onChangeYLabels={async (e) => {
           await updateDashboardCard(card.id, {
             ...card,
-            yLabels: e.target.value,
+            showYLabels: !card.showYLabels,
           });
         }}
       />

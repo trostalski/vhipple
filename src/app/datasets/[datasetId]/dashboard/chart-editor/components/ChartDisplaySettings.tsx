@@ -7,59 +7,75 @@ import DatasetColorInput from "../../components/ChartDisplay/DatasetColorInput";
 
 interface ChartDisplaySettingsProps {
   card: DashboardCard;
+  setPreviewCard: (card: DashboardCard) => void;
   setCard: (card: DashboardCard) => void;
 }
 
 const ChartDisplaySettings = (props: ChartDisplaySettingsProps) => {
-  const { card, setCard } = props;
+  const { card, setPreviewCard, setCard } = props;
   return (
     <>
       <div className="flex flex-col">
         <LabelsInput
           card={card}
           onChangeXLabels={(e) =>
-            setCard({ ...card, showXLables: e.target.checked })
+            setCard({ ...card, showXLabels: e.target.checked })
           }
           onChangeYLabels={(e) =>
-            setCard({ ...card, showYLables: e.target.checked })
+            setCard({ ...card, showYLabels: e.target.checked })
           }
         />
       </div>
       <div className="flex flex-col">
         <YAxisRangeInput
           card={card}
-          onChangeYMax={(e) => setCard({ ...card, yMax: e.target.value })}
-          onChangeYMin={(e) => setCard({ ...card, yMin: e.target.value })}
+          onChangeYMax={(e) => {
+            setPreviewCard({ ...card, yMax: e.target.value });
+            setCard({ ...card, yMax: e.target.value });
+          }}
+          onChangeYMin={(e) => {
+            setPreviewCard({ ...card, yMin: e.target.value });
+            setCard({ ...card, yMin: e.target.value });
+          }}
         />
       </div>
       <div>
         <LegendInput
           card={card}
-          onChangeLegendPosition={(e) =>
-            setCard({ ...card, legendPosition: e.target.value })
-          }
-          onChangeShowLegend={(e) =>
-            setCard({ ...card, showLegend: e.target.checked })
-          }
+          onChangeLegendPosition={(e) => {
+            setPreviewCard({ ...card, legendPosition: e.target.value });
+            setCard({ ...card, legendPosition: e.target.value });
+          }}
+          onChangeShowLegend={(e) => {
+            setPreviewCard({ ...card, showLegend: e.target.checked });
+            setCard({ ...card, showLegend: e.target.checked });
+          }}
         />
       </div>
       <div className="col-span-2">
         <DatasetColorInput
           card={card}
-          onChange={(e, itemId) =>
+          onChange={(e, itemId) => {
+            const newColorPallets = card.cohortColorPalletes.map((c) => {
+              if (c.id === itemId) {
+                return {
+                  ...c,
+                  chartColour: e.target.value,
+                };
+              }
+              return c;
+            });
+
+            setPreviewCard({
+              ...card,
+              cohortColorPalletes: newColorPallets,
+            });
+
             setCard({
               ...card,
-              cohortColorPalletes: card.cohortColorPalletes.map((c) => {
-                if (c.id === itemId) {
-                  return {
-                    ...c,
-                    chartColour: e.target.value,
-                  };
-                }
-                return c;
-              }),
-            })
-          }
+              cohortColorPalletes: newColorPallets,
+            });
+          }}
         />
       </div>
     </>

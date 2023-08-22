@@ -31,12 +31,6 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
   const TopButtons = () => {
     return (
       <div className="flex flex-row items-center gap-1">
-        {/* <button className="text-primary-button border rounded-md px-2 py-1 transition hover:scale-110">
-          {"<"}
-        </button>
-        <button className="text-primary-button border rounded-md px-2 py-1 transition hover:scale-110">
-          {">"}
-        </button> */}
         <button
           className="text-primary-button border rounded-md p-1 transition hover:scale-110"
           onClick={(e) => {

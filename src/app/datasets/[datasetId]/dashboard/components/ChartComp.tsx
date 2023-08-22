@@ -60,10 +60,10 @@ const ChartComp = (props: ChartCompProps) => {
     maintainAspectRatio: false,
     scales: {
       x: {
-        display: card.showXLables,
+        display: card.showXLabels,
       },
       y: {
-        display: card.showYLables,
+        display: card.showYLabels,
         min: Number(yMin),
         max: Number(yMax),
       },

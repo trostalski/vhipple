@@ -30,9 +30,8 @@ export interface DashboardCard {
   yMin?: number | string;
   yMax?: number | string;
   numDataPoints: number;
-  showChart: boolean;
-  showXLables: boolean;
-  showYLables: boolean;
+  showXLabels: boolean;
+  showYLabels: boolean;
   showLegend: boolean;
   legendPosition: (typeof availableLegendPositions)[number];
   createdAt: string;

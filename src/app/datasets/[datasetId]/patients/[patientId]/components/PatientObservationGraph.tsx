@@ -31,8 +31,8 @@ const PatientObservationGraph = (props: PatientLabGraphProps) => {
       ...defaultCard,
       chartType: "line",
       title: input,
-      showXLables: true,
-      showYLables: true,
+      showXLabels: true,
+      showYLabels: true,
       showLegend: false,
       data: {
         labels: observations.map((observation) =>

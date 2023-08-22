@@ -15,12 +15,14 @@ import { Dataset } from "@/app/datasets/lib/types";
 import { Resource } from "fhir/r4";
 import { getResourcesForCohort } from "@/app/datasets/lib/cohortUtils";
 import CohortSelect from "../../../components/CohortMultiSelect";
+import { editMode } from "@/app/datasets/lib/constants";
 
 interface ChartDataSettingsProps {
   card: DashboardCard;
   setCard: (card: DashboardCard) => void;
   dataset: Dataset;
   patientCohortOptions: OptionType[];
+  mode: "add" | "edit";
   showPreviewCard: (baseCard: DashboardCard) => void;
   handleSave: (baseCard: DashboardCard) => void;
 }
@@ -33,6 +35,7 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
     dataset,
     showPreviewCard,
     handleSave,
+    mode,
   } = props;
   const [selectedTemplateId, setSelectedTemplateId] = useState<
     OptionType | undefined
@@ -77,6 +80,12 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
       (c) => c.title === template.label
     );
     if (selectedTemplate) {
+      if (mode === editMode) {
+        console.log("template: ", selectedTemplate);
+        console.log("card: ", card);
+        // selectedTemplate.id = card.id;
+        // selectedTemplate.showOnHomePage = card.showOnHomePage;
+      }
       setCard(selectedTemplate);
     }
   };
@@ -182,10 +191,9 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
               enableSelect={true}
             />
           </div>
-
-          <div className="flex flex-col">
-            <label className="text-gray-500">Label Fhirpath</label>
-            {numerical1DChartTypes.includes(card.chartType) && (
+          {numerical1DChartTypes.includes(card.chartType) && (
+            <div className="flex flex-col">
+              <label className="text-gray-500">Label Fhirpath</label>
               <FhirPathInput
                 fhirPathAliases={dataset.fhirPathAliases}
                 datasetId={dataset.id}
@@ -197,8 +205,8 @@ const ChartDataSettings = (props: ChartDataSettingsProps) => {
                 enablPreview={true}
                 enableSelect={true}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="grow" />

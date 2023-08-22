@@ -16,7 +16,7 @@ const LabelsInput = (props: LabelsInputProps) => {
           id="x-labels"
           type="checkbox"
           className=""
-          checked={card.showXLables}
+          checked={card.showXLabels}
           onChange={onChangeXLabels}
         />
         <label htmlFor="x-labels" className="">
@@ -28,7 +28,7 @@ const LabelsInput = (props: LabelsInputProps) => {
           id="y-labels"
           type="checkbox"
           className=""
-          checked={card.showYLables}
+          checked={card.showYLabels}
           onChange={onChangeYLabels}
         />
         <label htmlFor="y-labels" className="">

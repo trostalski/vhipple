@@ -21,6 +21,7 @@ import {
 import { generateUniqueId } from "@/app/lib/utils";
 import { addDashboardCard, updateDashboardCard } from "@/app/db/utils";
 import { addMode } from "@/app/datasets/lib/constants";
+import { useRouter } from "next/navigation";
 
 interface ChartEditorProps {
   mode: "add" | "edit";
@@ -31,6 +32,7 @@ interface ChartEditorProps {
 
 const ChartEditor = (props: ChartEditorProps) => {
   const { mode, initialCard, patientCohorts, dataset } = props;
+  const router = useRouter();
   const [numDataPoints, setNumDataPoints] =
     useState<number>(defaultNumDataPoints);
   const [card, setCard] = useState<DashboardCard>(
@@ -89,6 +91,7 @@ const ChartEditor = (props: ChartEditorProps) => {
     const res = await addDashboardCard(finalCard);
     if (res) {
       toastSuccess("Card created");
+      router.back();
     } else {
       toastError("Error creating card");
     }
@@ -101,6 +104,7 @@ const ChartEditor = (props: ChartEditorProps) => {
     const res = await updateDashboardCard(finalCard.id, finalCard);
     if (res) {
       toastSuccess("Card updated");
+      // router.back();
     } else {
       toastError("Error updating card");
     }
@@ -119,6 +123,7 @@ const ChartEditor = (props: ChartEditorProps) => {
     >
       <ChartDataSettings
         card={card}
+        mode={mode}
         setCard={setCard}
         patientCohortOptions={patientCohortOptions}
         dataset={dataset}
@@ -137,7 +142,11 @@ const ChartEditor = (props: ChartEditorProps) => {
           />
           <hr className="w-full my-2" />
           <div className="grid grid-cols-5 pt-4 w-full h-1/12 px-32">
-            <ChartDisplaySettings card={previewCard} setCard={setPreviewCard} />
+            <ChartDisplaySettings
+              card={previewCard}
+              setCard={setCard}
+              setPreviewCard={setPreviewCard}
+            />
           </div>
         </div>
       )}

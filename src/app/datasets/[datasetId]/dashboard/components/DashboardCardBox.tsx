@@ -102,6 +102,7 @@ const DashboardCardBox = (props: DashboardCardBoxProps) => {
       </div>
       <DataPointsRange
         card={card}
+        dataset={dataset}
         numDataPoints={numDataPoints}
         setNumDataPoints={setNumDataPoints}
       />

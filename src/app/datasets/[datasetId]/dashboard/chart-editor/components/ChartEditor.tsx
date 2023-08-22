@@ -139,6 +139,7 @@ const ChartEditor = (props: ChartEditorProps) => {
             <ChartComp card={previewCard} />
           </div>
           <DataPointsRange
+            dataset={dataset}
             card={previewCard}
             numDataPoints={numDataPoints}
             setNumDataPoints={setNumDataPoints}

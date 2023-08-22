@@ -1,21 +1,26 @@
 import React from "react";
 import { DashboardCard } from "../lib/types";
-import { updateDashboardCard } from "@/app/db/utils";
 import { maxNumDataPoints } from "../lib/constants";
+import { updateDashboardCard } from "@/app/datasets/lib/dashboardCardUtils";
+import { Dataset } from "@/app/datasets/lib/types";
 
 interface DataPointsRangeProps {
   numDataPoints: number;
   setNumDataPoints: (numDataPoints: number) => void;
   card: DashboardCard;
+  dataset: Dataset;
 }
 
 const DataPointsRange = (props: DataPointsRangeProps) => {
-  const { numDataPoints, setNumDataPoints, card } = props;
+  const { numDataPoints, setNumDataPoints, card, dataset } = props;
   const updateCardDataPoints = async () => {
-    await updateDashboardCard(card.id, {
-      ...card,
-      numDataPoints: numDataPoints,
-    });
+    await updateDashboardCard(
+      {
+        ...card,
+        numDataPoints: numDataPoints,
+      },
+      dataset
+    );
   };
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {

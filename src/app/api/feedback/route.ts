@@ -45,4 +45,5 @@ export async function POST(req: Request, res: NextApiResponse) {
     subject: "Feedback from " + body.email,
     text: createEmailMessage(body),
   });
+  res.status(200);
 }

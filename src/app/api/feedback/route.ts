@@ -38,12 +38,12 @@ const sendEmail = async (data: EmailPayload) => {
   });
 };
 
-export async function POST(req: Request, res: NextApiResponse) {
+export async function POST(req: Request) {
   const body: FeedBackInput = await req.json();
   await sendEmail({
     from: process.env.SMTP_FROM_EMAIL || "",
     subject: "Feedback from " + body.email,
     text: createEmailMessage(body),
   });
-  res.status(200);
+  return NextResponse.json({ message: "success" }, { status: 200 });
 }

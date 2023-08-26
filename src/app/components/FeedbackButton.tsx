@@ -47,11 +47,14 @@ const StarRating = (props: StarRatingProps) => {
 
 const FeedbackButton = () => {
   const [showFeedback, setShowFeedback] = useState(false);
-  const [feedbackInput, setFeedbackInput] = useState<FeedBackInput>({
+  const defaultFeedbackInput = {
     comment: "",
     email: "",
     name: undefined,
     rating: undefined,
+  };
+  const [feedbackInput, setFeedbackInput] = useState<FeedBackInput>({
+    ...defaultFeedbackInput,
   });
 
   const handleSubmit = async () => {
@@ -78,7 +81,9 @@ const FeedbackButton = () => {
   };
 
   const handleCancel = () => {
-    setFeedbackInput({ comment: "", email: "" });
+    setFeedbackInput({
+      ...defaultFeedbackInput,
+    });
     setShowFeedback(false);
   };
 

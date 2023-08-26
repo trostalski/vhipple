@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   const body: FeedBackInput = await req.json();
   await sendEmail({
     from: process.env.SMTP_FROM_EMAIL || "",
-    subject: "Feedback from " + body.email,
+    subject: "Vhipple Feedback from " + body.email,
     text: createEmailMessage(body),
   });
   return NextResponse.json({ message: "success" }, { status: 200 });

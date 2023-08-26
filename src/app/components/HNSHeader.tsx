@@ -4,7 +4,7 @@ import { RiAncientGateFill } from "react-icons/ri";
 
 const HNSHeader = () => {
   return (
-    <header>
+    <header id="hns-header">
       <nav className="flex flex-row fixed left-0 top-0 w-full h-10 bg-primary-button items-center text-white font-light px-4 z-10">
         <h1>Vhipple</h1>
         <span className="flex-grow"></span>

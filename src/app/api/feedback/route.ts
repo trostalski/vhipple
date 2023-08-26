@@ -9,7 +9,6 @@ type EmailPayload = {
   text: string;
 };
 
-// Replace with your SMTP credentials
 const smtpOptions = {
   host: process.env.SMTP_HOST || "",
   port: parseInt(process.env.SMTP_PORT || ""),

@@ -89,6 +89,6 @@ export const defaultDataset: Dataset = {
   updatedAt: "",
   createdAt: "",
   size: 0,
-  dashboardColNums: 2,
+  dashboardColNums: 3,
   fhirPathAliases: defaultFhirPathAliases,
 };

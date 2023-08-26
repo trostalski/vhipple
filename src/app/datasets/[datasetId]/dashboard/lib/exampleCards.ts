@@ -20,7 +20,7 @@ export const baseExampleCard: DashboardCard = {
   numDataPoints: defaultNumDataPoints,
   yMin: undefined,
   yMax: undefined,
-  showLegend: true,
+  showLegend: false,
   legendPosition: "top",
   showXLabels: true,
   showYLabels: true,

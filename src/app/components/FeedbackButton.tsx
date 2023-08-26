@@ -50,9 +50,11 @@ const FeedbackButton = () => {
   const [feedbackInput, setFeedbackInput] = useState<FeedBackInput>({
     comment: "",
     email: "",
+    name: undefined,
+    rating: undefined,
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!feedbackInput.comment) {
       toastError("Please enter a comment");
       return;
@@ -61,19 +63,18 @@ const FeedbackButton = () => {
       toastError("Please enter a valid email address");
       return;
     }
-    fetch("/api/feedback", {
+    const res: any = await fetch("/api/feedback", {
       method: "POST",
       body: JSON.stringify(feedbackInput),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.success) {
-          toastSuccess("Successfully submitted feedback");
-          handleCancel();
-        } else {
-          toastError("Failed to submit feedback");
-        }
-      });
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (res.ok) {
+      toastSuccess("Feedback submitted successfully");
+    } else {
+      toastError("Something went wrong");
+    }
   };
 
   const handleCancel = () => {
@@ -96,8 +97,8 @@ const FeedbackButton = () => {
 
   return (
     <div
-      className={`fixed flex w-[50vw] items-center flex-row bottom-0 -right-[44vw] ease-in-out duration-300 
-    ${showFeedback ? "-translate-x-[44vw]" : "translate-x-0"}`}
+      className={`fixed flex w-[600px] items-center flex-row bottom-0 -right-[512px] ease-in-out duration-300 
+    ${showFeedback ? "-translate-x-[512px]" : "translate-x-0"}`}
     >
       <button
         className={`text-gray-500 shadow-lg rounded-md p-2 transform -rotate-90 translate-x-8 text-sm ${

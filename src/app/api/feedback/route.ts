@@ -1,5 +1,6 @@
 import { FeedBackInput } from "@/app/components/FeedbackButton";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 type EmailPayload = {
@@ -19,6 +20,14 @@ const smtpOptions = {
   },
 };
 
+const createEmailMessage = (data: FeedBackInput) => {
+  const email = data.email;
+  const comment = data.comment;
+  const nameString = data.name || "Name: Not provided";
+  const ratingString = data.rating || "Rating: Not provided";
+  return `Name: ${nameString}\nEmail: ${email}\nRating: ${ratingString}\nComment: ${comment}`;
+};
+
 const sendEmail = async (data: EmailPayload) => {
   const transporter = nodemailer.createTransport({
     ...smtpOptions,
@@ -30,20 +39,11 @@ const sendEmail = async (data: EmailPayload) => {
   });
 };
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request, res: NextApiResponse) {
   const body: FeedBackInput = await req.json();
-  const message =
-    body.name +
-    " sent you a message from " +
-    body.email +
-    " " +
-    body.rating +
-    " " +
-    body.comment;
-
   await sendEmail({
-    from: body.name + " " + body.email,
+    from: process.env.SMTP_FROM_EMAIL || "",
     subject: "Feedback from " + body.email,
-    text: message,
+    text: createEmailMessage(body),
   });
 }

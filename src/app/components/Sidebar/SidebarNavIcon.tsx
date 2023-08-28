@@ -4,17 +4,19 @@ interface SidebarNavIconProps {
   onClick: () => void;
   sidebarOpen: boolean;
   isActive: boolean;
+  id: string;
 }
 
 const SidebarNavIcon = (props: SidebarNavIconProps) => {
-  const { icon, text, onClick, sidebarOpen, isActive } = props;
+  const { icon, id, text, onClick, sidebarOpen, isActive } = props;
   return (
     <button
+      id={id}
       className={`relative flex flex-row w-full items-center gap-4 p-4 rounded-xl transition ${
         isActive
           ? "bg-secondary-button-hover "
           : "hover:bg-secondary-button-hover "
-      }}`}
+      }`}
       title={text}
       onClick={onClick}
     >

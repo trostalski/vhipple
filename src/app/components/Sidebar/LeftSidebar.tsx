@@ -31,6 +31,7 @@ const LeftSidebar = (props: LeftSidebarProps) => {
   const sidebarNavIcons = [
     {
       icon: <BiHomeAlt size={24} />,
+      id: "overviewSidebarNavIcon",
       text: "Overview",
       pathname: `/datasets/${dataset.id}`,
       onClick: () => {
@@ -40,6 +41,7 @@ const LeftSidebar = (props: LeftSidebarProps) => {
     {
       icon: <RxDashboard size={24} />,
       text: "Dashboard",
+      id: "dashboardSidebarNavIcon",
       pathname: `/datasets/${dataset.id}/dashboard`,
       onClick: () => {
         router.push(`/datasets/${dataset.id}/dashboard`);
@@ -48,6 +50,7 @@ const LeftSidebar = (props: LeftSidebarProps) => {
     {
       icon: <BsPeople size={24} />,
       text: "Patients",
+      id: "patientsSidebarNavIcon",
       pathname: `/datasets/${dataset.id}/patients`,
       onClick: () => {
         router.push(`/datasets/${dataset.id}/patients`);
@@ -56,6 +59,7 @@ const LeftSidebar = (props: LeftSidebarProps) => {
     {
       icon: <AiOutlineExport size={24} />,
       text: "Export",
+      id: "exportSidebarNavIcon",
       pathname: `/datasets/${dataset.id}/export`,
       onClick: () => {
         router.push(`/datasets/${dataset.id}/export`);
@@ -64,6 +68,7 @@ const LeftSidebar = (props: LeftSidebarProps) => {
     {
       icon: <AiOutlineSetting size={24} />,
       text: "Settings",
+      id: "settingsSidebarNavIcon",
       pathname: `/datasets/${dataset.id}/settings`,
       onClick: () => {
         router.push(`/datasets/${dataset.id}/settings`);
@@ -97,6 +102,7 @@ const LeftSidebar = (props: LeftSidebarProps) => {
             key={index}
             icon={icon.icon}
             text={icon.text}
+            id={icon.id}
             onClick={icon.onClick}
             sidebarOpen={sidebarOpen}
             isActive={pathname === icon.pathname}

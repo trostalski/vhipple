@@ -1,38 +1,34 @@
 "use client";
 import dynamic from "next/dynamic";
-
-const JoyRideNoSSR = dynamic(() => import("react-joyride"), { ssr: false });
-import React, { useState } from "react";
+import React from "react";
 import DatasetsHeader from "./components/DatasetsHeader";
 import DatasetList from "./components/DatasetList";
 import HNSHeader from "../components/HNSHeader";
+import useJoyRide from "../hooks/useJoyRide";
+import Cookies from "universal-cookie";
+const JoyRideNoSSR = dynamic(() => import("react-joyride"), { ssr: false });
 
 const page = () => {
-  const [{ run, steps }, setState] = useState({
-    run: true,
-    steps: [
-      {
-        target: "#add-dataset-button",
-        content: "Press this button to add a new dataset.",
-      },
-      {
-        target: "#bundle-upload-div",
-        content: "Upload FHIR R4 Bundles to your dataset.",
-      },
-    ],
-  });
-
+  const { joyrideDatasets } = useJoyRide();
+  const cookies = new Cookies();
+  if (cookies.get("datasets_joyride")) {
+    joyrideDatasets.run = false;
+  }
   return (
     <div className="flex flex-col w-full h-full px-48 py-12">
-      <JoyRideNoSSR
-        callback={() => {}}
-        steps={steps}
-        run={run}
-        showProgress={true}
-      />
       <HNSHeader />
       <DatasetsHeader />
       <DatasetList />
+      <JoyRideNoSSR
+        callback={(state) => {
+          if (state.status === "finished") {
+            cookies.set("datasets_joyride", true, { path: "/" });
+          }
+        }}
+        steps={joyrideDatasets.steps}
+        run={joyrideDatasets.run}
+        showProgress={true}
+      />
     </div>
   );
 };

@@ -11,13 +11,15 @@ import { resolveReferencesForDataset } from "../lib/resolveReferences";
 import { onlyUnique } from "@/app/datasets/[datasetId]/dashboard/lib/utils";
 import { AiFillDelete } from "react-icons/ai";
 import { generateUniqueId } from "@/app/lib/utils";
-import { addMode, defaultDataset, editMode } from "../lib/constants";
+import { addMode, editMode } from "../lib/constants";
 import useBundleUpload from "../hooks/useBundleUpload";
 import {
   generateDefaultDatasetDashboardCards,
   generateDefaultPatientCohorts,
 } from "../lib/datasetUtils";
 import dynamic from "next/dynamic";
+import useJoyRide from "@/app/hooks/useJoyRide";
+import Cookies from "universal-cookie";
 const JoyRideNoSSR = dynamic(() => import("react-joyride"), { ssr: false });
 
 interface AddDatasetModalProps {
@@ -32,6 +34,13 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
   const { selectedResources, uploadBundles, setSelectedResources } =
     useBundleUpload();
   const [dataset, setDataset] = useState<Dataset>(initialDataset);
+
+  // handle joyride guided tour
+  const { joyrideAddDataset } = useJoyRide();
+  const cookies = new Cookies();
+  if (cookies.get("add_dataset_joyride")) {
+    joyrideAddDataset.run = false;
+  }
 
   // previous dataset name when editing
   const prevDatasetId = dataset.id;
@@ -69,22 +78,17 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     }
     return true;
   };
-  const [{ run, steps }, setState] = useState({
-    run: true,
-    steps: [
-      {
-        target: "#bundle-upload-div",
-        content: "Upload FHIR R4 Bundles to your dataset.",
-      },
-    ],
-  });
 
   return (
     <ModalWrapper showModal={showModal} setShowModal={setShowModal}>
       <JoyRideNoSSR
-        callback={() => {}}
-        steps={steps}
-        run={run}
+        callback={(state) => {
+          if (state.status === "finished") {
+            cookies.set("add_dataset_joyride", true, { path: "/" });
+          }
+        }}
+        steps={joyrideAddDataset.steps}
+        run={joyrideAddDataset.run}
         showProgress={true}
       />
       <div className="flex flex-row justify-between items-center py-2 px-4">

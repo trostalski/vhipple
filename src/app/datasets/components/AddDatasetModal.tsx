@@ -17,6 +17,8 @@ import {
   generateDefaultDatasetDashboardCards,
   generateDefaultPatientCohorts,
 } from "../lib/datasetUtils";
+import dynamic from "next/dynamic";
+const JoyRideNoSSR = dynamic(() => import("react-joyride"), { ssr: false });
 
 interface AddDatasetModalProps {
   showModal: boolean;
@@ -67,9 +69,24 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     }
     return true;
   };
+  const [{ run, steps }, setState] = useState({
+    run: true,
+    steps: [
+      {
+        target: "#bundle-upload-div",
+        content: "Upload FHIR R4 Bundles to your dataset.",
+      },
+    ],
+  });
 
   return (
     <ModalWrapper showModal={showModal} setShowModal={setShowModal}>
+      <JoyRideNoSSR
+        callback={() => {}}
+        steps={steps}
+        run={run}
+        showProgress={true}
+      />
       <div className="flex flex-row justify-between items-center py-2 px-4">
         <h1 className="text-2xl font-bold">Create Dataset</h1>
       </div>
@@ -102,16 +119,16 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
             }
           />
         </div>
-        <div className="flex flex-col w-full">
+        <div id="bundle-upload-div" className="flex flex-col w-full">
           <label className="text-gray-700" htmlFor="description">
             Bundles
           </label>
           <label
-            htmlFor="bundle-upload"
+            htmlFor="bundle-upload-input"
             className="bg-secondary-button text-white py-1 text-center rounded cursor-pointer transition hover:bg-secondary-button-hover"
           >
             <input
-              id="bundle-upload"
+              id="bundle-upload-input"
               type="file"
               hidden
               multiple

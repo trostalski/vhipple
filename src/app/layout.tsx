@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import ToastProvider from "./lib/toast.provider";
 import "react-tooltip/dist/react-tooltip.css";
 import FeedbackButton from "./components/FeedbackButton";
+import JoyRide from "react-joyride";
 
 export const metadata: Metadata = {
   title: "Vhipple",

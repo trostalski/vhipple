@@ -4,7 +4,6 @@ import { addMode, defaultDataset } from "../lib/constants";
 import { IoAdd } from "react-icons/io5";
 import { AiOutlineSetting } from "react-icons/ai";
 import SettingsModal from "./SettingsModal";
-import { generateUniqueId } from "@/app/lib/utils";
 
 interface DatasetsHeaderProps {}
 
@@ -24,6 +23,7 @@ const DatasetsHeader = (props: DatasetsHeaderProps) => {
       </div>
       <span className="grow" />
       <button
+        id="add-dataset-button"
         className="bg-primary-button text-white font-bold py-2 px-4 rounded transition hover:bg-primary-button-hover"
         onClick={() => setShowAddDatasetModal(true)}
       >

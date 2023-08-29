@@ -83,7 +83,10 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     <ModalWrapper showModal={showModal} setShowModal={setShowModal}>
       <JoyRideNoSSR
         callback={(state) => {
-          if (state.status === "finished") {
+          if (
+            state.status === "finished" ||
+            state.index === joyrideAddDataset.steps.length - 1
+          ) {
             cookies.set("add_dataset_joyride", true, { path: "/" });
           }
         }}

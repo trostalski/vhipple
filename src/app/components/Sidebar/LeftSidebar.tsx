@@ -89,8 +89,8 @@ const LeftSidebar = (props: LeftSidebarProps) => {
   ];
   return (
     <nav
-      className={`bg-sidebar-bg fixed w-[16vw] rounded-r-lg top-0 -left-[12vw] text-white text-sm h-full shadow-md z-0 ease-in-out duration-200 ${
-        sidebarOpen ? "translate-x-[12vw]" : "translate-x-0"
+      className={`bg-sidebar-bg fixed w-48 rounded-r-lg top-0 -left-36 text-white text-sm h-full shadow-md z-0 ease-in-out duration-200 ${
+        sidebarOpen ? "translate-x-36 " : "translate-x-0"
       }`}
     >
       <JoyRideNoSSR
@@ -105,7 +105,7 @@ const LeftSidebar = (props: LeftSidebarProps) => {
       />
       <div
         className={`flex flex-row items-center justify-center h-12 ${
-          sidebarOpen ? "pr-8" : "pr-10"
+          sidebarOpen ? "pr-8" : "pr-8"
         }`}
       >
         <button

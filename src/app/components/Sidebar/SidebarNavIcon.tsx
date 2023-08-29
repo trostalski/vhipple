@@ -22,7 +22,7 @@ const SidebarNavIcon = (props: SidebarNavIconProps) => {
     >
       <div
         className={`absolute ease-in-out duration-300 ${
-          sidebarOpen ? "translate-x-0" : "translate-x-[12vw]"
+          sidebarOpen ? "translate-x-0" : "translate-x-36"
         }`}
       >
         {icon}

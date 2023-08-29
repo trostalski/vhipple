@@ -95,8 +95,12 @@ const LeftSidebar = (props: LeftSidebarProps) => {
     >
       <JoyRideNoSSR
         callback={(state) => {
-          if (state.action === "close") {
-            cookies.set("dataset_joyride", true, { path: "/" });
+          console.log(state);
+          if (
+            state.action === "close" ||
+            state.index === joyrideSidebar.steps.length - 1
+          ) {
+            cookies.set("sidebar_joyride", true, { path: "/" });
           }
         }}
         steps={joyrideSidebar.steps}

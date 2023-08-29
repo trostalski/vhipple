@@ -21,7 +21,10 @@ const page = () => {
       <DatasetList />
       <JoyRideNoSSR
         callback={(state) => {
-          if (state.status === "finished") {
+          if (
+            state.status === "finished" ||
+            state.index === joyrideDatasets.steps.length - 1
+          ) {
             cookies.set("datasets_joyride", true, { path: "/" });
           }
         }}

@@ -10,6 +10,11 @@ import { useGlobalStore } from "@/app/stores/useGlobalStore";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDataset } from "@/app/db/utils";
 import { BiHomeAlt } from "react-icons/bi";
+import useJoyRide from "@/app/hooks/useJoyRide";
+import dynamic from "next/dynamic";
+import Cookies from "universal-cookie";
+
+const JoyRideNoSSR = dynamic(() => import("react-joyride"), { ssr: false });
 
 interface LeftSidebarProps {
   datasetId: string;
@@ -23,6 +28,13 @@ const LeftSidebar = (props: LeftSidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const dataset = useLiveQuery(() => getDataset(props.datasetId));
+
+  // handle joyride guided tour
+  const { joyrideSidebar } = useJoyRide();
+  const cookies = new Cookies();
+  if (cookies.get("sidebar_joyride")) {
+    joyrideSidebar.run = false;
+  }
 
   if (!dataset) {
     return null;
@@ -77,13 +89,23 @@ const LeftSidebar = (props: LeftSidebarProps) => {
   ];
   return (
     <nav
-      className={`bg-sidebar-bg fixed w-[16vw] rounded-r-lg top-0 -left-[12vw] text-white text-sm h-full shadow-md z-0 ease-in-out duration-200 ${
-        sidebarOpen ? "translate-x-[12vw]" : "translate-x-0"
+      className={`bg-sidebar-bg fixed w-48 rounded-r-lg top-0 -left-36 text-white text-sm h-full shadow-md z-0 ease-in-out duration-200 ${
+        sidebarOpen ? "translate-x-36 " : "translate-x-0"
       }`}
     >
+      <JoyRideNoSSR
+        callback={(state) => {
+          if (state.action === "close") {
+            cookies.set("dataset_joyride", true, { path: "/" });
+          }
+        }}
+        steps={joyrideSidebar.steps}
+        run={joyrideSidebar.run}
+        continuous={joyrideSidebar.continuous}
+      />
       <div
         className={`flex flex-row items-center justify-center h-12 ${
-          sidebarOpen ? "pr-8" : "pr-10"
+          sidebarOpen ? "pr-8" : "pr-8"
         }`}
       >
         <button

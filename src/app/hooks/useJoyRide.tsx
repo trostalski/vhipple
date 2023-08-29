@@ -23,7 +23,7 @@ const useJoyRide = () => {
       ],
     });
 
-  const [{ run: runDataset, steps: stepsDataset }, setStateDataset] = useState({
+  const [{ run: runSidebar, steps: stepsSidebar }, setStateSidebar] = useState({
     run: true,
     steps: [
       {
@@ -56,11 +56,11 @@ const useJoyRide = () => {
       steps: stepsAddDataset,
       setState: setStateAddDataset,
     },
-    joyrideDataset: {
+    joyrideSidebar: {
       continuous: true,
-      run: runDataset,
-      steps: stepsDataset,
-      setState: setStateDataset,
+      run: runSidebar,
+      steps: stepsSidebar,
+      setState: setStateSidebar,
     },
   };
 };

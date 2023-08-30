@@ -10,10 +10,11 @@ import { Bundle, Patient, Resource } from "fhir/r4";
 import { DatasetInfo } from "../[datasetId]/lib/types";
 import { getMostCommonPathValue } from "./fhirpathUilts";
 import { getAge } from "../[datasetId]/patients/lib/utils";
-import { addDataset, getDatasetByName, updateDataset } from "@/app/db/utils";
+import { addDataset, updateDataset } from "@/app/db/utils";
 import { computePatientCohort } from "./cohortUtils";
 import { defaultDataset, defaultPatientCohorts } from "./constants";
 import { resolveReferencesForDataset } from "./resolveReferences";
+import example01 from "../../api/example_data/example_01.json";
 
 const homePageCards = ["Condition.code.coding.display", "Patient.gender"];
 
@@ -74,33 +75,22 @@ export const getResourceContainerFromResource = (
   return resourceContainer;
 };
 
-export const loadExampleDataset = async () => {
-  if (await getDatasetByName("Example Dataset")) {
-    return;
-  }
+export const getExampleDataset = async () => {
+  const bundle = example01 as Bundle;
+  const resourceContainers = getResourceContainersFromBundle(bundle, "example");
   const dataset: Dataset = {
     ...defaultDataset,
     id: generateUniqueId(),
     name: "Example Dataset",
-    description: "Example Dataset",
+    description:
+      "11 Synthea Patients from the dataset '1K Sample Synthetic Patient Records, FHIR R4' (https://synthea.mitre.org/downloads).",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
-  const res = await fetch("/api/example-data", {
-    method: "GET",
-  });
-  console.log(res);
-  const bundle = (await res.json()) as Bundle;
-  const resourceContainers = getResourceContainersFromBundle(
-    bundle,
-    "Example Dataset"
-  );
   dataset.resourceContainers = resourceContainers;
   dataset.size = resourceContainers.length;
   resolveReferencesForDataset(dataset);
-  await addDataset(dataset);
-  await generateDefaultDatasetDashboardCards(dataset);
-  await generateDefaultPatientCohorts(dataset);
+  return dataset;
 };
 
 export const generateDefaultDatasetDashboardCards = async (

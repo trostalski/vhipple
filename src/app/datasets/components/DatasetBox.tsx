@@ -73,14 +73,14 @@ const DatasetBox = (props: DatasetBoxProps) => {
           </>
         )}
       </div>
-      <div className="flex flex-row items-center h-full">
+      <div className="flex flex-row items-center shrink-0 h-full">
         <div className="flex flex-col">
           <span className="text-gray-500" title="">
             {getYYYYMMDD(dataset.updatedAt)}
           </span>
         </div>
         <button
-          className="py-2 px-4 h-full transition hover:bg-secondary-button hover:text-white rounded-md"
+          className="py-2 px-4 h-full rounded-md transition hover:bg-secondary-button hover:text-white"
           onClick={() => {
             setShowEditDatasetModal(true);
           }}

@@ -79,7 +79,6 @@ const useBundleUpload = () => {
     const processFile = (index: number) => {
       const file = e.target.files![index];
       const fileType = getFileTypeFromName(file.name);
-      console.log("FILET YPE: ", fileType);
       const reader = new FileReader();
 
       reader.onload = async (re) => {
@@ -87,10 +86,10 @@ const useBundleUpload = () => {
           switch (fileType) {
             case "json":
               handleJson(re, file.name, resourceContainers);
+              break;
             case "ndjson":
-              console.log("NDJSON");
-              console.log(fileType, "############");
               handleNDJson(re, file.name, resourceContainers);
+              break;
             default:
               break;
           }

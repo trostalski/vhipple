@@ -20,15 +20,6 @@ export const getDataset = async (id: string) => {
   }
 };
 
-export const getDatasetByName = async (name: string) => {
-  try {
-    const dataset = await db.datasets.get({ name: name });
-    return dataset;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export const getDatasetNames = async () => {
   try {
     const datasetNames = await db.datasets.toCollection().primaryKeys();

@@ -95,7 +95,6 @@ const LeftSidebar = (props: LeftSidebarProps) => {
     >
       <JoyRideNoSSR
         callback={(state) => {
-          console.log(state);
           if (
             state.action === "close" ||
             state.index === joyrideSidebar.steps.length - 1

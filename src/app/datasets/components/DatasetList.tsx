@@ -2,11 +2,14 @@ import { getDatasets } from "@/app/db/utils";
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import DatasetBox from "./DatasetBox";
+import Cookies from "universal-cookie";
 
 interface DatasetListProps {}
 
 const DatasetList = (props: DatasetListProps) => {
   const datasets = useLiveQuery(getDatasets);
+  const cookies = new Cookies();
+
   return (
     <div
       className="flex flex-col w-full h-full flex-wrap gap-4 mt-4"

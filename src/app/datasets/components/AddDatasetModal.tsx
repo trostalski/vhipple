@@ -31,8 +31,11 @@ interface AddDatasetModalProps {
 
 const AddDatasetModal = (props: AddDatasetModalProps) => {
   const { showModal, setShowModal, mode, dataset: initialDataset } = props;
-  const { selectedResources, uploadBundles, setSelectedResources } =
-    useBundleUpload();
+  const {
+    selectedResourceContainers,
+    uploadBundles,
+    setSelectedResourceContainers,
+  } = useBundleUpload();
   const [dataset, setDataset] = useState<Dataset>(initialDataset);
 
   // handle joyride guided tour
@@ -50,19 +53,16 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
     dataset.resourceContainers.map((rc) => rc.source).filter(onlyUnique) || [];
 
   const handleSubmit = async () => {
-    const newResourceContainers = selectedResources.flatMap(
-      (r) => r.resourceContainers
-    );
     dataset.resourceContainers = [
       ...dataset.resourceContainers,
-      ...newResourceContainers,
+      ...selectedResourceContainers,
     ];
     dataset.resourceContainers = dataset.resourceContainers.map((rc) => {
       rc.datasetId = dataset.id;
       return rc;
     });
-    resolveReferencesForDataset(dataset);
     dataset.size = dataset.resourceContainers.length;
+    resolveReferencesForDataset(dataset);
     if (mode === addMode) {
       dataset.createdAt = new Date().toISOString();
       dataset.updatedAt = new Date().toISOString();
@@ -168,24 +168,29 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
                 </button>
               </div>
             ))}
-            {selectedResources.map((file) => (
-              <div
-                key={file.name}
-                className="flex flex-row justify-between items-center text-xs p-2"
-              >
-                <p>{file.name}</p>
-                <button
-                  className="text-primary-button border py-1 px-2 rounded-md transition hover:scale-110"
-                  onClick={() =>
-                    setSelectedResources(
-                      selectedResources.filter((f) => f.name !== file.name)
-                    )
-                  }
+            {selectedResourceContainers
+              .map((rc) => rc.source)
+              .filter(onlyUnique)
+              .map((source) => (
+                <div
+                  key={source}
+                  className="flex flex-row justify-between items-center text-xs p-2"
                 >
-                  <AiFillDelete size={16} />
-                </button>
-              </div>
-            ))}
+                  <p>{source}</p>
+                  <button
+                    className="text-primary-button border py-1 px-2 rounded-md transition hover:scale-110"
+                    onClick={() =>
+                      setSelectedResourceContainers(
+                        selectedResourceContainers.filter(
+                          (src) => src.source !== source
+                        )
+                      )
+                    }
+                  >
+                    <AiFillDelete size={16} />
+                  </button>
+                </div>
+              ))}
           </div>
         </div>
         <div className="flex flex-row justify-end gap-4 w-full mt-4">

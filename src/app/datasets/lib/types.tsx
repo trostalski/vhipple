@@ -1,7 +1,7 @@
 import { Resource } from "fhir/r4";
 import { DashboardCard } from "../[datasetId]/dashboard/lib/types";
 
-export interface ResourceContainerWithSource {
+export interface ResourceContainersWithSource {
   source: string;
   resourceContainer: ResourceContainer;
 }

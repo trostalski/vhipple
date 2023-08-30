@@ -10,7 +10,7 @@ import { Bundle, Patient, Resource } from "fhir/r4";
 import { DatasetInfo } from "../[datasetId]/lib/types";
 import { getMostCommonPathValue } from "./fhirpathUilts";
 import { getAge } from "../[datasetId]/patients/lib/utils";
-import { addDataset, updateDataset } from "@/app/db/utils";
+import { addDataset, getDatasetByName, updateDataset } from "@/app/db/utils";
 import { computePatientCohort } from "./cohortUtils";
 import { defaultDataset, defaultPatientCohorts } from "./constants";
 import { resolveReferencesForDataset } from "./resolveReferences";
@@ -58,7 +58,26 @@ export const getResourceContainersFromBundle = (
   return resourceContainers;
 };
 
+export const getResourceContainerFromResource = (
+  resource: Resource,
+  sourceName: string
+) => {
+  const resourceContainer: ResourceContainer = {
+    id: resource.resourceType + "/" + resource.id,
+    fullUrl: resource.resourceType + "/" + resource.id,
+    source: sourceName,
+    resource: resource,
+    datasetId: "",
+    references: [],
+    referencedBy: [],
+  };
+  return resourceContainer;
+};
+
 export const loadExampleDataset = async () => {
+  if (await getDatasetByName("Example Dataset")) {
+    return;
+  }
   const dataset: Dataset = {
     ...defaultDataset,
     id: generateUniqueId(),
@@ -67,7 +86,7 @@ export const loadExampleDataset = async () => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
-  const res = await fetch("api/example-data", {
+  const res = await fetch("/api/example-data", {
     method: "GET",
   });
   console.log(res);

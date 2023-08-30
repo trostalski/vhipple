@@ -5,17 +5,84 @@ import { generateUniqueId } from "@/app/lib/utils";
 import {
   allPatientsCohortId,
   availableChartColours,
-  defaultPatientCohort,
 } from "../[datasetId]/dashboard/lib/constants";
-import { Patient } from "fhir/r4";
+import { Bundle, Patient, Resource } from "fhir/r4";
 import { DatasetInfo } from "../[datasetId]/lib/types";
 import { getMostCommonPathValue } from "./fhirpathUilts";
 import { getAge } from "../[datasetId]/patients/lib/utils";
-import { updateDataset } from "@/app/db/utils";
+import { addDataset, updateDataset } from "@/app/db/utils";
 import { computePatientCohort } from "./cohortUtils";
-import { defaultPatientCohorts } from "./constants";
+import { defaultDataset, defaultPatientCohorts } from "./constants";
+import { resolveReferencesForDataset } from "./resolveReferences";
 
 const homePageCards = ["Condition.code.coding.display", "Patient.gender"];
+
+export const isValidJson = (json: string) => {
+  try {
+    JSON.parse(json);
+  } catch (error) {
+    return false;
+  }
+  return true;
+};
+
+export const isValidBundle = (bundle: Bundle) => {
+  if (bundle.resourceType !== "Bundle") {
+    return false;
+  }
+  if (!bundle.entry) {
+    return false;
+  }
+  return true;
+};
+
+export const getResourceContainersFromBundle = (
+  bundle: Bundle,
+  sourceName: string
+) => {
+  const resourceContainers: ResourceContainer[] = [];
+  for (const entry of bundle.entry!) {
+    if (!entry.resource) {
+      continue;
+    }
+    resourceContainers.push({
+      id: entry.resource.resourceType + "/" + entry.resource!.id,
+      fullUrl: entry.fullUrl,
+      source: sourceName,
+      resource: entry.resource,
+      datasetId: "",
+      references: [],
+      referencedBy: [],
+    });
+  }
+  return resourceContainers;
+};
+
+export const loadExampleDataset = async () => {
+  const dataset: Dataset = {
+    ...defaultDataset,
+    id: generateUniqueId(),
+    name: "Example Dataset",
+    description: "Example Dataset",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  const res = await fetch("api/example-data", {
+    method: "GET",
+  });
+  console.log(res);
+  const bundle = (await res.json()) as Bundle;
+  const resourceContainers = getResourceContainersFromBundle(
+    bundle,
+    "Example Dataset"
+  );
+  dataset.resourceContainers = resourceContainers;
+  dataset.size = resourceContainers.length;
+  resolveReferencesForDataset(dataset);
+  await addDataset(dataset);
+  await generateDefaultDatasetDashboardCards(dataset);
+  await generateDefaultPatientCohorts(dataset);
+};
 
 export const generateDefaultDatasetDashboardCards = async (
   dataset: Dataset

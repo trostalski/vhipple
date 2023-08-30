@@ -1,5 +1,4 @@
 import { FeedBackInput } from "@/app/components/FeedbackButton";
-import { NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 

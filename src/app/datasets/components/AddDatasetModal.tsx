@@ -61,8 +61,8 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
       rc.datasetId = dataset.id;
       return rc;
     });
-    resolveReferencesForDataset(dataset);
     dataset.size = dataset.resourceContainers.length;
+    resolveReferencesForDataset(dataset);
     if (mode === addMode) {
       dataset.createdAt = new Date().toISOString();
       dataset.updatedAt = new Date().toISOString();

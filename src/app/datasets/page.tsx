@@ -6,11 +6,16 @@ import DatasetList from "./components/DatasetList";
 import HNSHeader from "../components/HNSHeader";
 import useJoyRide from "../hooks/useJoyRide";
 import Cookies from "universal-cookie";
+import { loadExampleDataset } from "./lib/datasetUtils";
 const JoyRideNoSSR = dynamic(() => import("react-joyride"), { ssr: false });
 
 const page = () => {
   const { joyrideDatasets } = useJoyRide();
   const cookies = new Cookies();
+  if (!cookies.get("known_user")) {
+    loadExampleDataset();
+    cookies.set("known_user", true, { path: "/" });
+  }
   if (cookies.get("datasets_joyride")) {
     joyrideDatasets.run = false;
   }
@@ -21,10 +26,7 @@ const page = () => {
       <DatasetList />
       <JoyRideNoSSR
         callback={(state) => {
-          if (
-            state.status === "finished" ||
-            state.index === joyrideDatasets.steps.length - 1
-          ) {
+          if (state.status === "finished") {
             cookies.set("datasets_joyride", true, { path: "/" });
           }
         }}

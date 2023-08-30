@@ -1,6 +1,11 @@
 import { toastError, toastInfo } from "@/app/lib/toasts";
 import React, { useState } from "react";
 import { ResourceContainer } from "../lib/types";
+import {
+  getResourceContainersFromBundle,
+  isValidBundle,
+  isValidJson,
+} from "../lib/datasetUtils";
 
 const useBundleUpload = () => {
   const [selectedResources, setSelectedResources] = useState<
@@ -12,7 +17,7 @@ const useBundleUpload = () => {
       toastInfo("No files selected.");
       return;
     }
-    const updatedResources: {
+    const resourceSources: {
       name: string;
       resourceContainers: ResourceContainer[];
     }[] = [];
@@ -23,44 +28,35 @@ const useBundleUpload = () => {
       reader.onload = async (re) => {
         let resource;
         if (re.target) {
-          try {
+          if (isValidJson(re.target.result as string)) {
             resource = JSON.parse(re.target.result as string);
-          } catch (error) {
+          } else {
             toastError(
               `File ${file.name} is not a valid JSON file. Please upload a valid JSON file.`
             );
             return;
           }
-          if (resource.resourceType === "Bundle") {
-            let resourceContainers: ResourceContainer[] = [];
-            for (const entry of resource.entry) {
-              resourceContainers.push({
-                id: entry.resource.resourceType + "/" + entry.resource.id,
-                fullUrl: entry.fullUrl,
-                source: file.name,
-                resource: entry.resource,
-                datasetId: "",
-                references: [],
-                referencedBy: [],
-              });
-            }
-            updatedResources.push({
-              name: file.name,
-              resourceContainers: resourceContainers,
-            });
-          } else {
+          if (!isValidBundle(resource)) {
             toastError(
               `File ${file.name} is not a valid FHIR Bundle. Please upload a valid FHIR Bundle.`
             );
+            return;
           }
+          let resourceContainers = getResourceContainersFromBundle(
+            resource,
+            file.name
+          );
+          resourceSources.push({
+            name: file.name,
+            resourceContainers: resourceContainers,
+          });
         }
-
         if (index + 1 < e.target.files!.length) {
           processFile(index + 1); // Continue with the next file
         } else {
           setSelectedResources((prevSelectedResources) => [
             ...prevSelectedResources,
-            ...updatedResources,
+            ...resourceSources,
           ]);
         }
       };

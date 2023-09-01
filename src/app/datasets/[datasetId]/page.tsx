@@ -38,7 +38,6 @@ const page = () => {
             </div>
             <div className="flex flex-col items-center justify-center bg-white font-bold rounded-md shadow-md py-4 transition hover:shadow-xl hover:cursor-pointer group">
               <span className="text-2xl text-gray-500 group-hover:text-primary-button-hover">
-                {" "}
                 Cohorts
               </span>
             </div>

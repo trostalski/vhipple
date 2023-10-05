@@ -1,11 +1,11 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { CiMenuKebab } from "react-icons/ci";
-import { Dataset, PatientCohort } from "../../lib/types";
 import { updateDataset } from "@/app/db/utils";
 import CohortSettingsMenu from "./CohortSettingsMenu";
 import SavePatientCohortModal from "./SavePatientCohortModal";
-import { editMode } from "../../lib/constants";
 import { useRouter } from "next/navigation";
+import { editMode } from "@/app/datasets/lib/constants";
+import { PatientCohort, Dataset } from "@/app/datasets/lib/types";
 
 interface CohortOverviewBoxProps {
   cohort: PatientCohort;

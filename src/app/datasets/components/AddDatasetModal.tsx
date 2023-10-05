@@ -18,9 +18,7 @@ import {
   generateDefaultPatientCohorts,
 } from "../lib/datasetUtils";
 import dynamic from "next/dynamic";
-import useJoyRide from "@/app/hooks/useJoyRide";
 import Cookies from "universal-cookie";
-const JoyRideNoSSR = dynamic(() => import("react-joyride"), { ssr: false });
 
 interface AddDatasetModalProps {
   showModal: boolean;
@@ -39,11 +37,7 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
   const [dataset, setDataset] = useState<Dataset>(initialDataset);
 
   // handle joyride guided tour
-  const { joyrideAddDataset } = useJoyRide();
   const cookies = new Cookies();
-  if (cookies.get("add_dataset_joyride")) {
-    joyrideAddDataset.run = false;
-  }
 
   // previous dataset name when editing
   const prevDatasetId = dataset.id;
@@ -81,19 +75,6 @@ const AddDatasetModal = (props: AddDatasetModalProps) => {
 
   return (
     <ModalWrapper showModal={showModal} setShowModal={setShowModal}>
-      <JoyRideNoSSR
-        callback={(state) => {
-          if (
-            state.status === "finished" ||
-            state.index === joyrideAddDataset.steps.length - 1
-          ) {
-            cookies.set("add_dataset_joyride", true, { path: "/" });
-          }
-        }}
-        steps={joyrideAddDataset.steps}
-        run={joyrideAddDataset.run}
-        showProgress={true}
-      />
       <div className="flex flex-row justify-between items-center py-2 px-4">
         <h1 className="text-2xl font-bold">Create Dataset</h1>
       </div>

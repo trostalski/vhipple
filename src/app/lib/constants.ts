@@ -1,4 +1,5 @@
 export const colorThemeStorageKey = "vhipple-color-theme";
+
 export const availableColorThemes = [
   {
     value: "root",

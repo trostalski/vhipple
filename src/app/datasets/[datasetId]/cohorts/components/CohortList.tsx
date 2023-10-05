@@ -1,9 +1,10 @@
+"use client";
 import React, { useState } from "react";
 import { IoAdd } from "react-icons/io5";
-import { Dataset } from "../../lib/types";
+import { Dataset } from "../../../lib/types";
 import CohortOverviewBox from "./CohortOverviewBox";
 import SavePatientCohortModal from "./SavePatientCohortModal";
-import { addMode } from "../../lib/constants";
+import { addMode } from "../../../lib/constants";
 
 interface CohortListProps {
   dataset: Dataset;

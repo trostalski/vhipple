@@ -4,7 +4,7 @@ import MainWrapper from "@/app/components/MainWrapper";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDataset } from "@/app/db/utils";
 import DatasetHeader from "../components/DatasetHeader";
-import CohortList from "../components/CohortList";
+import CohortList from "../cohorts/components/CohortList";
 import { DatasetInfo } from "../components/DatasetInfo";
 import DisplayTabs from "../patients/components/DisplayTabs";
 import ResourcesTableContainer from "../components/ResourcesTableContainer";

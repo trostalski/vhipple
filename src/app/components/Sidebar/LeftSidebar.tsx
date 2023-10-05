@@ -10,11 +10,8 @@ import { useGlobalStore } from "@/app/stores/useGlobalStore";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDataset } from "@/app/db/utils";
 import { BiHomeAlt } from "react-icons/bi";
-import useJoyRide from "@/app/hooks/useJoyRide";
-import dynamic from "next/dynamic";
-import Cookies from "universal-cookie";
-
-const JoyRideNoSSR = dynamic(() => import("react-joyride"), { ssr: false });
+import { FaPeopleArrows } from "react-icons/fa";
+import { LuToyBrick } from "react-icons/lu";
 
 interface LeftSidebarProps {
   datasetId: string;
@@ -28,13 +25,6 @@ const LeftSidebar = (props: LeftSidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const dataset = useLiveQuery(() => getDataset(props.datasetId));
-
-  // handle joyride guided tour
-  const { joyrideSidebar } = useJoyRide();
-  const cookies = new Cookies();
-  if (cookies.get("sidebar_joyride")) {
-    joyrideSidebar.run = false;
-  }
 
   if (!dataset) {
     return null;
@@ -69,6 +59,24 @@ const LeftSidebar = (props: LeftSidebarProps) => {
       },
     },
     {
+      icon: <FaPeopleArrows size={24} />,
+      text: "Cohorts",
+      id: "cohortsSidebarNavIcon",
+      pathname: `/datasets/${dataset.id}/cohorts`,
+      onClick: () => {
+        router.push(`/datasets/${dataset.id}/cohorts`);
+      },
+    },
+    {
+      icon: <LuToyBrick size={24} />,
+      text: "Resources",
+      id: "resourcesSidebarNavIcon",
+      pathname: `/datasets/${dataset.id}/resources`,
+      onClick: () => {
+        router.push(`/datasets/${dataset.id}/resources`);
+      },
+    },
+    {
       icon: <AiOutlineExport size={24} />,
       text: "Export",
       id: "exportSidebarNavIcon",
@@ -93,19 +101,6 @@ const LeftSidebar = (props: LeftSidebarProps) => {
         sidebarOpen ? "translate-x-36 " : "translate-x-0"
       }`}
     >
-      <JoyRideNoSSR
-        callback={(state) => {
-          if (
-            state.action === "close" ||
-            state.index === joyrideSidebar.steps.length - 1
-          ) {
-            cookies.set("sidebar_joyride", true, { path: "/" });
-          }
-        }}
-        steps={joyrideSidebar.steps}
-        run={joyrideSidebar.run}
-        continuous={joyrideSidebar.continuous}
-      />
       <div
         className={`flex flex-row items-center justify-center h-12 ${
           sidebarOpen ? "pr-8" : "pr-8"

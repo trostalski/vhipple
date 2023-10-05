@@ -1,9 +1,7 @@
 "use client";
 import { PatientCohort } from "@/app/datasets/lib/types";
 import React from "react";
-import Select from "react-select";
-import { allPatientsCohortName } from "../../dashboard/lib/constants";
-import CohortSingleSelect from "../../components/CohortSingleSelect";
+import CohortSingleSelect from "../../cohorts/components/CohortSingleSelect";
 
 interface PatientsHeaderProps {
   patientCohorts: PatientCohort[];

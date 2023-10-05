@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { Dataset } from "../../lib/types";
-import CohortSingleSelect from "./CohortSingleSelect";
+import React from "react";
 import ResourcesTable, { TableResource } from "./ResourcesTable";
+import { Dataset } from "@/app/datasets/lib/types";
 
 interface ResourcesTableContainerProps {
   dataset: Dataset;

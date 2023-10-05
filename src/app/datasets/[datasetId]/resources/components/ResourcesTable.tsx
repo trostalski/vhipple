@@ -12,7 +12,7 @@ import {
 import TablePagination from "@/app/components/TablePagination";
 import { useState } from "react";
 import { Resource } from "fhir/r4";
-import PreviewModal from "../../components/PreviewModal";
+import PreviewModal from "../../../components/PreviewModal";
 import { FaSortUp, FaSortDown } from "react-icons/fa";
 import TableFilter from "@/app/components/TableFilter";
 
@@ -51,7 +51,7 @@ interface ResourcesTableProps {
 }
 
 const ResourcesTable = (props: ResourcesTableProps) => {
-  const { inputData, datasetId } = props;
+  const { inputData } = props;
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [previewResource, setPreviewResource] = useState<Resource | undefined>(
     undefined

@@ -4,6 +4,7 @@ import React from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDataset } from "@/app/db/utils";
 import ResourcesTableContainer from "./components/ResourcesTableContainer";
+import ResourcesHeader from "./components/ResourcesHeader";
 
 const page = ({ params }: { params: { datasetId: string } }) => {
   const { datasetId } = params;
@@ -13,7 +14,10 @@ const page = ({ params }: { params: { datasetId: string } }) => {
   }
   return (
     <MainWrapper>
-      <ResourcesTableContainer dataset={dataset} />
+      <div className="flex flex-col h-full w-full">
+        <ResourcesHeader />
+        <ResourcesTableContainer dataset={dataset} />
+      </div>
     </MainWrapper>
   );
 };

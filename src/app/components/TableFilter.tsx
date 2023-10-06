@@ -15,7 +15,7 @@ const TableFilter = (props: TableFilterProps) => {
   const columnFilterValue = column.getFilterValue();
 
   return typeof firstValue === "number" ? (
-    <div className="flex flex-row font-normal text-xs">
+    <div className="flex flex-row font-normal gap-1">
       <input
         type="number"
         value={(columnFilterValue as [number, number])?.[0] ?? ""}
@@ -26,7 +26,7 @@ const TableFilter = (props: TableFilterProps) => {
           ])
         }
         placeholder={`Min`}
-        className="w-full border shadow rounded"
+        className="w-full border shadow rounded p-1"
       />
       <input
         type="number"
@@ -47,7 +47,7 @@ const TableFilter = (props: TableFilterProps) => {
       value={(columnFilterValue ?? "") as string}
       onChange={(e) => column.setFilterValue(e.target.value)}
       placeholder={`Search...`}
-      className="w-full border shadow rounded text-xs font-normal"
+      className="w-full border shadow rounded font-normal p-1"
     />
   );
 };

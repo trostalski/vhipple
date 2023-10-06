@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import { PatientData } from "../../lib/patientData";
 import { MdOutlineExpandMore, MdOutlineExpandLess } from "react-icons/md";
 import {
-  getCodedResourceDisplay,
   getConditionDateDisplay,
-  getImmunizationDisplay,
   getMedicationRequestDateDisplay,
-  getMedicationRequestDisplay,
   getObservationDateDisplay,
   getOccurrenceDateDisplay,
   getPerformedDateDisplay,
-  getValueDisplay,
 } from "../../lib/utils";
+import {
+  getCodedResourceDisplay,
+  getImmunizationDisplay,
+  getMedicationRequestDisplay,
+  getValueDisplay,
+} from "@/app/lib/resourceTypeDisplay";
 
 interface PatientResourcesProps {
   patientData: PatientData;

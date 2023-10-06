@@ -14,6 +14,7 @@ import TablePagination from "@/app/components/TablePagination";
 import TableFilter from "@/app/components/TableFilter";
 import { useRouter } from "next/navigation";
 import { FaSortDown, FaSortUp } from "react-icons/fa";
+import { BaseTable } from "@/app/datasets/components/BaseTable";
 
 export type TablePatient = {
   firstName: string;
@@ -96,142 +97,18 @@ interface PatientsTableProps {
 const PatientsTable = (props: PatientsTableProps) => {
   const { inputData, datasetId } = props;
   const router = useRouter();
-  const [data, setData] = useState(() => [...inputData]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  const table = useReactTable({
-    data: inputData,
-    columns: columns,
-    state: {
-      sorting: sorting,
-    },
-    columnResizeMode: "onChange",
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
 
   const handleOnRowClick = (row: Row<TablePatient>) => {
-    return () =>
-      router.push(`/datasets/${datasetId}/patients/${row.original.id}`);
+    router.push(`/datasets/${datasetId}/patients/${row.original.id}`);
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-white rounded-md border shadow-lg">
-      <div className="h-[75vh] overflow-scroll rounded-md">
-        <table
-          {...{
-            style: {
-              width: table.getCenterTotalSize(),
-            },
-          }}
-        >
-          <thead className="h-16 text-sm bg-slate-50 p-2">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="">
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="relative text-left px-2"
-                    colSpan={header.colSpan}
-                    style={{
-                      width: header.getSize(),
-                    }}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <div
-                        {...{
-                          className: header.column.getCanSort()
-                            ? "cursor-pointer select-none flex flex-row gap-4"
-                            : "",
-                          onClick: header.column.getToggleSortingHandler(),
-                        }}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        <div className="flex flex-col items-center relative">
-                          <FaSortUp
-                            className={`absolute top-0 ${
-                              header.column.getIsSorted() && !sorting[0].desc
-                                ? "text-black"
-                                : "text-gray-400"
-                            }`}
-                            size={20}
-                          />
-                          <FaSortDown
-                            className={`absolute top-0 ${
-                              header.column.getIsSorted() && sorting[0].desc
-                                ? "text-black"
-                                : "text-gray-400"
-                            }`}
-                            size={20}
-                          />
-                        </div>
-                      </div>
-                    )}
-                    {header.column.getCanFilter() ? (
-                      <div>
-                        <TableFilter column={header.column} table={table} />
-                      </div>
-                    ) : null}
-                    <div
-                      onMouseDown={header.getResizeHandler()}
-                      onTouchStart={header.getResizeHandler()}
-                      className={`absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-gray-200 transition hover:bg-gray-500 ${
-                        header.column.getIsResizing() ? "isResizing" : ""
-                      }`}
-                    />
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody className="text-xs">
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="border-y cursor-pointer transition hover:bg-gray-100"
-                onClick={handleOnRowClick(row)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="px-2"
-                    style={{ width: cell.column.getSize() }}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            {table.getFooterGroups().map((footerGroup) => (
-              <tr key={footerGroup.id}>
-                {footerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.footer,
-                          header.getContext()
-                        )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </tfoot>
-        </table>
-      </div>
-      <div className="grow" />
-      <div className="p-2">
-        <TablePagination table={table} initialPageSize={20} />
-      </div>
-    </div>
+    <BaseTable
+      columns={columns}
+      handleOnRowClick={handleOnRowClick}
+      inputData={inputData}
+      columnResize={true}
+    />
   );
 };
 

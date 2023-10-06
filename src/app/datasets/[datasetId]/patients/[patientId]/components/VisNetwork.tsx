@@ -1,9 +1,12 @@
 import React, { memo, useEffect, useState } from "react";
 import { Network } from "vis-network/standalone";
 import LoadingScreen from "@/app/components/LoadingScreen";
-import { getDisplayForResource, getValueDisplay } from "../../lib/utils";
 import { PatientData } from "../../lib/patientData";
 import { VisNetworkData } from "../../lib/types";
+import {
+  getDisplayForResource,
+  getValueDisplay,
+} from "@/app/lib/resourceTypeDisplay";
 
 interface VisNetworkProps {
   patientData: PatientData;

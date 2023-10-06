@@ -10,7 +10,7 @@ import { Bundle, Patient, Resource } from "fhir/r4";
 import { DatasetInfo } from "../[datasetId]/lib/types";
 import { getMostCommonPathValue } from "./fhirpathUilts";
 import { getAge } from "../[datasetId]/patients/lib/utils";
-import { addDataset, updateDataset } from "@/app/db/utils";
+import { updateDataset } from "@/app/db/utils";
 import { computePatientCohort } from "./cohortUtils";
 import { defaultDataset, defaultPatientCohorts } from "./constants";
 import { resolveReferencesForDataset } from "./resolveReferences";

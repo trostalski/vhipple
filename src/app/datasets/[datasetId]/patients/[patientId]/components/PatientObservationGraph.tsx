@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { PatientData } from "../../lib/patientData";
 import Select from "react-select";
-import {
-  getCodedResourceDisplay,
-  getObservationDateDisplay,
-  getValueDisplay,
-} from "../../lib/utils";
+import { getObservationDateDisplay } from "../../lib/utils";
 import ChartComp from "@/app/datasets/[datasetId]/dashboard/components/ChartComp";
 import { onlyUnique } from "@/app/datasets/[datasetId]/dashboard/lib/utils";
 import { Observation } from "fhir/r4";
 import { DashboardCard } from "@/app/datasets/[datasetId]/dashboard/lib/types";
 import { defaultCard } from "../../../dashboard/lib/exampleCards";
+import {
+  getCodedResourceDisplay,
+  getValueDisplay,
+} from "@/app/lib/resourceTypeDisplay";
 
 interface PatientLabGraphProps {
   patientData: PatientData;

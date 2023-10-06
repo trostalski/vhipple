@@ -7,8 +7,8 @@ import DatasetHeader from "../components/DatasetHeader";
 import CohortList from "../cohorts/components/CohortList";
 import { DatasetInfo } from "../components/DatasetInfo";
 import DisplayTabs from "../patients/components/DisplayTabs";
-import ResourcesTableContainer from "../components/ResourcesTableContainer";
 import { availableDatasetDisplayTabs } from "../lib/constants";
+import ResourcesTableContainer from "../resources/components/ResourcesTableContainer";
 
 const page = ({ params }: { params: { datasetId: string } }) => {
   const { datasetId } = params;

@@ -22,15 +22,10 @@ const ResourcesTableContainer = (props: ResourcesTableContainerProps) => {
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-row items-center justify-between">
-        <span className="text-xl font-bold">Resources</span>
-      </div>
-      <ResourcesTable
-        datasetId={dataset.id}
-        inputData={computeResourcesTableInputData()}
-      />
-    </div>
+    <ResourcesTable
+      datasetId={dataset.id}
+      inputData={computeResourcesTableInputData()}
+    />
   );
 };
 

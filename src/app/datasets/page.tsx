@@ -1,10 +1,8 @@
 "use client";
-import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 import DatasetsHeader from "./components/DatasetsHeader";
 import DatasetList from "./components/DatasetList";
 import HNSHeader from "../components/HNSHeader";
-import Cookies from "universal-cookie";
 import { addDataset } from "../db/utils";
 import {
   getExampleDataset,
@@ -13,8 +11,6 @@ import {
 } from "./lib/datasetUtils";
 
 const page = () => {
-  const cookies = new Cookies();
-
   useEffect(() => {
     const addExampleDataset = async () => {
       const dataset = await getExampleDataset();
@@ -23,9 +19,11 @@ const page = () => {
       await generateDefaultPatientCohorts(dataset);
     };
 
-    if (!cookies.get("known_user")) {
+    const alreadyVisited = localStorage.getItem("already_visited");
+
+    if (!alreadyVisited) {
       addExampleDataset();
-      cookies.set("known_user", true, { path: "/" });
+      localStorage.setItem("already_visited", "true");
     }
   }, []);
 

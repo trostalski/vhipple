@@ -198,6 +198,5 @@ export const getDisplayForResource = (resource: any): string => {
       result = resource.resourceType;
       break;
   }
-  console.log("getDisplayForResource : +++++++++++ ", result, resourceType);
   return result;
 };

@@ -13,12 +13,12 @@ interface PreviewModalProps {
 const PreviewModal = (props: PreviewModalProps) => {
   return (
     <ModalWrapper showModal={props.showModal} setShowModal={props.setShowModal}>
-      <div className="flex flex-row justify-between items-center p-4">
+      <div className="flex flex-row justify-between items-center px-4 py-2">
         <h1 className="font-light">
           {props.resource.resourceType + "/" + props.resource.id}
         </h1>
       </div>
-      <div className="p-4 h-[calc(100vh-200px)] overflow-y-auto">
+      <div className="px-4 h-[calc(100vh-200px)] overflow-y-auto">
         <JsonView src={props.resource} />
       </div>
     </ModalWrapper>

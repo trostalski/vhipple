@@ -1,11 +1,11 @@
 import React, { memo, useEffect, useState } from "react";
 import { Timeline } from "vis-timeline/standalone";
 import { Resource } from "fhir/r4";
+import { convertResourcesToVisTimeline } from "../../lib/utils";
 import {
-  convertResourcesToVisTimeline,
   getDisplayForResource,
   getValueDisplay,
-} from "../../lib/utils";
+} from "@/app/lib/resourceTypeDisplay";
 import "../styles/timeline.css";
 import { VisTimelineData } from "../../lib/types";
 

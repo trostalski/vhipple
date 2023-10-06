@@ -14,8 +14,8 @@ import FhirPathInput from "../../components/FhirPathInput";
 import { Dataset } from "@/app/datasets/lib/types";
 import { Resource } from "fhir/r4";
 import { getResourcesForCohort } from "@/app/datasets/lib/cohortUtils";
-import CohortSelect from "../../../components/CohortMultiSelect";
 import { editMode } from "@/app/datasets/lib/constants";
+import CohortSelect from "../../../cohorts/components/CohortMultiSelect";
 
 interface ChartDataSettingsProps {
   card: DashboardCard;

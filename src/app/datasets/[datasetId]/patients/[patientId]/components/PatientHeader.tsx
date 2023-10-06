@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Patient } from "fhir/r4";
 import { getAge } from "../../lib/utils";
 
@@ -8,7 +8,6 @@ interface PatientHeaderProps {
 
 const PatientHeader = (props: PatientHeaderProps) => {
   const patient = props.patient;
-  const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="flex flex-col justify-between shrink-0">

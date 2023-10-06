@@ -1,9 +1,7 @@
 "use client";
 import { PatientCohort } from "@/app/datasets/lib/types";
 import React from "react";
-import Select from "react-select";
-import { allPatientsCohortName } from "../../dashboard/lib/constants";
-import CohortSingleSelect from "../../components/CohortSingleSelect";
+import CohortSingleSelect from "../../cohorts/components/CohortSingleSelect";
 
 interface PatientsHeaderProps {
   patientCohorts: PatientCohort[];
@@ -21,17 +19,14 @@ const PatientsHeader = (props: PatientsHeaderProps) => {
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-row gap-4 justify-between items-center h-12">
-        <h1 className="text-3xl font-bold">Patients</h1>
-        <span className="grow" />
-        <CohortSingleSelect
-          handleSelectChange={handleSelectChange}
-          patientCohorts={patientCohorts}
-          selectedPatientCohort={selectedPatientCohort}
-        />
-      </div>
-      <div className="flex flex-row"></div>
+    <div className="flex flex-row gap-4 justify-between items-center h-12">
+      <h1 className="text-3xl font-bold">Patients</h1>
+      <span className="grow" />
+      <CohortSingleSelect
+        handleSelectChange={handleSelectChange}
+        patientCohorts={patientCohorts}
+        selectedPatientCohort={selectedPatientCohort}
+      />
     </div>
   );
 };

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { Dataset } from "../../lib/types";
-import CohortSingleSelect from "./CohortSingleSelect";
+import React from "react";
 import ResourcesTable, { TableResource } from "./ResourcesTable";
+import { Dataset } from "@/app/datasets/lib/types";
 
 interface ResourcesTableContainerProps {
   dataset: Dataset;
@@ -23,15 +22,10 @@ const ResourcesTableContainer = (props: ResourcesTableContainerProps) => {
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-row items-center justify-between">
-        <span className="text-xl font-bold">Resources</span>
-      </div>
-      <ResourcesTable
-        datasetId={dataset.id}
-        inputData={computeResourcesTableInputData()}
-      />
-    </div>
+    <ResourcesTable
+      datasetId={dataset.id}
+      inputData={computeResourcesTableInputData()}
+    />
   );
 };
 

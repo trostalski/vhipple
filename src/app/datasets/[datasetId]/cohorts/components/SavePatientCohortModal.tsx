@@ -1,26 +1,25 @@
 import React, { useState } from "react";
 import ModalWrapper from "@/app/components/ModalWrapper";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import {
-  Dataset,
-  PatientCohort,
-  PatientCohortCriterium,
-} from "../../lib/types";
 import { generateUniqueId } from "@/app/lib/utils";
 import { IoAdd } from "react-icons/io5";
 import PatientCohortPreviewMenu from "./PatientCohortPreviewMenu";
 import CriteriumInput from "./CriteriumInput";
 import { updateDataset } from "@/app/db/utils";
 import { toastError, toastSuccess } from "@/app/lib/toasts";
-import { defaultPatientCohort } from "../dashboard/lib/constants";
+import { computePatientCohort } from "@/app/datasets/lib/cohortUtils";
 import {
+  patientIncludeCritriumString,
   addMode,
   editMode,
-  patientIncludeCritriumString,
-} from "../../lib/constants";
-import { computePatientCohort } from "../../lib/cohortUtils";
-import { validateFhirPath } from "../../lib/fhirpathUilts";
-import { Resource } from "fhir/r4";
+} from "@/app/datasets/lib/constants";
+import { validateFhirPath } from "@/app/datasets/lib/fhirpathUilts";
+import {
+  Dataset,
+  PatientCohort,
+  PatientCohortCriterium,
+} from "@/app/datasets/lib/types";
+import { defaultPatientCohort } from "../../dashboard/lib/constants";
 
 interface SavePatientCohortModalProps {
   showModal: boolean;

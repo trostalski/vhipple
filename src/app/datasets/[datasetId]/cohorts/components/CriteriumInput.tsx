@@ -1,7 +1,10 @@
 import { AiFillDelete } from "react-icons/ai";
-import { FhirPathAlias, PatientCohortCriterium } from "../../lib/types";
-import FhirPathInput from "../dashboard/components/FhirPathInput";
 import { Resource } from "fhir/r4";
+import {
+  PatientCohortCriterium,
+  FhirPathAlias,
+} from "@/app/datasets/lib/types";
+import FhirPathInput from "../../dashboard/components/FhirPathInput";
 
 interface CriteriumInputProps {
   criterium: PatientCohortCriterium;

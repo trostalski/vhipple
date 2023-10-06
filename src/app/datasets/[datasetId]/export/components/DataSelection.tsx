@@ -1,7 +1,7 @@
 import React from "react";
-import CohortSelect from "../../components/CohortMultiSelect";
 import { OptionType } from "@/app/lib/types";
 import { PatientCohort } from "@/app/datasets/lib/types";
+import CohortSelect from "../../cohorts/components/CohortMultiSelect";
 
 interface DataSelectionProps {
   patientCohorts: PatientCohort[];

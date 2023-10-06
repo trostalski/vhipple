@@ -22,52 +22,6 @@ export const getAge = (birthDate: string) => {
   return age;
 };
 
-const getCodedDisplay = (
-  code: CodeableConcept | undefined,
-  coding: Coding[] | undefined
-) => {
-  if (code?.text) {
-    return code.text;
-  }
-  if (coding && coding.length > 0) {
-    const primaryCoding = coding[0];
-    if (primaryCoding.display) {
-      return primaryCoding.display;
-    } else if (primaryCoding.code) {
-      let result = primaryCoding.code;
-      result += primaryCoding.system
-        ? ` (${primaryCoding.system})`
-        : " (unknown system)";
-      return result;
-    }
-  }
-  return "";
-};
-
-export const getCodedResourceDisplay = (resource: CodedResource) => {
-  let result = "";
-  const code = resource.code;
-  const coding = code?.coding;
-  result = getCodedDisplay(code, coding);
-  return result;
-};
-
-export const getImmunizationDisplay = (resource: Immunization) => {
-  let result = "";
-  const code = resource.vaccineCode;
-  const coding = code?.coding;
-  result = getCodedDisplay(code, coding);
-  return result;
-};
-
-export const getMedicationRequestDisplay = (resource: MedicationRequest) => {
-  let result = "";
-  const code = resource.medicationCodeableConcept;
-  const coding = code?.coding;
-  result = getCodedDisplay(code, coding);
-  return result;
-};
-
 export const getYYYYMMDD = (date: string) => {
   let result = "";
   const dateObj = new Date(date);
@@ -163,51 +117,6 @@ export const getPerformedDateDisplay = (resource: Procedure) => {
   return result;
 };
 
-export const getValueDisplay = (resource: any, includeUnit: boolean) => {
-  let result = undefined;
-  includeUnit = includeUnit ?? true;
-  if (resource.valueQuantity) {
-    let value = resource.valueQuantity.value;
-    // round value to 2 decimal places
-    result = Math.round(value * 100) / 100;
-    if (includeUnit) {
-      const unit = resource.valueQuantity.unit;
-      result = result + " " + unit;
-    }
-  } else if (resource.valueCodeableConcept) {
-    const code = resource.valueCodeableConcept;
-    const coding = code?.coding;
-    result = getCodedDisplay(code, coding);
-  } else if (resource.valueString) {
-    result = resource.valueString;
-  } else if (resource.valueBoolean) {
-    result = resource.valueBoolean;
-  } else if (resource.valueInteger) {
-    result = resource.valueInteger;
-  } else if (resource.valueRange) {
-    result =
-      resource.valueRange.low!.value + " " + resource.valueRange.low!.unit;
-  } else if (resource.valueRatio) {
-    result =
-      resource.valueRatio.numerator!.value +
-      " " +
-      resource.valueRatio.numerator!.unit +
-      " / " +
-      resource.valueRatio.denominator!.value +
-      " " +
-      resource.valueRatio.denominator!.unit;
-  } else if (resource.valueSampledData) {
-    result = resource.valueSampledData.data;
-  } else if (resource.valueTime) {
-    result = resource.valueTime;
-  } else if (resource.valueDateTime) {
-    result = resource.valueDateTime;
-  } else if (resource.valuePeriod) {
-    result = resource.valuePeriod.start!;
-  }
-  return result;
-};
-
 export const getConditionDateDisplay = (condition: Condition) => {
   let result = undefined;
   result = getOnsetDateDisplay(condition);
@@ -237,19 +146,6 @@ export const getMedicationRequestDateDisplay = (
   }
   result = result ? getYYYYMMDD(result) : "";
   return result;
-};
-
-export const getDisplayForResource = (resource: Resource) => {
-  switch (resource.resourceType) {
-    case "Procedure":
-    case "Observation":
-    case "DiagnosticReport":
-    case "Condition":
-    case "AllergyIntolerance":
-      return getCodedResourceDisplay(resource as any);
-    default:
-      return undefined;
-  }
 };
 
 export const getDateDisplayForResource = (resource: Resource) => {

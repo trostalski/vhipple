@@ -1,9 +1,10 @@
 import React from "react";
 import { PatientData } from "../../lib/patientData";
+import {} from "../../lib/utils";
 import {
   getCodedResourceDisplay,
   getMedicationRequestDisplay,
-} from "../../lib/utils";
+} from "@/app/lib/resourceTypeDisplay";
 
 interface PatientInfoActiveProps {
   patientData: PatientData;

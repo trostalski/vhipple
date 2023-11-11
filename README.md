@@ -15,4 +15,4 @@ Vhipple is a project that provides introspection into FHIR data. It allows you t
 
 ## Contributing
 
-Contributions of all kinds are welcome.
+Contributions of all kinds are welcome!

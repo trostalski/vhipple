@@ -1,6 +1,6 @@
 # Vhipple
 
-Visit the project: [https://vhipple.com](https://vhipple.com)
+Visit the project: [https://vhipple.com](https://vhipple.com)!
 
 And: The [blog post](https://healthnerd.solutions/vhipple-your-fhir-visualization-and-analysis-ally/)
 
